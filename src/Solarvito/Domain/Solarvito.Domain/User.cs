@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Domain
 {
-    internal class User
+    public class User
     {
         /// <summary>
         /// Идентификатор пользователя.

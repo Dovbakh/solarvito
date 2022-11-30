@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Domain
 {
-    internal class Category
+    public class Category
     {
         /// <summary>
         /// Идентификатор категории.

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Domain
 {
-    internal class Advertisement
+    public class Advertisement
     {
         /// <summary>
         /// Идентификатор обьявления.
@@ -33,10 +33,10 @@ namespace Solarvito.Domain
         /// </summary>
         public string Description {get; set; }
 
-        /// <summary>
-        /// Адресс, указанный в обьявлении.
-        /// </summary>
-        public string Adress { get; set; }
+        ///// <summary>
+        ///// Адресс, указанный в обьявлении.
+        ///// </summary>
+        //public string Address { get; set; }
 
         /// <summary>
         /// Путь к картинке обьявления.
