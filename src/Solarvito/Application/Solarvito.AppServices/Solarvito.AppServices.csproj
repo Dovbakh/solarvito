@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Advertisement\Services\" />
+    <Folder Include="Category\Services\" />
+    <Folder Include="User\Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Contracts\Solarvito.Contracts\Solarvito.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

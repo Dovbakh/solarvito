@@ -26,7 +26,6 @@ namespace Solarvito.Migrations.Factories
             optionsBuilder.UseNpgsql(connectionString, opts => opts
             .CommandTimeout((int)TimeSpan.FromMinutes(10).TotalSeconds)
             );
-
             return new MigrationsDbContext(optionsBuilder.Options);
         }
     }
