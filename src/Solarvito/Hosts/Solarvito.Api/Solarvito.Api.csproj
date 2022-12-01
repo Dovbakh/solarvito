@@ -14,6 +14,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\Solarvito.AppServices\Solarvito.AppServices.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Solarvito.Registrar\Solarvito.Registrar.csproj" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/appsscript.json" /></VisualStudio></ProjectExtensions>
 
 </Project>

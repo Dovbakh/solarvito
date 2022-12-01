@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Advertisement\Services\" />
     <Folder Include="Category\Services\" />
     <Folder Include="User\Services\" />
   </ItemGroup>

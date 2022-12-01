@@ -1,37 +1,25 @@
 ﻿using Solarvito.AppServices.Advertisement.Repositories;
 using Solarvito.Contracts.Advertisement;
-using Solarvito.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
+namespace Solarvito.AppServices.Advertisement.Services
 {
-    public class AdvertisementRepository : IAdvertisementRepository
+    public class AdvertisementService : IAdvertisementService
     {
-        private readonly IRepository<Domain.Advertisement> _repository;
+        private readonly IAdvertisementRepository _advertisementRepository;
 
-        public AdvertisementRepository(IRepository<Domain.Advertisement> repository)
+        public AdvertisementService(IAdvertisementRepository repository)
         {
-            _repository = repository;
+            _advertisementRepository = repository;
         }
 
-        public async Task<int> AddAsync(AdvertisementDto advertisementDto, CancellationToken cancellation)
+        public Task<int> AddAsync(AdvertisementDto advertisementDto, CancellationToken cancellation)
         {
-            var advertisement = new Domain.Advertisement {
-                Name = advertisementDto.Name,
-                Description = advertisementDto.Description,
-                UserId = advertisementDto.UserId,
-                CategoryId = advertisementDto.CategoryId,
-                ImagePath = advertisementDto.ImagePath,
-                CreatedAt = DateTime.UtcNow,
-                ExpireAt = DateTime.UtcNow.AddDays(30),
-                NumberOfViews = 0
-            };
-            await _repository.AddAsync(advertisement);
-            return advertisement.Id;
+            return _advertisementRepository.AddAsync(advertisementDto, cancellation);
         }
 
         public Task DeleteAsync(int id, CancellationToken cancellation)

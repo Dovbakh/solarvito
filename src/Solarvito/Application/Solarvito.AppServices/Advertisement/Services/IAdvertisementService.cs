@@ -5,12 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solarvito.AppServices.Advertisement.Repositories
+namespace Solarvito.AppServices.Advertisement.Services
 {
-    /// <summary>
-    /// Репозиторий чтения/записи для работы с обьявлениями.
-    /// </summary>
-    public interface IAdvertisementRepository
+    public interface IAdvertisementService
     {
         /// <summary>
         /// Возвращает записи товаров используя постраничную загрузку.
@@ -56,6 +53,5 @@ namespace Solarvito.AppServices.Advertisement.Repositories
         /// </summary>
         /// <param name="id">Идентификатор обьявления.</param>
         Task DeleteAsync(int id, CancellationToken cancellation);
-
     }
 }

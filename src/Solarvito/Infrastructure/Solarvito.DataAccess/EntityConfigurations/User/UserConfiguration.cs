@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
 {
     /// <summary>
-    /// Конфигурация таблицы Advertisement.
+    /// Конфигурация таблицы Users.
     /// </summary>
     public class UserConfiguration : IEntityTypeConfiguration<Domain.User>
     {

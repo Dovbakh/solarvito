@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Application\Solarvito.AppServices\Solarvito.AppServices.csproj" />
     <ProjectReference Include="..\..\Domain\Solarvito.Domain\Solarvito.Domain.csproj" />
+    <ProjectReference Include="..\Solarvito.Infrastructure\Solarvito.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

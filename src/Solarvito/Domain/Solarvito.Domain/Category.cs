@@ -16,7 +16,7 @@ namespace Solarvito.Domain
         /// <summary>
         /// Идентификатор родительской категории.
         /// </summary>
-        public int ParentCategoryId { get; set; }
+        //public int ParentCategoryId { get; set; }
 
         /// <summary>
         /// Название категории.
@@ -26,12 +26,12 @@ namespace Solarvito.Domain
         /// <summary>
         /// Родительская категория.
         /// </summary>
-        public Category ParentCategory { get; set; }
+        //public Category ParentCategory { get; set; }
 
         /// <summary>
         /// Коллекция подкатегорий.
         /// </summary>
-        public ICollection<Category> ChildCategories { get; set; }
+        //public ICollection<Category> ChildCategories { get; set; }
 
         /// <summary>
         /// Коллекция обьявлений в категории.

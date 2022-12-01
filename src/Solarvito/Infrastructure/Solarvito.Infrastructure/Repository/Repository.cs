@@ -41,7 +41,7 @@ namespace Solarvito.Infrastructure.Repository
         }
 
         /// <inheritdoc />
-        public async Task<TEntity> GetByIdAsync(Guid id)
+        public async Task<TEntity> GetByIdAsync(int id)
         {
             return await DbSet.FindAsync(id);
         }

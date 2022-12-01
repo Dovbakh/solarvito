@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.Advertisement
 {
-    public class AdvertisementDto
+    public class AdvertisementFilterRequest
     {
         /// <summary>
         /// Идентификатор обьявления.
@@ -33,16 +33,6 @@ namespace Solarvito.Contracts.Advertisement
         /// </summary>
         public string Description { get; set; }
 
-        ///// <summary>
-        ///// Адресс, указанный в обьявлении.
-        ///// </summary>
-        //public string Address { get; set; }
-
-        /// <summary>
-        /// Путь к картинке обьявления.
-        /// </summary>
-        public string ImagePath { get; set; }
-
         /// <summary>
         /// Дата создания обьявления.
         /// </summary>
@@ -58,15 +48,6 @@ namespace Solarvito.Contracts.Advertisement
         /// </summary>
         public int NumberOfViews { get; set; }
 
-        /// <summary>
-        /// Название категории обьявления
-        /// </summary>
-        public string CategoryName { get; set; }
-
-        /// <summary>
-        /// Имя пользователя, разместившего обьявление
-        /// </summary>
-        public string UserName { get; set; }
 
     }
 }

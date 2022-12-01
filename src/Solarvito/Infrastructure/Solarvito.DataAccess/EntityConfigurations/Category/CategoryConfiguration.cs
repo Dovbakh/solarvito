@@ -23,9 +23,9 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
 
             builder.Property(c => c.Name).HasMaxLength(100);
 
-            builder.HasMany(c => c.ChildCategories)
-                .WithOne(c => c.ParentCategory)
-                .HasForeignKey(c => c.ParentCategoryId);
+            builder.HasMany(с => с.Advertisements)
+                .WithOne(a => a.Category)
+                .HasForeignKey(a => a.CategoryId);
 
 
 

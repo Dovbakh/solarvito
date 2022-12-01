@@ -31,7 +31,7 @@ namespace Solarvito.Infrastructure.Repository
         /// </summary>
         /// <param name="id">Идентификатор <see cref="TEntity"/>.</param>
         /// <returns><see cref="TEntity"/>.</returns>
-        Task<TEntity> GetByIdAsync(Guid id);
+        Task<TEntity> GetByIdAsync(int id);
 
         /// <summary>
         /// Добавляет элемент <see cref="TEntity"/>.

@@ -12,7 +12,7 @@ using Solarvito.Migrations;
 namespace Solarvito.Migrations.Migrations
 {
     [DbContext(typeof(MigrationsDbContext))]
-    [Migration("20221130142435_init")]
+    [Migration("20221201192457_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -84,12 +84,7 @@ namespace Solarvito.Migrations.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int>("ParentCategoryId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Categories", (string)null);
                 });
@@ -160,20 +155,7 @@ namespace Solarvito.Migrations.Migrations
 
             modelBuilder.Entity("Solarvito.Domain.Category", b =>
                 {
-                    b.HasOne("Solarvito.Domain.Category", "ParentCategory")
-                        .WithMany("ChildCategories")
-                        .HasForeignKey("ParentCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ParentCategory");
-                });
-
-            modelBuilder.Entity("Solarvito.Domain.Category", b =>
-                {
                     b.Navigation("Advertisements");
-
-                    b.Navigation("ChildCategories");
                 });
 
             modelBuilder.Entity("Solarvito.Domain.User", b =>
