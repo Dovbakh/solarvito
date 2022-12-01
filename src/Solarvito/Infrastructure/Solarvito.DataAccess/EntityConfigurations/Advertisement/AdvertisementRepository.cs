@@ -1,4 +1,5 @@
-﻿using Solarvito.AppServices.Advertisement.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Solarvito.AppServices.Advertisement.Repositories;
 using Solarvito.Contracts.Advertisement;
 using Solarvito.Infrastructure.Repository;
 using System;
@@ -34,14 +35,33 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
             return advertisement.Id;
         }
 
-        public Task DeleteAsync(int id, CancellationToken cancellation)
+        public async Task DeleteAsync(int id, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            var advertisement = await _repository.GetByIdAsync(id);
+            if (advertisement == null)
+            {
+                throw new Exception($"Не найдено обьявление с идентификатором '{id}'");
+            }
+
+            await _repository.DeleteAsync(advertisement);
         }
 
-        public Task<IReadOnlyCollection<AdvertisementDto>> GetAllAsync(int take, int skip, CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<AdvertisementDto>> GetAllAsync(int take, int skip, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            return await _repository.GetAll().
+                Select(a => new AdvertisementDto()
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Description = a.Description,
+                    UserId = a.UserId,
+                    CategoryId = a.CategoryId,
+                    ImagePath = a.ImagePath,
+                    CreatedAt = a.CreatedAt,
+                    ExpireAt = a.ExpireAt,
+                    NumberOfViews = a.NumberOfViews
+
+                }).Take(take).Skip(skip).ToListAsync();
         }
 
         public Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation)
@@ -49,14 +69,39 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
             throw new NotImplementedException();
         }
 
-        public Task<AdvertisementDto> GetByIdAsync(int id, CancellationToken cancellation)
+        public async Task<AdvertisementDto> GetByIdAsync(int id, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            var advertisement = await _repository.GetByIdAsync(id);
+            var advertisementDto = new AdvertisementDto()
+            {
+                Id = advertisement.Id,
+                Name = advertisement.Name,
+                Description = advertisement.Description,
+                UserId = advertisement.UserId,
+                CategoryId = advertisement.CategoryId,
+                ImagePath = advertisement.ImagePath,
+                CreatedAt = advertisement.CreatedAt,
+                ExpireAt = advertisement.ExpireAt,
+                NumberOfViews = advertisement.NumberOfViews
+            };
+
+            return advertisementDto;
         }
 
-        public Task UpdateAsync(int id, AdvertisementDto advertisementDto, CancellationToken cancellation)
+        public async Task UpdateAsync(int id, AdvertisementDto advertisementDto, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            var advertisement = await _repository.GetByIdAsync(id);  
+            if (advertisement == null)
+            {
+                throw new Exception($"Не найдено обьявление с идентификатором '{id}'");
+            }
+
+            advertisement.Name = advertisementDto.Name;
+            advertisement.Description = advertisementDto.Description;
+            advertisement.ImagePath = advertisementDto.ImagePath;
+            advertisement.CategoryId = advertisementDto.CategoryId;
+
+            await _repository.UpdateAsync(advertisement);
         }
     }
 }

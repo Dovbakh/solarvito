@@ -24,12 +24,12 @@ namespace Solarvito.AppServices.Advertisement.Services
 
         public Task DeleteAsync(int id, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            return _advertisementRepository.DeleteAsync(id, cancellation);
         }
 
         public Task<IReadOnlyCollection<AdvertisementDto>> GetAllAsync(int take, int skip, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            return _advertisementRepository.GetAllAsync(take, skip, cancellation);
         }
 
         public Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation)
@@ -39,12 +39,12 @@ namespace Solarvito.AppServices.Advertisement.Services
 
         public Task<AdvertisementDto> GetByIdAsync(int id, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            return _advertisementRepository.GetByIdAsync(id, cancellation);
         }
 
         public Task UpdateAsync(int id, AdvertisementDto advertisementDto, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            return _advertisementRepository.UpdateAsync(id, advertisementDto, cancellation);
         }
     }
 }
