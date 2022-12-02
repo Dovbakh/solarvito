@@ -10,46 +10,42 @@ namespace Solarvito.AppServices.Advertisement.Services
     public interface IAdvertisementService
     {
         /// <summary>
-        /// Возвращает записи товаров используя постраничную загрузку.
+        /// Получить все обьявления с пагинацией.
         /// </summary>
-        /// <param name="take">Количество записей в ответе.</param>
-        /// <param name="skip">Количество пропущеных записей.</param>
-        /// <param name="cancellation">Отмена операции.</param>
+        /// <param name="take">Количество получаемых обьявлений.</param>
+        /// <param name="skip">Количество пропускаемых обьявлений.</param>
+        /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Коллекция элементов <see cref="AdvertisementDto"/>.</returns>
         Task<IReadOnlyCollection<AdvertisementDto>> GetAllAsync(int take, int skip, CancellationToken cancellation);
 
-        /// <summary>
-        /// Возвращает записи товаров по фильтру используя постраничную загрузку.
-        /// </summary>
-        /// <param name="take">Количество записей в ответе.</param>
-        /// <param name="skip">Количество пропущеных записей.</param>
-        /// <param name="cancellation">Отмена операции.</param>
-        /// <returns>Коллекция элементов <see cref="AdvertisementDto"/>.</returns>
+        // TODO
         Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation);
 
         /// <summary>
-        /// Возвращает обьявление по идентификатору.
+        /// Получить обьявление по идентификатору.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellation"></param>
-        /// <returns></returns>
+        /// <param name="id">Идентификатор обьявления.</param>
+        /// <param name="cancellation">Токен отмены</param>
+        /// <returns>Элемент <see cref="AdvertisementDto"/>.</returns>
         Task<AdvertisementDto> GetByIdAsync(int id, CancellationToken cancellation);
 
         /// <summary>
-        /// Создает обьявление.
+        /// Добавить новое обьявление.
         /// </summary>
-        /// <returns>Идентификатор обьявления <see cref="AdvertisementDto"/>.</returns>
+        /// <param name="advertisementDto">Элемент <see cref="AdvertisementDto"/>.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Идентификатор нового обьявления.</returns>
         Task<int> AddAsync(AdvertisementDto advertisementDto, CancellationToken cancellation);
 
         /// <summary>
-        /// Изменяет обьявление.
+        /// Изменить обьявление.
         /// </summary>
         /// <param name="id">Идентификатор обьявления.</param>
-        /// <param name="advertisementDto">Измененное обьявление</param>
+        /// <param name="advertisementDto">Элемент <see cref="AdvertisementDto"/>.</param>
         Task UpdateAsync(int id, AdvertisementDto advertisementDto, CancellationToken cancellation);
 
         /// <summary>
-        /// Удаляет обьявление.
+        /// Удалить обьявление.
         /// </summary>
         /// <param name="id">Идентификатор обьявления.</param>
         Task DeleteAsync(int id, CancellationToken cancellation);

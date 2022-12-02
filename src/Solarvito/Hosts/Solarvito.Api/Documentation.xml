@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Solarvito.Api</name>
+    </assembly>
+    <members>
+        <member name="T:Solarvito.Api.Controllers.AdvertisementController">
+            <summary>
+            Работа с обьявлениями.
+            </summary>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetAll(System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Получить все обьявления с пагинацией.
+            </summary>
+            <param name="take">Количество получаемых обьявлений.</param>
+            <param name="skip">Количество пропускаемых обьявлений.</param>
+            <param name="cancellation">Токен отмены.</param>
+            <returns>Коллекция элементов <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementDto"/>.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetById(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Получить обьявление по идентификатору.
+            </summary>
+            <param name="id">Идентификатор обьявления.</param>
+            <param name="cancellation">Токен отмены</param>
+            <returns>Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementDto"/>.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.Add(System.String,System.String,System.Int32,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Добавить новое обьявление.
+            </summary>
+            <param name="name">Название обьявления.</param>
+            <param name="description">Описание обьявления.</param>
+            <param name="categoryId">Идентификатор категории обьявления.</param>
+            <param name="imagePath">Путь к картинке в обьявлении.</param>
+            <param name="cancellation">Токен отмены.</param>
+            <returns>Идентификатор нового обьявления.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.Update(System.Int32,System.String,System.String,System.Int32,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Изменить обьявление.
+            </summary>
+            <param name="id">Идентификатор обьявления.</param>
+            <param name="name">Название обьявления.</param>
+            <param name="description">Описание обьявления.</param>
+            <param name="categoryId">Идентификатор категории обьявления.</param>
+            <param name="imagePath">Путь к картинке в обьявлении.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.Delete(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Удалить обьявление.
+            </summary>
+            <param name="id">Идентификатор обьявления.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
+    </members>
+</doc>

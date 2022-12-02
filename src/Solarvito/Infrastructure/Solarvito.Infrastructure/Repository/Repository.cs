@@ -15,7 +15,7 @@ namespace Solarvito.Infrastructure.Repository
         protected DbSet<TEntity> DbSet { get; }
 
         /// <summary>
-        /// Инициализирует экземпляр <see cref="Repository"/>.
+        /// Инициализировать экземпляр <see cref="Repository"/>.
         /// </summary>
         /// <param name="context">Контекст БД.</param>
         public Repository(DbContext context)

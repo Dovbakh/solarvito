@@ -10,15 +10,21 @@ using System.Threading.Tasks;
 
 namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
 {
+    /// <inheritdoc/>
     public class AdvertisementRepository : IAdvertisementRepository
     {
         private readonly IRepository<Domain.Advertisement> _repository;
 
+        /// <summary>
+        /// Инициализировать экземпляр <see cref="AdvertisementRepository"/>.
+        /// </summary>
+        /// <param name="repository">Базовый репозиторий.</param>
         public AdvertisementRepository(IRepository<Domain.Advertisement> repository)
         {
             _repository = repository;
         }
 
+        /// <inheritdoc/>
         public async Task<int> AddAsync(AdvertisementDto advertisementDto, CancellationToken cancellation)
         {
             var advertisement = new Domain.Advertisement {
@@ -35,6 +41,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
             return advertisement.Id;
         }
 
+        /// <inheritdoc/>
         public async Task DeleteAsync(int id, CancellationToken cancellation)
         {
             var advertisement = await _repository.GetByIdAsync(id);
@@ -46,6 +53,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
             await _repository.DeleteAsync(advertisement);
         }
 
+        /// <inheritdoc/>
         public async Task<IReadOnlyCollection<AdvertisementDto>> GetAllAsync(int take, int skip, CancellationToken cancellation)
         {
             return await _repository.GetAll().
@@ -64,11 +72,13 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
                 }).Take(take).Skip(skip).ToListAsync();
         }
 
+        /// <inheritdoc/>
         public Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public async Task<AdvertisementDto> GetByIdAsync(int id, CancellationToken cancellation)
         {
             var advertisement = await _repository.GetByIdAsync(id);
@@ -88,6 +98,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
             return advertisementDto;
         }
 
+        /// <inheritdoc/>
         public async Task UpdateAsync(int id, AdvertisementDto advertisementDto, CancellationToken cancellation)
         {
             var advertisement = await _repository.GetByIdAsync(id);  
