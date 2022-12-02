@@ -2,6 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Solarvito.AppServices.Advertisement.Repositories;
 using Solarvito.AppServices.Advertisement.Services;
+using Solarvito.AppServices.Category.Repositories;
+using Solarvito.AppServices.Category.Services;
+using Solarvito.AppServices.Services;
 using Solarvito.DataAccess;
 using Solarvito.DataAccess.EntityConfigurations.Advertisement;
 using Solarvito.DataAccess.Interfaces;
@@ -18,7 +21,8 @@ namespace Solarvito.Registrar
     {
         public static IServiceCollection AddServiceRegistrationModule(this IServiceCollection services)
         {
-            //services.AddSingleton<IDateTimeService, DateTimeService>();
+            services.AddSingleton<IDateTimeService, DateTimeService>();
+
             services.AddSingleton<IDbContextOptionsConfigurator<SolarvitoContext>, ShoppingCartContextConfiguration>();
 
             services.AddDbContext<SolarvitoContext>((Action<IServiceProvider, DbContextOptionsBuilder>)
@@ -31,6 +35,9 @@ namespace Solarvito.Registrar
 
             services.AddTransient<IAdvertisementService, AdvertisementService>();
             services.AddTransient<IAdvertisementRepository, AdvertisementRepository>();
+
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
 
             //services.AddTransient<IProductService, ProductService>();
             //services.AddTransient<IProductRepository, ProductRepository>();

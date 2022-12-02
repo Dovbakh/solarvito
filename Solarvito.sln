@@ -19,21 +19,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{663951
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{798B6194-4185-4003-9816-5AA1A67DD37B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarvito.Api", "src\Solarvito\Hosts\Solarvito.Api\Solarvito.Api.csproj", "{B24EB8DB-4CF0-4DD1-B3C2-DA758397079F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solarvito.Api", "src\Solarvito\Hosts\Solarvito.Api\Solarvito.Api.csproj", "{B24EB8DB-4CF0-4DD1-B3C2-DA758397079F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarvito.Domain", "src\Solarvito\Domain\Solarvito.Domain\Solarvito.Domain.csproj", "{B583BEE1-40AD-4ECC-9A4E-421A8C8964E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solarvito.Domain", "src\Solarvito\Domain\Solarvito.Domain\Solarvito.Domain.csproj", "{B583BEE1-40AD-4ECC-9A4E-421A8C8964E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarvito.Contracts", "src\Solarvito\Contracts\Solarvito.Contracts\Solarvito.Contracts.csproj", "{F5F8AAA8-8C20-4B41-A87B-CC51093FE618}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solarvito.Contracts", "src\Solarvito\Contracts\Solarvito.Contracts\Solarvito.Contracts.csproj", "{F5F8AAA8-8C20-4B41-A87B-CC51093FE618}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarvito.AppServices", "src\Solarvito\Application\Solarvito.AppServices\Solarvito.AppServices.csproj", "{67AF4EAB-7C0F-47BB-BC89-0438E8B0224C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solarvito.AppServices", "src\Solarvito\Application\Solarvito.AppServices\Solarvito.AppServices.csproj", "{67AF4EAB-7C0F-47BB-BC89-0438E8B0224C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarvito.DataAccess", "src\Solarvito\Infrastructure\Solarvito.DataAccess\Solarvito.DataAccess.csproj", "{6D50C5FC-AE56-4C64-AF77-1B8DCA9E0198}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solarvito.DataAccess", "src\Solarvito\Infrastructure\Solarvito.DataAccess\Solarvito.DataAccess.csproj", "{6D50C5FC-AE56-4C64-AF77-1B8DCA9E0198}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarvito.Infrastructure", "src\Solarvito\Infrastructure\Solarvito.Infrastructure\Solarvito.Infrastructure.csproj", "{763A3A02-74F5-4B40-A3BA-98891A753D7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solarvito.Infrastructure", "src\Solarvito\Infrastructure\Solarvito.Infrastructure\Solarvito.Infrastructure.csproj", "{763A3A02-74F5-4B40-A3BA-98891A753D7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarvito.Migrations", "src\Solarvito\Infrastructure\Solarvito.Migrations\Solarvito.Migrations.csproj", "{C7DCEC52-508C-4B6C-9308-06E98F51C23E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solarvito.Migrations", "src\Solarvito\Infrastructure\Solarvito.Migrations\Solarvito.Migrations.csproj", "{C7DCEC52-508C-4B6C-9308-06E98F51C23E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarvito.Registrar", "src\Solarvito\Infrastructure\Solarvito.Registrar\Solarvito.Registrar.csproj", "{1C98A624-1E2B-46BB-B050-9FF68C328A1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solarvito.Registrar", "src\Solarvito\Infrastructure\Solarvito.Registrar\Solarvito.Registrar.csproj", "{1C98A624-1E2B-46BB-B050-9FF68C328A1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

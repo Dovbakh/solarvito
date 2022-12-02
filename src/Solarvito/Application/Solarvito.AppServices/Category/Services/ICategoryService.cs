@@ -6,12 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solarvito.AppServices.Category.Repositories
+namespace Solarvito.AppServices.Category.Services
 {
-    /// <summary>
-    /// Репозиторий чтения/записи для работы с категориями.
-    /// </summary>
-    public interface ICategoryRepository
+    public interface ICategoryService
     {
         /// <summary>
         /// Получить все категории с пагинацией.

@@ -82,6 +82,11 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
         public async Task<AdvertisementDto> GetByIdAsync(int id, CancellationToken cancellation)
         {
             var advertisement = await _repository.GetByIdAsync(id);
+            if (advertisement == null)
+            {
+                throw new Exception($"Не найдено обьявление с идентификатором '{id}'");
+            }
+
             var advertisementDto = new AdvertisementDto()
             {
                 Id = advertisement.Id,

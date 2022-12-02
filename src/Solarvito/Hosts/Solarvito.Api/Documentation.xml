@@ -55,5 +55,50 @@
             <param name="id">Идентификатор обьявления.</param>
             <param name="cancellation">Токен отмены.</param>
         </member>
+        <member name="T:Solarvito.Api.Controllers.CategoryController">
+            <summary>
+            Работа с категориями.
+            </summary>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CategoryController.GetAll(System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Получить все категории с пагинацией.
+            </summary>
+            <param name="take">Количество получаемых категорий.</param>
+            <param name="skip">Количество пропускаемых категорий.</param>
+            <param name="cancellation">Токен отмены.</param>
+            <returns>Коллекция элементов <see cref="T:Solarvito.Contracts.Category.CategoryDto"/>.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CategoryController.GetById(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Получить категорию по идентификатору.
+            </summary>
+            <param name="id">Идентификатор категории.</param>
+            <param name="cancellation">Токен отмены</param>
+            <returns>Элемент <see cref="T:Solarvito.Contracts.Category.CategoryDto"/>.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CategoryController.Add(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Добавить новое категорию.
+            </summary>
+            <param name="name">Название категории.</param>
+            <param name="cancellation">Токен отмены.</param>
+            <returns>Идентификатор новой категории.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CategoryController.Update(System.Int32,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Изменить категорию.
+            </summary>
+            <param name="id">Идентификатор категории.</param>
+            <param name="name">Название категории.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CategoryController.Delete(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Удалить категорию.
+            </summary>
+            <param name="id">Идентификатор категории.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
     </members>
 </doc>
