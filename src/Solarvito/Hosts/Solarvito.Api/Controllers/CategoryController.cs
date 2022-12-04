@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Solarvito.AppServices.Advertisement.Services;
 using Solarvito.AppServices.Category.Services;
@@ -12,6 +13,7 @@ namespace Solarvito.Api.Controllers
     /// </summary>
     [ApiController]
     [Route("v1/[controller]")]
+    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;

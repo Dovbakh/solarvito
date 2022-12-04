@@ -1,7 +1,8 @@
-﻿using Solarvito.Contracts.User;
+﻿using Solarvito.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,44 +13,11 @@ namespace Solarvito.AppServices.User.Repositories
     /// </summary>
     public interface IUserRepository
     {
-        /// <summary>
-        /// Возвращает пользователей используя постраничную загрузку.
-        /// </summary>
-        /// <param name="take">Количество записей в ответе.</param>
-        /// <param name="skip">Количество пропущеных записей.</param>
-        /// <param name="cancellation">Отмена операции.</param>
-        /// <returns>Коллекция элементов <see cref="UserDto"/>.</returns>
-        Task<IReadOnlyCollection<UserDto>> GetAllAsync(int take, int skip, CancellationToken cancellation);
+        Task<Domain.User> FindWhere(Expression<Func<Domain.User, bool>> predicate, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Добавить нового пользователя.
-        /// </summary>
-        /// <param name="userDto">Элемент <see cref="UserDto"/>.</param>
-        /// <param name="cancellation">Токен отмены.</param>
-        /// <returns>Идентификатор нового пользователя.</returns>
-        Task<int> AddAsync(UserDto userDto, CancellationToken cancellation);
+        Task<Domain.User> FindById(int id, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Удалить пользователя.
-        /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
-        Task DeleteAsync(int id, CancellationToken cancellation);
-
-
-        /// <summary>
-        /// Получить пользователя по идентификатору.
-        /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
-        /// <param name="cancellation">Токен отмены</param>
-        /// <returns>Элемент <see cref="UserDto"/>.</returns>
-        Task<UserDto> GetByIdAsync(int id, CancellationToken cancellation);
-
-        /// <summary>
-        /// Изменить пользователя.
-        /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
-        /// <param name="userDto">Элемент <see cref="UserDto"/>.</param>
-        Task UpdateAsync(int id, UserDto userDto, CancellationToken cancellation);
+        Task AddAsync(Domain.User model);
 
     }
 }

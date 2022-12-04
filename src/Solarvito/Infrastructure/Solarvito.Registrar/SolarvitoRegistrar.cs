@@ -18,6 +18,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Solarvito.AppServices;
+using Solarvito.Infrastructure.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace Solarvito.Registrar
 {
@@ -43,16 +46,13 @@ namespace Solarvito.Registrar
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
 
+            services.AddScoped<IClaimsAccessor, HttpContextClaimsAccessor>();
+
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserRepository, UserRepository>();
 
-            //services.AddTransient<IProductService, ProductService>();
-            //services.AddTransient<IProductRepository, ProductRepository>();
 
-            //services.AddTransient<IShoppingCartService, ShoppingCartService>();
-            //services.AddTransient<IShoppingCartRepository, ShoppingCartRepository>();
-
-            //services.AddScoped<IClaimsAccessor, HttpContextClaimsAccessor>();
+            
 
             return services;
         }

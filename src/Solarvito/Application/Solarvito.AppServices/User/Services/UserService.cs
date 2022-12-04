@@ -3,53 +3,110 @@ using Solarvito.Contracts.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Solarvito.AppServices.User.Services
 {
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IClaimsAccessor _claimsAccessor;
+        private readonly IConfiguration _configuration;
 
-        /// <summary>
-        /// Инициализировать экземпляр <see cref="UserService"/>
-        /// </summary>
-        /// <param name="repository">Репозиторий для работы с <see cref="UserDto"/></param>
-        public UserService(IUserRepository repository)
+
+        public UserService(
+            IUserRepository userRepository,
+            IClaimsAccessor claimsAccessor,
+            IConfiguration configuration)
         {
-            _userRepository = repository;
+            _userRepository = userRepository;
+            _claimsAccessor = claimsAccessor;
+            _configuration = configuration;
         }
 
-        /// <inheritdoc/>
-        public Task<int> AddAsync(UserDto userDto, CancellationToken cancellation)
+        public async Task<Domain.User> GetCurrent(CancellationToken cancellationToken)
         {
-            return _userRepository.AddAsync(userDto, cancellation);
+            var claims = await _claimsAccessor.GetClaims(cancellationToken);
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrWhiteSpace(claimId))
+            {
+                return null;
+            }
+
+            var id = int.Parse(claimId);
+            var user = await _userRepository.FindById(id, cancellationToken);
+
+            if (user == null)
+            {
+                throw new Exception($"Не найден пользователь с идентификатором '{id}'");
+            }
+
+            return user;
         }
 
-        /// <inheritdoc/>
-        public Task DeleteAsync(int id, CancellationToken cancellation)
+        public async Task<string> Login(string login, string password, CancellationToken cancellationToken)
         {
-            return _userRepository.DeleteAsync(id, cancellation);
+            var existingUser = await _userRepository.FindWhere(user => user.Login == login, cancellationToken);
+
+            if (existingUser == null)
+            {
+                throw new Exception("Пользователь не найден.");
+            }
+
+            if (!existingUser.Password.Equals(password))
+            {
+                throw new Exception("Нет прав.");
+            }
+
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, existingUser.Id.ToString()),
+            new Claim(ClaimTypes.Name, existingUser.Login)
+        };
+
+            var secretKey = _configuration["Token:SecretKey"];
+
+            var token = new JwtSecurityToken
+                (
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                notBefore: DateTime.UtcNow,
+                signingCredentials: new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                    SecurityAlgorithms.HmacSha256
+                    )
+                );
+
+            var result = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return result;
         }
 
-        /// <inheritdoc/>
-        public Task<IReadOnlyCollection<UserDto>> GetAllAsync(int take, int skip, CancellationToken cancellation)
+        public async Task<int> Register(string login, string password, CancellationToken cancellationToken)
         {
-            return _userRepository.GetAllAsync(take, skip, cancellation);
-        }
+            var user = new Domain.User
+            {
+                Name = login,
+                Login = login,
+                Password = password
+            };
 
-        /// <inheritdoc/>
-        public Task<UserDto> GetByIdAsync(int id, CancellationToken cancellation)
-        {
-            return _userRepository.GetByIdAsync(id, cancellation);
-        }
+            var existingUser = await _userRepository.FindWhere(user => user.Login == login, cancellationToken);
+            if (existingUser != null)
+            {
+                throw new Exception($"Пользователь с логином '{login}' уже зарегистрирован!");
+            }
 
-        /// <inheritdoc/>
-        public Task UpdateAsync(int id, UserDto userDto, CancellationToken cancellation)
-        {
-            return _userRepository.UpdateAsync(id, userDto, cancellation);
+            await _userRepository.AddAsync(user);
+
+            return user.Id;
         }
     }
 }

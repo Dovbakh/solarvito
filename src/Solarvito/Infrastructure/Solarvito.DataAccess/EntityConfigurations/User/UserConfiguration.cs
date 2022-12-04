@@ -25,6 +25,8 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
 
             builder.Property(u => u.Login).HasMaxLength(50);
 
+            //builder.Property(u => u.Adress).
+
             builder.HasMany(u => u.Advertisements)
                 .WithOne(a => a.User)
                 .HasForeignKey(a => a.UserId);

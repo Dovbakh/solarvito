@@ -10,41 +10,28 @@ namespace Solarvito.AppServices.User.Services
     public interface IUserService
     {
         /// <summary>
-        /// Получить всех пользователей с пагинацией.
+        /// Регистрация пользователя.
         /// </summary>
-        /// <param name="take">Количество получаемых пользователей.</param>
-        /// <param name="skip">Количество пропускаемых пользователей.</param>
-        /// <param name="cancellation">Токен отмены.</param>
-        /// <returns>Коллекция элементов <see cref="UserDto"/>.</returns>
-        Task<IReadOnlyCollection<UserDto>> GetAllAsync(int take, int skip, CancellationToken cancellation);
+        /// <param name="login">Логин.</param>
+        /// <param name="password">Пароль.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Идентификатор пользователя.</returns>
+        Task<int> Register(string login, string password, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Получить пользователя по идентификатору.
+        /// Авторизация пользователя.
         /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
-        /// <param name="cancellation">Токен отмены</param>
-        /// <returns>Элемент <see cref="UserDto"/>.</returns>
-        Task<UserDto> GetByIdAsync(int id, CancellationToken cancellation);
+        /// <param name="login">Логин.</param>
+        /// <param name="password">Пароль.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Токен.</returns>
+        Task<string> Login(string login, string password, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Добавить нового пользователя.
+        /// Получить текущего пользователя.
         /// </summary>
-        /// <param name="userDto">Элемент <see cref="UserDto"/>.</param>
-        /// <param name="cancellation">Токен отмены.</param>
-        /// <returns>Идентификатор нового пользователя.</returns>
-        Task<int> AddAsync(UserDto userDto, CancellationToken cancellation);
-
-        /// <summary>
-        /// Изменить пользователя.
-        /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
-        /// <param name="userDto">Элемент <see cref="UserDto"/>.</param>
-        Task UpdateAsync(int id, UserDto userDto, CancellationToken cancellation);
-
-        /// <summary>
-        /// Удалить пользователя.
-        /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
-        Task DeleteAsync(int id, CancellationToken cancellation);
+        /// <param name="cancellationToken"></param>
+        /// <returns>Текущий пользователь.</returns>
+        Task<Domain.User> GetCurrent(CancellationToken cancellationToken);
     }
 }

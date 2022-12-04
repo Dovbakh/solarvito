@@ -125,45 +125,29 @@
             Работа с пользователями.
             </summary>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.GetAll(System.Int32,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.#ctor(Solarvito.AppServices.User.Services.IUserService)">
             <summary>
-            Получить всех пользователей с пагинацией.
+            Работа с пользователями.
             </summary>
-            <param name="take">Количество получаемых пользователей.</param>
-            <param name="skip">Количество пропускаемых пользователей.</param>
-            <param name="cancellation">Токен отмены.</param>
-            <returns>Коллекция элементов <see cref="T:Solarvito.Contracts.User.UserDto"/>.</returns>
+            <param name="userService"></param>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.GetById(System.Int32,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.Register(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
-            Получить пользователя по идентификатору.
+            Зарегистрировать пользователя.
             </summary>
-            <param name="id">Идентификатор пользователя.</param>
-            <param name="cancellation">Токен отмены</param>
-            <returns>Элемент <see cref="T:Solarvito.Contracts.User.UserDto"/>.</returns>
+            <param name="login"></param>
+            <param name="password"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.Add(System.String,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.Login(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
-            Добавить новуого пользователя.
+            Залогинить пользователя.
             </summary>
-            <param name="name">Название пользователя.</param>
-            <param name="cancellation">Токен отмены.</param>
-            <returns>Идентификатор нового пользователя.</returns>
-        </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.Update(System.Int32,System.String,System.Threading.CancellationToken)">
-            <summary>
-            Изменить пользователя.
-            </summary>
-            <param name="id">Идентификатор пользователя.</param>
-            <param name="name">Название пользователя.</param>
-            <param name="cancellation">Токен отмены.</param>
-        </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.Delete(System.Int32,System.Threading.CancellationToken)">
-            <summary>
-            Удалить пользователя.
-            </summary>
-            <param name="id">Идентификатор пользователя.</param>
-            <param name="cancellation">Токен отмены.</param>
+            <param name="login"></param>
+            <param name="password"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
         </member>
         <member name="T:Solarvito.Api.Modules.AuthenticationModule">
             <summary>

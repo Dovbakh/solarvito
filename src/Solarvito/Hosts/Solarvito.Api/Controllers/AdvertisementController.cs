@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Solarvito.AppServices.Advertisement.Services;
 using Solarvito.Contracts.Advertisement;
@@ -108,6 +109,7 @@ namespace Solarvito.Api.Controllers
         /// <returns>Идентификатор нового обьявления.</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [Authorize]
         public async Task<IActionResult> Add(string name, string description, int categoryId, string imagePath, CancellationToken cancellation)
         {
 
@@ -136,6 +138,7 @@ namespace Solarvito.Api.Controllers
         /// <param name="cancellation">Токен отмены.</param>
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize]
         public async Task<IActionResult> Update(int id, string name, string description, int categoryId, string imagePath, CancellationToken cancellation)
         {
             var advertisementDto = new AdvertisementDto()
@@ -157,6 +160,7 @@ namespace Solarvito.Api.Controllers
         /// <param name="cancellation">Токен отмены.</param>
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellation)
         {
             await _advertisementService.DeleteAsync(id, cancellation);
