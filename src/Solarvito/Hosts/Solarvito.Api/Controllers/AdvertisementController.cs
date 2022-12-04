@@ -37,7 +37,7 @@ namespace Solarvito.Api.Controllers
         }
 
         //// TODO
-        //[HttpGet]
+        //[HttpGet("userId")]
         //[ProducesResponseType(typeof(AdvertisementDto), (int)HttpStatusCode.OK)]
         //public async Task<IActionResult> GetAllFiltered(int id, CancellationToken cancellation)
         ////        public async Task<IActionResult> GetAllFiltered(string text, int categoryId, int userId, bool isName, bool isDescription, bool is CancellationToken cancellation)
@@ -46,6 +46,40 @@ namespace Solarvito.Api.Controllers
 
         //    return Ok(result);
         //}
+
+        /// <summary>
+        /// Получить все обьявления по идентификатору пользователя с пагинацией.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="take">Количество получаемых обьявлений.</param>
+        /// <param name="skip">Количество пропускаемых обьявлений.</param>
+        /// <param name="cancellation">Токен отмены</param>
+        /// <returns>Элемент <see cref="AdvertisementDto"/>.</returns>
+        [HttpGet("userId/{userId:int}")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<AdvertisementDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAllByUserId(int userId, int take, int skip, CancellationToken cancellation)
+        {
+            var result = await _advertisementService.GetAllByUserIdAsync(userId, take, skip, cancellation);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Получить все обьявления по идентификатору категории с пагинацией.
+        /// </summary>
+        /// <param name="categoryId">Идентификатор категории.</param>
+        /// <param name="take">Количество получаемых обьявлений.</param>
+        /// <param name="skip">Количество пропускаемых обьявлений.</param>
+        /// <param name="cancellation">Токен отмены</param>
+        /// <returns>Элемент <see cref="AdvertisementDto"/>.</returns>
+        [HttpGet("categoryId/{categoryId:int}")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<AdvertisementDto>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAllByCategoryId(int categoryId, int take, int skip, CancellationToken cancellation)
+        {
+            var result = await _advertisementService.GetAllByCategoryIdAsync(categoryId, take, skip, cancellation);
+
+            return Ok(result);
+        }
 
         /// <summary>
         /// Получить обьявление по идентификатору.

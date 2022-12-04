@@ -21,8 +21,26 @@ namespace Solarvito.AppServices.Advertisement.Repositories
         /// <returns>Коллекция элементов <see cref="AdvertisementDto"/>.</returns>
         Task<IReadOnlyCollection<AdvertisementDto>> GetAllAsync(int take, int skip, CancellationToken cancellation);
 
-        // TODO
-        Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation);
+        //// TODO
+        //Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation);
+
+        /// <summary>
+        /// Получить все обьявления с пагинацией.
+        /// </summary>
+        /// <param name="take">Количество получаемых обьявлений.</param>
+        /// <param name="skip">Количество пропускаемых обьявлений.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Коллекция элементов <see cref="AdvertisementDto"/>.</returns>
+        Task<IReadOnlyCollection<AdvertisementDto>> GetAllByUserIdAsync(int userId, int take, int skip, CancellationToken cancellation);
+
+        /// <summary>
+        /// Получить все обьявления с пагинацией.
+        /// </summary>
+        /// <param name="take">Количество получаемых обьявлений.</param>
+        /// <param name="skip">Количество пропускаемых обьявлений.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Коллекция элементов <see cref="AdvertisementDto"/>.</returns>
+        Task<IReadOnlyCollection<AdvertisementDto>> GetAllByCategoryIdAsync(int categoryId, int take, int skip, CancellationToken cancellation);
 
         /// <summary>
         /// Получить обьявление по идентификатору.

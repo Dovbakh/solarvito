@@ -39,11 +39,21 @@ namespace Solarvito.AppServices.Advertisement.Services
             return _advertisementRepository.GetAllAsync(take, skip, cancellation);
         }
 
-        /// <inheritdoc/>
-        public Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation)
+        public Task<IReadOnlyCollection<AdvertisementDto>> GetAllByCategoryIdAsync(int categoryId, int take, int skip, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            return _advertisementRepository.GetAllByCategoryIdAsync(categoryId, take, skip, cancellation);
         }
+
+        public Task<IReadOnlyCollection<AdvertisementDto>> GetAllByUserIdAsync(int userId, int take, int skip, CancellationToken cancellation)
+        {
+            return _advertisementRepository.GetAllByUserIdAsync(userId, take, skip, cancellation);
+        }
+
+        ///// <inheritdoc/>
+        //public Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         /// <inheritdoc/>
         public Task<AdvertisementDto> GetByIdAsync(int id, CancellationToken cancellation)

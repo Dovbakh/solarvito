@@ -18,6 +18,26 @@
             <param name="cancellation">Токен отмены.</param>
             <returns>Коллекция элементов <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementDto"/>.</returns>
         </member>
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetAllByUserId(System.Int32,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Получить все обьявления по идентификатору пользователя с пагинацией.
+            </summary>
+            <param name="userId">Идентификатор пользователя.</param>
+            <param name="take">Количество получаемых обьявлений.</param>
+            <param name="skip">Количество пропускаемых обьявлений.</param>
+            <param name="cancellation">Токен отмены</param>
+            <returns>Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementDto"/>.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetAllByCategoryId(System.Int32,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Получить все обьявления по идентификатору категории с пагинацией.
+            </summary>
+            <param name="categoryId">Идентификатор категории.</param>
+            <param name="take">Количество получаемых обьявлений.</param>
+            <param name="skip">Количество пропускаемых обьявлений.</param>
+            <param name="cancellation">Токен отмены</param>
+            <returns>Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementDto"/>.</returns>
+        </member>
         <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetById(System.Int32,System.Threading.CancellationToken)">
             <summary>
             Получить обьявление по идентификатору.
@@ -79,7 +99,7 @@
         </member>
         <member name="M:Solarvito.Api.Controllers.CategoryController.Add(System.String,System.Threading.CancellationToken)">
             <summary>
-            Добавить новое категорию.
+            Добавить новую категорию.
             </summary>
             <param name="name">Название категории.</param>
             <param name="cancellation">Токен отмены.</param>

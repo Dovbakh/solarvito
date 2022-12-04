@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Solarvito.AppServices.Advertisement.Repositories;
 using Solarvito.Contracts.Advertisement;
+using Solarvito.Domain;
 using Solarvito.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
@@ -72,11 +73,47 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
                 }).Take(take).Skip(skip).ToListAsync();
         }
 
-        /// <inheritdoc/>
-        public Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<AdvertisementDto>> GetAllByCategoryIdAsync(int categoryId, int take, int skip, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            return await _repository.GetAll().
+                Select(a => new AdvertisementDto()
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Description = a.Description,
+                    UserId = a.UserId,
+                    CategoryId = a.CategoryId,
+                    ImagePath = a.ImagePath,
+                    CreatedAt = a.CreatedAt,
+                    ExpireAt = a.ExpireAt,
+                    NumberOfViews = a.NumberOfViews
+
+                }).Where(a => a.CategoryId == categoryId).Take(take).Skip(skip).ToListAsync();
         }
+
+        public async Task<IReadOnlyCollection<AdvertisementDto>> GetAllByUserIdAsync(int userId, int take, int skip, CancellationToken cancellation)
+        {
+            return await _repository.GetAll().
+                Select(a => new AdvertisementDto()
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Description = a.Description,
+                    UserId = a.UserId,
+                    CategoryId = a.CategoryId,
+                    ImagePath = a.ImagePath,
+                    CreatedAt = a.CreatedAt,
+                    ExpireAt = a.ExpireAt,
+                    NumberOfViews = a.NumberOfViews
+
+                }).Where(a => a.UserId == userId).Take(take).Skip(skip).ToListAsync();
+        }
+
+        ///// <inheritdoc/>
+        //public Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         /// <inheritdoc/>
         public async Task<AdvertisementDto> GetByIdAsync(int id, CancellationToken cancellation)
