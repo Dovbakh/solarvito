@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="User\Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Contracts\Solarvito.Contracts\Solarvito.Contracts.csproj" />
   </ItemGroup>
 

@@ -4,9 +4,13 @@ using Solarvito.AppServices.Advertisement.Repositories;
 using Solarvito.AppServices.Advertisement.Services;
 using Solarvito.AppServices.Category.Repositories;
 using Solarvito.AppServices.Category.Services;
+using Solarvito.AppServices.User.Repositories;
+using Solarvito.AppServices.User.Services;
 using Solarvito.AppServices.Services;
 using Solarvito.DataAccess;
 using Solarvito.DataAccess.EntityConfigurations.Advertisement;
+using Solarvito.DataAccess.EntityConfigurations.Category;
+using Solarvito.DataAccess.EntityConfigurations.User;
 using Solarvito.DataAccess.Interfaces;
 using Solarvito.Infrastructure.Repository;
 using System;
@@ -38,6 +42,9 @@ namespace Solarvito.Registrar
 
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
+
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
             //services.AddTransient<IProductService, ProductService>();
             //services.AddTransient<IProductRepository, ProductRepository>();

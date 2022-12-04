@@ -19,7 +19,37 @@ namespace Solarvito.AppServices.User.Repositories
         /// <param name="skip">Количество пропущеных записей.</param>
         /// <param name="cancellation">Отмена операции.</param>
         /// <returns>Коллекция элементов <see cref="UserDto"/>.</returns>
-        Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellation);
+        Task<IReadOnlyCollection<UserDto>> GetAllAsync(int take, int skip, CancellationToken cancellation);
+
+        /// <summary>
+        /// Добавить нового пользователя.
+        /// </summary>
+        /// <param name="userDto">Элемент <see cref="UserDto"/>.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Идентификатор нового пользователя.</returns>
+        Task<int> AddAsync(UserDto userDto, CancellationToken cancellation);
+
+        /// <summary>
+        /// Удалить пользователя.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        Task DeleteAsync(int id, CancellationToken cancellation);
+
+
+        /// <summary>
+        /// Получить пользователя по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="cancellation">Токен отмены</param>
+        /// <returns>Элемент <see cref="UserDto"/>.</returns>
+        Task<UserDto> GetByIdAsync(int id, CancellationToken cancellation);
+
+        /// <summary>
+        /// Изменить пользователя.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="userDto">Элемент <see cref="UserDto"/>.</param>
+        Task UpdateAsync(int id, UserDto userDto, CancellationToken cancellation);
 
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
+namespace Solarvito.DataAccess.EntityConfigurations.Category
 {
     /// <summary>
     /// Конфигурация таблицы Categories.

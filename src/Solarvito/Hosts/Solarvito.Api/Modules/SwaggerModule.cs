@@ -2,8 +2,11 @@
 using Microsoft.OpenApi.Models;
 using Solarvito.Contracts.Advertisement;
 
-namespace Solarvito.Api
+namespace Solarvito.Api.Modules
 {
+    /// <summary>
+    /// Подключение и настройки Swagger
+    /// </summary>
     public static class SwaggerModule
     {
         public static IServiceCollection AddSwaggerModule(this IServiceCollection services)
@@ -11,7 +14,7 @@ namespace Solarvito.Api
             services.AddSwaggerGen(options =>
             {
                 options.CustomSchemaIds(type => type.FullName.Replace("+", "_"));
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Shopping Cart Api", Version = "V1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Solarvito Api", Version = "V1" });
                 options.IncludeXmlComments(Path.Combine(Path.Combine(AppContext.BaseDirectory,
                     $"{typeof(AdvertisementDto).Assembly.GetName().Name}.xml")));
                 options.IncludeXmlComments(Path.Combine(Path.Combine(AppContext.BaseDirectory, "Documentation.xml")));

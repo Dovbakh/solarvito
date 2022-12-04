@@ -8,5 +8,49 @@ namespace Solarvito.Contracts.User
 {
     public class UserDto
     {
+        /// <summary>
+        /// Идентификатор пользователя.
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Логин пользователя.
+        /// </summary>
+        public string Login { get; set; }
+
+        /// <summary>
+        /// Пароль пользователя.
+        /// </summary>
+        public string Password { get; set; }
+
+        /// <summary>
+        /// Имя пользователя.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Номер телефона пользователя.
+        /// </summary>
+        public string Phone { get; set; }
+
+        /// <summary>
+        /// Электронная почта пользователя.
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Адрес пользователя.
+        /// </summary>
+        public string Adress { get; set; }
+
+        /// <summary>
+        /// Рейтинг пользователя.
+        /// </summary>
+        public decimal Rating { get; set; }
+
+        /// <summary>
+        /// Дата создания пользователя.
+        /// </summary>
+        public DateTime CreatedAt { get; set; }
     }
 }

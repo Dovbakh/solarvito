@@ -1,61 +1,55 @@
 ﻿using Solarvito.AppServices.User.Repositories;
 using Solarvito.Contracts.User;
-using Solarvito.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solarvito.DataAccess.EntityConfigurations.User
+namespace Solarvito.AppServices.User.Services
 {
-    public class UserRepository : IUserRepository
+    /// <inheritdoc/>
+    public class UserService : IUserService
     {
-        private readonly IRepository<Domain.User> _repository;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
-        /// Инициализировать экземпляр <see cref="UserRepository"/>.
+        /// Инициализировать экземпляр <see cref="UserService"/>
         /// </summary>
-        /// <param name="repository">Базовый репозиторий.</param>
-        public UserRepository(IRepository<Domain.User> repository)
+        /// <param name="repository">Репозиторий для работы с <see cref="UserDto"/></param>
+        public UserService(IUserRepository repository)
         {
-            _repository = repository;
+            _userRepository = repository;
         }
 
         /// <inheritdoc/>
         public Task<int> AddAsync(UserDto userDto, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            return _userRepository.AddAsync(userDto, cancellation);
         }
 
         /// <inheritdoc/>
         public Task DeleteAsync(int id, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellation)
-        {
-            throw new NotImplementedException();
+            return _userRepository.DeleteAsync(id, cancellation);
         }
 
         /// <inheritdoc/>
         public Task<IReadOnlyCollection<UserDto>> GetAllAsync(int take, int skip, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            return _userRepository.GetAllAsync(take, skip, cancellation);
         }
 
         /// <inheritdoc/>
         public Task<UserDto> GetByIdAsync(int id, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            return _userRepository.GetByIdAsync(id, cancellation);
         }
 
         /// <inheritdoc/>
         public Task UpdateAsync(int id, UserDto userDto, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            return _userRepository.UpdateAsync(id, userDto, cancellation);
         }
     }
 }
