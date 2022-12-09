@@ -9,11 +9,6 @@ namespace Solarvito.Contracts.Advertisement
     public class AdvertisementFilterRequest
     {
         /// <summary>
-        /// Идентификатор обьявления.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// Идентификатор категории.
         /// </summary>
         public int CategoryId { get; set; }

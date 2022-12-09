@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Solarvito.AppServices.User.Services;
@@ -26,6 +27,40 @@ namespace Solarvito.Api.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll(int take, int skip, CancellationToken cancellation)
+        {
+            var users = await _userService.GetAll(take, skip, cancellation);
+
+            return Ok(users);
+        }
+
+
+        [HttpGet("{id:int}")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetById(int id, CancellationToken cancellation)
+        {
+            var user = await _userService.GetById(id, cancellation);
+
+            return Ok(user);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
+        [HttpGet("current")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetCurrent(CancellationToken cancellation)
+        {
+            var user = await _userService.GetCurrent(cancellation);
+
+            return Ok(user);
+        }
+
         /// <summary>
         /// Зарегистрировать пользователя.
         /// </summary>
@@ -34,12 +69,12 @@ namespace Solarvito.Api.Controllers
         /// <param name="cancellation"></param>
         /// <returns></returns>
         [HttpPost("register")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Register(string login, string password, CancellationToken cancellation)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Register(UserLoginDto userLoginDto, CancellationToken cancellation)
         {
-            var user = await _userService.Register(login, password, cancellation);
+            var userId = await _userService.Register(userLoginDto, cancellation);
 
-            return Created("", new { });
+            return Ok(userId);
         }
 
         /// <summary>
@@ -50,12 +85,15 @@ namespace Solarvito.Api.Controllers
         /// <param name="cancellation"></param>
         /// <returns></returns>
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Login(string login, string password, CancellationToken cancellation)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Login(UserLoginDto userLoginDto, CancellationToken cancellation)
         {
-            var token = await _userService.Login(login, password, cancellation);
+            var token = await _userService.Login(userLoginDto, cancellation);
 
             return Ok(token);
         }
+
+
+
     }
 }

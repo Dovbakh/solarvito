@@ -16,7 +16,7 @@ namespace Solarvito.AppServices.User.Services
         /// <param name="password">Пароль.</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Идентификатор пользователя.</returns>
-        Task<int> Register(string login, string password, CancellationToken cancellationToken);
+        Task<int> Register(UserLoginDto userLoginDto, CancellationToken cancellationToken);
 
         /// <summary>
         /// Авторизация пользователя.
@@ -25,13 +25,21 @@ namespace Solarvito.AppServices.User.Services
         /// <param name="password">Пароль.</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Токен.</returns>
-        Task<string> Login(string login, string password, CancellationToken cancellationToken);
+        Task<string> Login(UserLoginDto userLoginDto, CancellationToken cancellationToken);
+
+        Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellationToken);
+
+        Task<UserDto> GetById(int id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Получить текущего пользователя.
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>Текущий пользователь.</returns>
-        Task<Domain.User> GetCurrent(CancellationToken cancellationToken);
+        Task<UserDto> GetCurrent(CancellationToken cancellationToken);
+
+
+
+        
     }
 }

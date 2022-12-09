@@ -16,7 +16,7 @@ namespace Solarvito.Api.Modules
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
-                    var secretKey = configuration["Token:SecretKey"];
+                    var secretKey = configuration["AuthToken:SecretKey"];
 
                     options.SaveToken = true;
                     options.RequireHttpsMetadata = false;

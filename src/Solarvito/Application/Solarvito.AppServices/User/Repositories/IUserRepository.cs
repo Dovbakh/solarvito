@@ -1,4 +1,5 @@
-﻿using Solarvito.Domain;
+﻿using Solarvito.Contracts.User;
+using Solarvito.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,13 @@ namespace Solarvito.AppServices.User.Repositories
     /// </summary>
     public interface IUserRepository
     {
-        Task<Domain.User> FindWhere(Expression<Func<Domain.User, bool>> predicate, CancellationToken cancellationToken);
+        Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellationToken);
 
-        Task<Domain.User> FindById(int id, CancellationToken cancellationToken);
+        Task<IReadOnlyCollection<UserDto>> GetAllFiltered(Expression<Func<Domain.User, bool>> predicate, CancellationToken cancellationToken);
+
+        Task<UserDto> GetById(int id, CancellationToken cancellationToken);
+
+        Task<UserVerifyDto> GetWithHashByEmail(string email, CancellationToken cancellationToken);
 
         Task AddAsync(Domain.User model);
 

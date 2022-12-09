@@ -13,26 +13,6 @@ namespace Solarvito.Domain
         /// Идентификатор пользователя.
         /// </summary>
         public int Id { get; set; }
-        
-        /// <summary>
-        /// Логин пользователя.
-        /// </summary>
-        public string Login { get; set; }
-
-        /// <summary>
-        /// Пароль пользователя.
-        /// </summary>
-        public string Password { get; set; }
-
-        /// <summary>
-        /// Имя пользователя.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Номер телефона пользователя.
-        /// </summary>
-        public string Phone { get; set; }
 
         /// <summary>
         /// Электронная почта пользователя.
@@ -40,15 +20,35 @@ namespace Solarvito.Domain
         public string Email { get; set; }
 
         /// <summary>
+        /// Хэш пароля пользователя.
+        /// </summary>
+        public string PasswordHash { get; set; }
+
+        /// <summary>
+        /// Имя пользователя.
+        /// </summary>
+        public string? Name { get; set; }
+
+        /// <summary>
+        /// Номер телефона пользователя.
+        /// </summary>
+        public string? Phone { get; set; }
+
+        /// <summary>
         /// Адрес пользователя.
         /// </summary>
-        public string Adress { get; set; }
+        public string? Address { get; set; }
 
         /// <summary>
         /// Рейтинг пользователя.
         /// </summary>
-        public decimal Rating { get; set; }
-        
+        public float Rating { get; set; }
+
+        /// <summary>
+        /// Количество оценок.
+        /// </summary>
+        public int NumberOfRates { get; set; }
+
         /// <summary>
         /// Дата создания пользователя.
         /// </summary>

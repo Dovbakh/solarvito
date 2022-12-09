@@ -131,7 +131,14 @@
             </summary>
             <param name="userService"></param>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.Register(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.GetCurrent(System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.UserController.Register(Solarvito.Contracts.User.UserLoginDto,System.Threading.CancellationToken)">
             <summary>
             Зарегистрировать пользователя.
             </summary>
@@ -140,7 +147,7 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.Login(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.Login(Solarvito.Contracts.User.UserLoginDto,System.Threading.CancellationToken)">
             <summary>
             Залогинить пользователя.
             </summary>

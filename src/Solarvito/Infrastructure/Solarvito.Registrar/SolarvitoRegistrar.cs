@@ -21,6 +21,10 @@ using System.Threading.Tasks;
 using Solarvito.AppServices;
 using Solarvito.Infrastructure.Identity;
 using Microsoft.AspNetCore.Http;
+using FluentValidation;
+using Solarvito.AppServices.User.Validators;
+using Microsoft.AspNetCore.Identity;
+using Solarvito.Contracts.User;
 
 namespace Solarvito.Registrar
 {
@@ -52,7 +56,10 @@ namespace Solarvito.Registrar
             services.AddTransient<IUserRepository, UserRepository>();
 
 
-            
+            services.AddScoped<IValidator<UserLoginDto>, UserValidator>();
+
+            services.AddScoped(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
+
 
             return services;
         }

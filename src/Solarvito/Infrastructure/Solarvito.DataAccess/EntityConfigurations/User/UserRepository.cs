@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Solarvito.AppServices.User.Repositories;
 using Solarvito.Contracts.User;
+using Solarvito.Domain;
 using Solarvito.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
@@ -24,12 +25,86 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
         {
             _repository = repository;
         }
-
-        public async Task<Domain.User> FindWhere(Expression<Func<Domain.User, bool>> predicate, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellationToken)
         {
-            var data = _repository.GetAllFiltered(predicate);
+            return await _repository.GetAll()
+                .Select(u => new UserDto()
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    Name = u.Name,
+                    Phone = u.Phone,
+                    Address = u.Address,
+                    Rating = u.Rating,
+                    NumberOfRates = u.NumberOfRates,
+                    CreatedAt = u.CreatedAt
+                })
+                .Take(take).Skip(skip).ToListAsync(cancellationToken);
+        }
 
-            return await data.Where(predicate).FirstOrDefaultAsync(cancellationToken);
+        public async Task<IReadOnlyCollection<UserDto>> GetAllFiltered(Expression<Func<Domain.User, bool>> predicate, CancellationToken cancellationToken)
+        {
+            return await _repository.GetAllFiltered(predicate)
+                .Select(u => new UserDto()
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    Name = u.Name,
+                    Phone = u.Phone,
+                    Address = u.Address,
+                    Rating = u.Rating,
+                    NumberOfRates = u.NumberOfRates,
+                    CreatedAt = u.CreatedAt
+                })
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<UserDto> GetById(int id, CancellationToken cancellationToken)
+        {
+            var user = await _repository.GetByIdAsync(id);
+
+            if (user == null)
+            {
+                throw new Exception($"Не найден пользователь с идентификатором '{id}'");
+            }
+
+            var userDto = new UserDto()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Name = user.Name,
+                Phone = user.Phone,
+                Address = user.Address,
+                Rating = user.Rating,
+                NumberOfRates = user.NumberOfRates,
+                CreatedAt = user.CreatedAt
+            };
+
+            return userDto;
+        }
+
+        //public async Task<string> GetPasswordHashById(int id, CancellationToken cancellationToken)
+        //{
+        //    var user = await _repository.GetByIdAsync(id);
+
+        //    if (user == null) {
+        //        throw new Exception($"Не найден пользователь с идентификатором '{id}'");
+        //    }
+
+        //    return user.Password;
+        //}
+
+        public async Task<UserVerifyDto> GetWithHashByEmail(string email, CancellationToken cancellationToken)
+        {
+            var user = await _repository.GetAllFiltered(user => user.Email == email)
+                .Select(u => new UserVerifyDto()
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    PasswordHash = u.PasswordHash
+                }).FirstOrDefaultAsync();
+
+            return user;              
         }
 
         public Task AddAsync(Domain.User model)
@@ -37,9 +112,6 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
             return _repository.AddAsync(model);
         }
 
-        public async Task<Domain.User> FindById(int id, CancellationToken cancellationToken)
-        {
-            return await _repository.GetByIdAsync(id);
-        }
+
     }
 }

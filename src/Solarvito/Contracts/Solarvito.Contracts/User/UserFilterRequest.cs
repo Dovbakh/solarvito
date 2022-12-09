@@ -6,27 +6,12 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.User
 {
-    public class UserDto
+    public class UserFilterRequest
     {
-        /// <summary>
-        /// Идентификатор пользователя.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Электронная почта пользователя.
-        /// </summary>
-        public string Email { get; set; }
-
         /// <summary>
         /// Имя пользователя.
         /// </summary>
         public string? Name { get; set; }
-
-        /// <summary>
-        /// Номер телефона пользователя.
-        /// </summary>
-        public string? Phone { get; set; }
 
         /// <summary>
         /// Адрес пользователя.
@@ -36,16 +21,17 @@ namespace Solarvito.Contracts.User
         /// <summary>
         /// Рейтинг пользователя.
         /// </summary>
-        public float? Rating { get; set; }
+        public float Rating { get; set; }
 
         /// <summary>
         /// Количество оценок.
         /// </summary>
-        public int? NumberOfRates { get; set; }
+        public int NumberOfRates { get; set; }
 
         /// <summary>
         /// Дата создания пользователя.
         /// </summary>
         public DateTime CreatedAt { get; set; }
+
     }
 }

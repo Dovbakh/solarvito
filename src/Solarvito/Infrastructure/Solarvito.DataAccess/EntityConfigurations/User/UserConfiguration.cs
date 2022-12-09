@@ -20,12 +20,13 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
 
             builder.HasKey(u => u.Id);
             builder.Property(u => u.Id).ValueGeneratedOnAdd();
+            builder.Property(u => u.Email).HasMaxLength(100).IsRequired();
+            builder.Property(u => u.Name).HasMaxLength(100);
+            builder.Property(u => u.PasswordHash).HasMaxLength(500).IsRequired();
+            builder.Property(u => u.Address).HasMaxLength(500);
+            builder.Property(u => u.Rating).HasDefaultValue(0);
+            builder.Property(u => u.NumberOfRates).HasDefaultValue(0);
 
-            builder.Property(u => u.Name).HasMaxLength(50);
-
-            builder.Property(u => u.Login).HasMaxLength(50);
-
-            //builder.Property(u => u.Adress).
 
             builder.HasMany(u => u.Advertisements)
                 .WithOne(a => a.User)

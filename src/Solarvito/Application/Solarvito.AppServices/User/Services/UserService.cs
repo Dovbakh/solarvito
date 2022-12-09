@@ -9,6 +9,11 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
 using System.Text;
 using System.Threading.Tasks;
+using FluentValidation;
+using Solarvito.AppServices.User.Validators;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Identity;
+using Solarvito.Domain;
 
 namespace Solarvito.AppServices.User.Services
 {
@@ -18,19 +23,81 @@ namespace Solarvito.AppServices.User.Services
         private readonly IUserRepository _userRepository;
         private readonly IClaimsAccessor _claimsAccessor;
         private readonly IConfiguration _configuration;
+        private readonly IValidator<UserLoginDto> _validator;
+        private readonly IPasswordHasher<UserLoginDto> _hasher;
 
 
         public UserService(
             IUserRepository userRepository,
             IClaimsAccessor claimsAccessor,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IValidator<UserLoginDto> validator,
+            IPasswordHasher<UserLoginDto> hasher)
         {
             _userRepository = userRepository;
             _claimsAccessor = claimsAccessor;
             _configuration = configuration;
+            _validator = validator;
+            _hasher = hasher;
         }
 
-        public async Task<Domain.User> GetCurrent(CancellationToken cancellationToken)
+        public async Task<int> Register(UserLoginDto userLoginDto, CancellationToken cancellationToken)
+        {
+
+            var validationResult = _validator.Validate(userLoginDto);
+            if (!validationResult.IsValid) {
+                throw new Exception(validationResult.ToString("~"));
+            }
+
+
+            var existingUser = await _userRepository.GetWithHashByEmail(userLoginDto.Email, cancellationToken);
+            if (existingUser != null) {
+                throw new Exception($"Пользователь с почтой '{userLoginDto.Email}' уже зарегистрирован!");
+            }
+
+
+            var passwordHash = _hasher.HashPassword(userLoginDto, userLoginDto.Password); 
+            
+            var user = new Domain.User { Email = userLoginDto.Email, PasswordHash = passwordHash, CreatedAt = DateTime.UtcNow };           
+            await _userRepository.AddAsync(user);
+
+            return user.Id;
+        }
+
+
+        public async Task<string> Login(UserLoginDto userLoginDto, CancellationToken cancellationToken)
+        {
+
+            var existingUser = await _userRepository.GetWithHashByEmail(userLoginDto.Email, cancellationToken);           
+            if (existingUser == null)
+            {
+                throw new Exception("Введен неверный email или пароль.");
+            }
+
+            var isPasswordVerified = _hasher.VerifyHashedPassword(userLoginDto, existingUser.PasswordHash, userLoginDto.Password) != PasswordVerificationResult.Failed;
+            if (!isPasswordVerified)
+            {
+                throw new Exception("Введен неверный email или пароль.");
+            }
+
+            var token = GenerateToken(existingUser);
+
+            return token;
+        }
+
+
+        public Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellationToken)
+        {
+            return _userRepository.GetAll(take, skip, cancellationToken);
+        }
+
+        public Task<UserDto> GetById(int id, CancellationToken cancellationToken)
+        {
+            return _userRepository.GetById(id, cancellationToken);
+        }
+
+
+        public async Task<UserDto> GetCurrent(CancellationToken cancellationToken)
         {
             var claims = await _claimsAccessor.GetClaims(cancellationToken);
             var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -41,37 +108,24 @@ namespace Solarvito.AppServices.User.Services
             }
 
             var id = int.Parse(claimId);
-            var user = await _userRepository.FindById(id, cancellationToken);
+            var userDto = await _userRepository.GetById(id, cancellationToken);
 
-            if (user == null)
+            if (userDto == null)
             {
                 throw new Exception($"Не найден пользователь с идентификатором '{id}'");
             }
 
-            return user;
+            return userDto;
         }
 
-        public async Task<string> Login(string login, string password, CancellationToken cancellationToken)
+        private string GenerateToken(UserVerifyDto user)
         {
-            var existingUser = await _userRepository.FindWhere(user => user.Login == login, cancellationToken);
+            var claims = new List<Claim> {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
 
-            if (existingUser == null)
-            {
-                throw new Exception("Пользователь не найден.");
-            }
-
-            if (!existingUser.Password.Equals(password))
-            {
-                throw new Exception("Нет прав.");
-            }
-
-            var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, existingUser.Id.ToString()),
-            new Claim(ClaimTypes.Name, existingUser.Login)
-        };
-
-            var secretKey = _configuration["Token:SecretKey"];
+            var secretKey = _configuration["AuthToken:SecretKey"];
 
             var token = new JwtSecurityToken
                 (
@@ -89,24 +143,5 @@ namespace Solarvito.AppServices.User.Services
             return result;
         }
 
-        public async Task<int> Register(string login, string password, CancellationToken cancellationToken)
-        {
-            var user = new Domain.User
-            {
-                Name = login,
-                Login = login,
-                Password = password
-            };
-
-            var existingUser = await _userRepository.FindWhere(user => user.Login == login, cancellationToken);
-            if (existingUser != null)
-            {
-                throw new Exception($"Пользователь с логином '{login}' уже зарегистрирован!");
-            }
-
-            await _userRepository.AddAsync(user);
-
-            return user.Id;
-        }
     }
 }
