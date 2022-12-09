@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Solarvito.AppServices.User.Additional
 {
-    public static class PasswordCryptor
+    public interface IClaimsAccessor
     {
-        private static readonly string secretKey = "";
+        Task<IEnumerable<Claim>> GetClaims(CancellationToken cancellation);
     }
 }

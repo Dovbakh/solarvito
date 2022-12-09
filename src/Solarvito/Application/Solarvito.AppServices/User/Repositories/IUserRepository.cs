@@ -20,9 +20,11 @@ namespace Solarvito.AppServices.User.Repositories
 
         Task<UserDto> GetById(int id, CancellationToken cancellationToken);
 
-        Task<UserVerifyDto> GetWithHashByEmail(string email, CancellationToken cancellationToken);
+        Task<UserHashDto> GetWithHashByEmail(string email, CancellationToken cancellationToken);
 
-        Task AddAsync(Domain.User model);
+        Task<int> AddAsync(UserHashDto userHashDto, CancellationToken cancellationToken);
+
+        Task DeleteAsync(int id, CancellationToken cancellationToken);
 
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.User
 {
-    public class UserLoginDto
+    public class UserCredsDto
     {
         /// <summary>
         /// Логин пользователя.

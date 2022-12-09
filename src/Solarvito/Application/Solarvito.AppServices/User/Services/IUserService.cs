@@ -16,7 +16,7 @@ namespace Solarvito.AppServices.User.Services
         /// <param name="password">Пароль.</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Идентификатор пользователя.</returns>
-        Task<int> Register(UserLoginDto userLoginDto, CancellationToken cancellationToken);
+        Task<int> Register(UserCredsDto UserCredsDto, CancellationToken cancellationToken);
 
         /// <summary>
         /// Авторизация пользователя.
@@ -25,7 +25,7 @@ namespace Solarvito.AppServices.User.Services
         /// <param name="password">Пароль.</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Токен.</returns>
-        Task<string> Login(UserLoginDto userLoginDto, CancellationToken cancellationToken);
+        Task<string> Login(UserCredsDto UserCredsDto, CancellationToken cancellationToken);
 
         Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellationToken);
 
@@ -38,8 +38,9 @@ namespace Solarvito.AppServices.User.Services
         /// <returns>Текущий пользователь.</returns>
         Task<UserDto> GetCurrent(CancellationToken cancellationToken);
 
+        Task DeleteAsync(int id, CancellationToken cancellationToken);
 
 
-        
+
     }
 }

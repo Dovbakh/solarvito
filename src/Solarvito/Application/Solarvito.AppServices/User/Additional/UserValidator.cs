@@ -9,7 +9,7 @@ using Solarvito.Contracts.User;
 
 namespace Solarvito.AppServices.User.Validators
 {
-    public class UserValidator : AbstractValidator<UserLoginDto>
+    public class UserValidator : AbstractValidator<UserCredsDto>
     {
         public UserValidator()
         {

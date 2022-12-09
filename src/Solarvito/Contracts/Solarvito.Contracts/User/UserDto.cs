@@ -14,11 +14,6 @@ namespace Solarvito.Contracts.User
         public int Id { get; set; }
 
         /// <summary>
-        /// Электронная почта пользователя.
-        /// </summary>
-        public string Email { get; set; }
-
-        /// <summary>
         /// Имя пользователя.
         /// </summary>
         public string? Name { get; set; }
@@ -36,12 +31,12 @@ namespace Solarvito.Contracts.User
         /// <summary>
         /// Рейтинг пользователя.
         /// </summary>
-        public float? Rating { get; set; }
+        public float Rating { get; set; }
 
         /// <summary>
         /// Количество оценок.
         /// </summary>
-        public int? NumberOfRates { get; set; }
+        public int NumberOfRates { get; set; }
 
         /// <summary>
         /// Дата создания пользователя.

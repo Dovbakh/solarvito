@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.User
 {
-    public class UserVerifyDto
+    public class UserHashDto
     {
         /// <summary>
         /// Идентификатор пользователя.

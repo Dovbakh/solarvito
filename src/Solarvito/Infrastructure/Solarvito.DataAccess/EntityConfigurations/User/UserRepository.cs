@@ -28,10 +28,8 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
         public async Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellationToken)
         {
             return await _repository.GetAll()
-                .Select(u => new UserDto()
-                {
+                .Select(u => new UserDto() {
                     Id = u.Id,
-                    Email = u.Email,
                     Name = u.Name,
                     Phone = u.Phone,
                     Address = u.Address,
@@ -45,10 +43,8 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
         public async Task<IReadOnlyCollection<UserDto>> GetAllFiltered(Expression<Func<Domain.User, bool>> predicate, CancellationToken cancellationToken)
         {
             return await _repository.GetAllFiltered(predicate)
-                .Select(u => new UserDto()
-                {
+                .Select(u => new UserDto() {
                     Id = u.Id,
-                    Email = u.Email,
                     Name = u.Name,
                     Phone = u.Phone,
                     Address = u.Address,
@@ -62,16 +58,13 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
         public async Task<UserDto> GetById(int id, CancellationToken cancellationToken)
         {
             var user = await _repository.GetByIdAsync(id);
-
             if (user == null)
             {
                 throw new Exception($"Не найден пользователь с идентификатором '{id}'");
             }
 
-            var userDto = new UserDto()
-            {
+            var userDto = new UserDto() {
                 Id = user.Id,
-                Email = user.Email,
                 Name = user.Name,
                 Phone = user.Phone,
                 Address = user.Address,
@@ -83,35 +76,38 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
             return userDto;
         }
 
-        //public async Task<string> GetPasswordHashById(int id, CancellationToken cancellationToken)
-        //{
-        //    var user = await _repository.GetByIdAsync(id);
-
-        //    if (user == null) {
-        //        throw new Exception($"Не найден пользователь с идентификатором '{id}'");
-        //    }
-
-        //    return user.Password;
-        //}
-
-        public async Task<UserVerifyDto> GetWithHashByEmail(string email, CancellationToken cancellationToken)
+        public async Task<UserHashDto> GetWithHashByEmail(string email, CancellationToken cancellationToken)
         {
-            var user = await _repository.GetAllFiltered(user => user.Email == email)
-                .Select(u => new UserVerifyDto()
-                {
+            var userHashDto = await _repository.GetAllFiltered(user => user.Email == email)
+                .Select(u => new UserHashDto() {
                     Id = u.Id,
                     Email = u.Email,
                     PasswordHash = u.PasswordHash
-                }).FirstOrDefaultAsync();
+                }).FirstOrDefaultAsync(cancellationToken);
 
-            return user;              
+            return userHashDto;              
         }
 
-        public Task AddAsync(Domain.User model)
+        public async Task<int> AddAsync(UserHashDto userHashDto, CancellationToken cancellationToken)
         {
-            return _repository.AddAsync(model);
+            var user = new Domain.User() { 
+                Email = userHashDto.Email, PasswordHash = userHashDto.PasswordHash, CreatedAt = DateTime.UtcNow 
+            };
+
+            await _repository.AddAsync(user);
+
+            return user.Id;
         }
 
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+        {
+            var user = await _repository.GetByIdAsync(id);
+            if (user == null)
+            {
+                throw new Exception($"Не найден пользователь с идентификатором '{id}'");
+            }
 
+            await _repository.DeleteAsync(user);
+        }
     }
 }

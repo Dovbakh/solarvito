@@ -61,6 +61,19 @@ namespace Solarvito.Api.Controllers
             return Ok(user);
         }
 
+
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Delete(int id, CancellationToken cancellation)
+        {
+            await _userService.DeleteAsync(id, cancellation);
+
+            return Ok();
+        }
+
+
+
         /// <summary>
         /// Зарегистрировать пользователя.
         /// </summary>
@@ -70,9 +83,9 @@ namespace Solarvito.Api.Controllers
         /// <returns></returns>
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Register(UserLoginDto userLoginDto, CancellationToken cancellation)
+        public async Task<IActionResult> Register(UserCredsDto userCreds, CancellationToken cancellation)
         {
-            var userId = await _userService.Register(userLoginDto, cancellation);
+            var userId = await _userService.Register(userCreds, cancellation);
 
             return Ok(userId);
         }
@@ -86,9 +99,9 @@ namespace Solarvito.Api.Controllers
         /// <returns></returns>
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Login(UserLoginDto userLoginDto, CancellationToken cancellation)
+        public async Task<IActionResult> Login(UserCredsDto userCreds, CancellationToken cancellation)
         {
-            var token = await _userService.Login(userLoginDto, cancellation);
+            var token = await _userService.Login(userCreds, cancellation);
 
             return Ok(token);
         }
