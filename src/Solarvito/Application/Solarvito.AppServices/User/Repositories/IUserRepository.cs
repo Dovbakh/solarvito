@@ -24,6 +24,8 @@ namespace Solarvito.AppServices.User.Repositories
 
         Task<int> AddAsync(UserHashDto userHashDto, CancellationToken cancellationToken);
 
+        Task<int> UpdateAsync(UserUpdateRequestDto request, CancellationToken cancellationToken);
+
         Task DeleteAsync(int id, CancellationToken cancellationToken);
 
     }

@@ -11,37 +11,34 @@ namespace Solarvito.Contracts.Advertisement
         /// <summary>
         /// Идентификатор категории.
         /// </summary>
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         /// <summary>
         /// Идентификатор пользователя.
         /// </summary>
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
         /// <summary>
         /// Название обьявления.
         /// </summary>
-        public string Name { get; set; }
+        public string? Text { get; set; }
+
+        public decimal? minPrice { get; set; }
+
+        public decimal? maxPrice { get; set; }
 
         /// <summary>
-        /// Текст обьявления.
+        /// выше 4х
         /// </summary>
-        public string Description { get; set; }
+        public int? highRating { get; set; }
+
+        public int? OrderDesc { get; set; }
 
         /// <summary>
-        /// Дата создания обьявления.
+        /// 1 - сортировка по дате добавления
+        /// 2 - сортировка по цене
         /// </summary>
-        public DateTime CreatedAt { get; set; }
-
-        /// <summary>
-        /// Дата истечения срока обьявления.
-        /// </summary>
-        public DateTime ExpireAt { get; set; }
-
-        /// <summary>
-        /// Количество просмотров обьявления.
-        /// </summary>
-        public int NumberOfViews { get; set; }
+        public int? SortBy { get; set; }
 
 
     }

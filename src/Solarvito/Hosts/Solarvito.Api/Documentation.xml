@@ -9,34 +9,14 @@
             Работа с обьявлениями.
             </summary>
         </member>
-        <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetAll(System.Int32,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetAll(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
-            Получить все обьявления с пагинацией.
+            Получить все обьявления отсортированные по дате добавления по убыванию и с пагинацией.
             </summary>
             <param name="take">Количество получаемых обьявлений.</param>
             <param name="skip">Количество пропускаемых обьявлений.</param>
             <param name="cancellation">Токен отмены.</param>
-            <returns>Коллекция элементов <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementDto"/>.</returns>
-        </member>
-        <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetAllByUserId(System.Int32,System.Int32,System.Int32,System.Threading.CancellationToken)">
-            <summary>
-            Получить все обьявления по идентификатору пользователя с пагинацией.
-            </summary>
-            <param name="userId">Идентификатор пользователя.</param>
-            <param name="take">Количество получаемых обьявлений.</param>
-            <param name="skip">Количество пропускаемых обьявлений.</param>
-            <param name="cancellation">Токен отмены</param>
-            <returns>Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementDto"/>.</returns>
-        </member>
-        <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetAllByCategoryId(System.Int32,System.Int32,System.Int32,System.Threading.CancellationToken)">
-            <summary>
-            Получить все обьявления по идентификатору категории с пагинацией.
-            </summary>
-            <param name="categoryId">Идентификатор категории.</param>
-            <param name="take">Количество получаемых обьявлений.</param>
-            <param name="skip">Количество пропускаемых обьявлений.</param>
-            <param name="cancellation">Токен отмены</param>
-            <returns>Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementDto"/>.</returns>
+            <returns>Коллекция элементов <see cref="!:AdvertisementDto"/>.</returns>
         </member>
         <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetById(System.Int32,System.Threading.CancellationToken)">
             <summary>
@@ -44,9 +24,9 @@
             </summary>
             <param name="id">Идентификатор обьявления.</param>
             <param name="cancellation">Токен отмены</param>
-            <returns>Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementDto"/>.</returns>
+            <returns>Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementResponseDto"/>.</returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.AdvertisementController.Add(System.String,System.String,System.Int32,System.String,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.Add(Solarvito.Contracts.Advertisement.AdvertisementRequestDto,System.Threading.CancellationToken)">
             <summary>
             Добавить новое обьявление.
             </summary>
@@ -57,7 +37,7 @@
             <param name="cancellation">Токен отмены.</param>
             <returns>Идентификатор нового обьявления.</returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.AdvertisementController.Update(System.Int32,System.String,System.String,System.Int32,System.String,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.Update(Solarvito.Contracts.Advertisement.AdvertisementRequestDto,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Изменить обьявление.
             </summary>
@@ -97,7 +77,7 @@
             <param name="cancellation">Токен отмены</param>
             <returns>Элемент <see cref="T:Solarvito.Contracts.Category.CategoryDto"/>.</returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.CategoryController.Add(System.String,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.CategoryController.Add(Solarvito.Contracts.Category.CategoryDto,System.Threading.CancellationToken)">
             <summary>
             Добавить новую категорию.
             </summary>
@@ -105,7 +85,7 @@
             <param name="cancellation">Токен отмены.</param>
             <returns>Идентификатор новой категории.</returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.CategoryController.Update(System.Int32,System.String,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.CategoryController.Update(System.Int32,Solarvito.Contracts.Category.CategoryDto,System.Threading.CancellationToken)">
             <summary>
             Изменить категорию.
             </summary>

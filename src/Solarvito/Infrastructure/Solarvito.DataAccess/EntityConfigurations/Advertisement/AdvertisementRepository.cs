@@ -1,11 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Minio.DataModel;
 using Solarvito.AppServices.Advertisement.Repositories;
+using Solarvito.Contracts;
 using Solarvito.Contracts.Advertisement;
 using Solarvito.Domain;
+using Solarvito.Infrastructure.ObjectStorage;
 using Solarvito.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,29 +20,27 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
     public class AdvertisementRepository : IAdvertisementRepository
     {
         private readonly IRepository<Domain.Advertisement> _repository;
+        private readonly IObjectStorage _objectStorage;
 
         /// <summary>
         /// Инициализировать экземпляр <see cref="AdvertisementRepository"/>.
         /// </summary>
         /// <param name="repository">Базовый репозиторий.</param>
-        public AdvertisementRepository(IRepository<Domain.Advertisement> repository)
+        public AdvertisementRepository(IRepository<Domain.Advertisement> repository, IObjectStorage objectStorage)
         {
             _repository = repository;
+            _objectStorage = objectStorage;
+        }
+        public async Task<byte[]> GetImage(CancellationToken cancellation)
+        {
+            return await _objectStorage.Create();
         }
 
         /// <inheritdoc/>
-        public async Task<int> AddAsync(AdvertisementDto advertisementDto, CancellationToken cancellation)
+        public async Task<int> AddAsync(AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation)
         {
-            var advertisement = new Domain.Advertisement {
-                Name = advertisementDto.Name,
-                Description = advertisementDto.Description,
-                UserId = advertisementDto.UserId,
-                CategoryId = advertisementDto.CategoryId,
-                ImagePath = advertisementDto.ImagePath,
-                CreatedAt = DateTime.UtcNow,
-                ExpireAt = DateTime.UtcNow.AddDays(30),
-                NumberOfViews = 0
-            };
+            var advertisement = advertisementRequestDto.MapToEntity();
+
             await _repository.AddAsync(advertisement);
             return advertisement.Id;
         }
@@ -55,93 +58,95 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<AdvertisementDto>> GetAllAsync(int take, int skip, CancellationToken cancellation)
-        {
-            return await _repository.GetAll().
-                Select(a => new AdvertisementDto()
-                {
-                    Id = a.Id,
-                    Name = a.Name,
-                    Description = a.Description,
-                    UserId = a.UserId,
-                    CategoryId = a.CategoryId,
-                    ImagePath = a.ImagePath,
-                    CreatedAt = a.CreatedAt,
-                    ExpireAt = a.ExpireAt,
-                    NumberOfViews = a.NumberOfViews
+        public async Task<IReadOnlyCollection<AdvertisementResponseDto>> GetAllAsync(int take, int skip, CancellationToken cancellation)
+        {           
 
-                }).Take(take).Skip(skip).ToListAsync();
+            return await _repository.GetAll()
+                .Include(a => a.Category)
+                .Include(a => a.User)
+                .OrderByDescending(a => a.CreatedAt)
+                .Select(a => a.MapToDto())
+                .Skip(skip).Take(take).ToListAsync();
         }
 
-        public async Task<IReadOnlyCollection<AdvertisementDto>> GetAllByCategoryIdAsync(int categoryId, int take, int skip, CancellationToken cancellation)
-        {
-            return await _repository.GetAll().
-                Select(a => new AdvertisementDto()
-                {
-                    Id = a.Id,
-                    Name = a.Name,
-                    Description = a.Description,
-                    UserId = a.UserId,
-                    CategoryId = a.CategoryId,
-                    ImagePath = a.ImagePath,
-                    CreatedAt = a.CreatedAt,
-                    ExpireAt = a.ExpireAt,
-                    NumberOfViews = a.NumberOfViews
-
-                }).Where(a => a.CategoryId == categoryId).Take(take).Skip(skip).ToListAsync();
-        }
-
-        public async Task<IReadOnlyCollection<AdvertisementDto>> GetAllByUserIdAsync(int userId, int take, int skip, CancellationToken cancellation)
-        {
-            return await _repository.GetAll().
-                Select(a => new AdvertisementDto()
-                {
-                    Id = a.Id,
-                    Name = a.Name,
-                    Description = a.Description,
-                    UserId = a.UserId,
-                    CategoryId = a.CategoryId,
-                    ImagePath = a.ImagePath,
-                    CreatedAt = a.CreatedAt,
-                    ExpireAt = a.ExpireAt,
-                    NumberOfViews = a.NumberOfViews
-
-                }).Where(a => a.UserId == userId).Take(take).Skip(skip).ToListAsync();
-        }
-
-        ///// <inheritdoc/>
-        //public Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         /// <inheritdoc/>
-        public async Task<AdvertisementDto> GetByIdAsync(int id, CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<AdvertisementResponseDto>> GetAllFilteredAsync(AdvertisementFilterRequest filter, int take, int skip, CancellationToken cancellation)
         {
-            var advertisement = await _repository.GetByIdAsync(id);
+            var query = _repository.GetAll();
+
+            if (filter.UserId.HasValue)
+            {
+                query = query.Where(a => a.UserId == filter.UserId);
+            }
+
+            if (filter.CategoryId.HasValue)
+            {
+                query = query.Where(a => a.CategoryId == filter.CategoryId);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Text))
+            {
+                query = query.Where(p => p.Name.ToLower().Contains(filter.Text.ToLower()) || p.Description.ToLower().Contains(filter.Text.ToLower()));
+            }
+
+            if (filter.minPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= filter.minPrice);
+            }
+
+            if (filter.maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= filter.maxPrice);
+            }
+
+            if (filter.highRating.HasValue)
+            {
+                query = query.Where(p => p.User.Rating >= 4);
+            }
+
+            if (filter.SortBy.HasValue)
+            {
+                switch (filter.SortBy)
+                {
+                    case 1:
+                        query = filter.OrderDesc == 1 ? query.OrderByDescending(p => p.CreatedAt) : query.OrderBy(p => p.CreatedAt);
+                        break;
+                    case 2:
+                        query = filter.OrderDesc == 1 ? query.OrderByDescending(p => p.Price) : query.OrderBy(p => p.Price);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+
+            return await query
+                .Include(a => a.Category)
+                .Include(a => a.User)
+                .Select(a => a.MapToDto())
+                .Skip(skip).Take(take).ToListAsync(cancellation);
+        }
+
+        /// <inheritdoc/>
+        public async Task<AdvertisementResponseDto> GetByIdAsync(int id, CancellationToken cancellation)
+        {
+            var advertisement = await _repository.GetAllFiltered(a => a.Id.Equals(id))
+                .Include(a => a.Category)
+                .Include(a => a.User)
+                .Select(a => a.MapToDto())
+                .FirstOrDefaultAsync();
+
             if (advertisement == null)
             {
                 throw new Exception($"Не найдено обьявление с идентификатором '{id}'");
             }
 
-            var advertisementDto = new AdvertisementDto()
-            {
-                Id = advertisement.Id,
-                Name = advertisement.Name,
-                Description = advertisement.Description,
-                UserId = advertisement.UserId,
-                CategoryId = advertisement.CategoryId,
-                ImagePath = advertisement.ImagePath,
-                CreatedAt = advertisement.CreatedAt,
-                ExpireAt = advertisement.ExpireAt,
-                NumberOfViews = advertisement.NumberOfViews
-            };
-
-            return advertisementDto;
+            return advertisement;
         }
 
         /// <inheritdoc/>
-        public async Task UpdateAsync(int id, AdvertisementDto advertisementDto, CancellationToken cancellation)
+        public async Task UpdateAsync(int id, AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation)
         {
             var advertisement = await _repository.GetByIdAsync(id);  
             if (advertisement == null)
@@ -149,10 +154,13 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
                 throw new Exception($"Не найдено обьявление с идентификатором '{id}'");
             }
 
-            advertisement.Name = advertisementDto.Name;
-            advertisement.Description = advertisementDto.Description;
-            advertisement.ImagePath = advertisementDto.ImagePath;
-            advertisement.CategoryId = advertisementDto.CategoryId;
+            advertisement.Name = advertisementRequestDto.Name;
+            advertisement.Description = advertisementRequestDto.Description;
+            advertisement.Price = advertisementRequestDto.Price;
+            advertisement.Address = advertisementRequestDto.Address;
+            advertisement.Phone = advertisementRequestDto.Phone;
+            advertisement.ImagePath = advertisementRequestDto.ImagePath;
+            advertisement.CategoryId = advertisementRequestDto.CategoryId;               
 
             await _repository.UpdateAsync(advertisement);
         }

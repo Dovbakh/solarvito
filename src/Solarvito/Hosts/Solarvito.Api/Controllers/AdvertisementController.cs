@@ -21,75 +21,60 @@ namespace Solarvito.Api.Controllers
             _advertisementService = advertisementService;
         }
 
+        [HttpGet("image")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<AdvertisementResponseDto>), (int)HttpStatusCode.OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetImage(CancellationToken cancellation)
+        {
+            var result = await _advertisementService.GetImage(cancellation);
+            return File(result, "image/png");
+
+            return Ok(result);
+            //Byte[] b = System.IO.File.ReadAllBytes(@"E:\\Test.jpg");
+            //Byte[] b = System.IO.File.ReadAllBytes()
+            //return File(b, "image/jpeg");
+
+        }
+
+
         /// <summary>
-        /// Получить все обьявления с пагинацией.
+        /// Получить все обьявления отсортированные по дате добавления по убыванию и с пагинацией.
         /// </summary>
         /// <param name="take">Количество получаемых обьявлений.</param>
         /// <param name="skip">Количество пропускаемых обьявлений.</param>
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Коллекция элементов <see cref="AdvertisementDto"/>.</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IReadOnlyCollection<AdvertisementDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll(int take, int skip, CancellationToken cancellation)
+        [ProducesResponseType(typeof(IReadOnlyCollection<AdvertisementResponseDto>), (int)HttpStatusCode.OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAll(int? page, CancellationToken cancellation)
         {
-            var result = await _advertisementService.GetAllAsync(take, skip, cancellation);
+            var result = await _advertisementService.GetAllAsync(cancellation, page);
 
             return Ok(result);
         }
 
-        //// TODO
-        //[HttpGet("userId")]
-        //[ProducesResponseType(typeof(AdvertisementDto), (int)HttpStatusCode.OK)]
-        //public async Task<IActionResult> GetAllFiltered(int id, CancellationToken cancellation)
-        ////        public async Task<IActionResult> GetAllFiltered(string text, int categoryId, int userId, bool isName, bool isDescription, bool is CancellationToken cancellation)
-        //{
-        //    var result = await _advertisementService.GetByIdAsync(id, cancellation);
-
-        //    return Ok(result);
-        //}
-
-        /// <summary>
-        /// Получить все обьявления по идентификатору пользователя с пагинацией.
-        /// </summary>
-        /// <param name="userId">Идентификатор пользователя.</param>
-        /// <param name="take">Количество получаемых обьявлений.</param>
-        /// <param name="skip">Количество пропускаемых обьявлений.</param>
-        /// <param name="cancellation">Токен отмены</param>
-        /// <returns>Элемент <see cref="AdvertisementDto"/>.</returns>
-        [HttpGet("userId/{userId:int}")]
-        [ProducesResponseType(typeof(IReadOnlyCollection<AdvertisementDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllByUserId(int userId, int take, int skip, CancellationToken cancellation)
+        // TODO
+        [HttpGet("filter")]
+        [ProducesResponseType(typeof(AdvertisementResponseDto), (int)HttpStatusCode.OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllFiltered([FromQuery] AdvertisementFilterRequest filter, int? page, CancellationToken cancellation)
         {
-            var result = await _advertisementService.GetAllByUserIdAsync(userId, take, skip, cancellation);
+            var result = await _advertisementService.GetAllFilteredAsync(filter, cancellation, page);
 
             return Ok(result);
         }
 
-        /// <summary>
-        /// Получить все обьявления по идентификатору категории с пагинацией.
-        /// </summary>
-        /// <param name="categoryId">Идентификатор категории.</param>
-        /// <param name="take">Количество получаемых обьявлений.</param>
-        /// <param name="skip">Количество пропускаемых обьявлений.</param>
-        /// <param name="cancellation">Токен отмены</param>
-        /// <returns>Элемент <see cref="AdvertisementDto"/>.</returns>
-        [HttpGet("categoryId/{categoryId:int}")]
-        [ProducesResponseType(typeof(IReadOnlyCollection<AdvertisementDto>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllByCategoryId(int categoryId, int take, int skip, CancellationToken cancellation)
-        {
-            var result = await _advertisementService.GetAllByCategoryIdAsync(categoryId, take, skip, cancellation);
-
-            return Ok(result);
-        }
 
         /// <summary>
         /// Получить обьявление по идентификатору.
         /// </summary>
         /// <param name="id">Идентификатор обьявления.</param>
         /// <param name="cancellation">Токен отмены</param>
-        /// <returns>Элемент <see cref="AdvertisementDto"/>.</returns>
+        /// <returns>Элемент <see cref="AdvertisementResponseDto"/>.</returns>
         [HttpGet("{id:int}")]
-        [ProducesResponseType(typeof(AdvertisementDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AdvertisementResponseDto), (int)HttpStatusCode.OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellation)
         {
             var result = await _advertisementService.GetByIdAsync(id, cancellation);
@@ -110,20 +95,9 @@ namespace Solarvito.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize]
-        public async Task<IActionResult> Add(string name, string description, int categoryId, string imagePath, CancellationToken cancellation)
+        public async Task<IActionResult> Add(AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation)
         {
-
-            var advertisementDto = new AdvertisementDto()
-            {
-                Name = name,
-                Description = description,
-                UserId = 1,
-                CategoryId = categoryId,
-                ImagePath = imagePath,
-                NumberOfViews = 0
-            };
-
-            var advertisementId = await _advertisementService.AddAsync(advertisementDto, cancellation);
+            var advertisementId = await _advertisementService.AddAsync(advertisementRequestDto, cancellation);
             return Created("", advertisementId);
         }
 
@@ -139,16 +113,9 @@ namespace Solarvito.Api.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize]
-        public async Task<IActionResult> Update(int id, string name, string description, int categoryId, string imagePath, CancellationToken cancellation)
+        public async Task<IActionResult> Update([FromBody] AdvertisementRequestDto advertisementRequestDto, int id, CancellationToken cancellation)
         {
-            var advertisementDto = new AdvertisementDto()
-            {
-                Name = name,
-                Description = description,
-                CategoryId = categoryId,
-                ImagePath = imagePath,
-            };
-            await _advertisementService.UpdateAsync(id, advertisementDto, cancellation);
+            await _advertisementService.UpdateAsync(id, advertisementRequestDto, cancellation);
 
             return Ok();
         }

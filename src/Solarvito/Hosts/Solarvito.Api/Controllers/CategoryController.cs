@@ -13,7 +13,6 @@ namespace Solarvito.Api.Controllers
     /// </summary>
     [ApiController]
     [Route("v1/[controller]")]
-    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -32,6 +31,7 @@ namespace Solarvito.Api.Controllers
         /// <returns>Коллекция элементов <see cref="CategoryDto"/>.</returns>
         [HttpGet]
         [ProducesResponseType(typeof(IReadOnlyCollection<CategoryDto>), (int)HttpStatusCode.OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll(int take, int skip, CancellationToken cancellation)
         {
             var result = await _categoryService.GetAllAsync(take, skip, cancellation);
@@ -39,16 +39,6 @@ namespace Solarvito.Api.Controllers
             return Ok(result);
         }
 
-        //// TODO
-        //[HttpGet]
-        //[ProducesResponseType(typeof(AdvertisementDto), (int)HttpStatusCode.OK)]
-        //public async Task<IActionResult> GetAllFiltered(int id, CancellationToken cancellation)
-        ////        public async Task<IActionResult> GetAllFiltered(string text, int categoryId, int userId, bool isName, bool isDescription, bool is CancellationToken cancellation)
-        //{
-        //    var result = await _advertisementService.GetByIdAsync(id, cancellation);
-
-        //    return Ok(result);
-        //}
 
         /// <summary>
         /// Получить категорию по идентификатору.
@@ -58,6 +48,7 @@ namespace Solarvito.Api.Controllers
         /// <returns>Элемент <see cref="CategoryDto"/>.</returns>
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(CategoryDto), (int)HttpStatusCode.OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellation)
         {
             var result = await _categoryService.GetByIdAsync(id, cancellation);
@@ -74,14 +65,9 @@ namespace Solarvito.Api.Controllers
         /// <returns>Идентификатор новой категории.</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Add(string name, CancellationToken cancellation)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Add(CategoryDto categoryDto, CancellationToken cancellation)
         {
-
-            var categoryDto = new CategoryDto()
-            {
-                Name = name
-            };
-
             var categoryId = await _categoryService.AddAsync(categoryDto, cancellation);
             return Created("", categoryId);
         }
@@ -94,12 +80,9 @@ namespace Solarvito.Api.Controllers
         /// <param name="cancellation">Токен отмены.</param>
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update(int id, string name, CancellationToken cancellation)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Update(int id, CategoryDto categoryDto, CancellationToken cancellation)
         {
-            var categoryDto = new CategoryDto()
-            {
-                Name = name
-            };
             await _categoryService.UpdateAsync(id, categoryDto, cancellation);
 
             return Ok();
@@ -112,6 +95,7 @@ namespace Solarvito.Api.Controllers
         /// <param name="cancellation">Токен отмены.</param>
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellation)
         {
             await _categoryService.DeleteAsync(id, cancellation);

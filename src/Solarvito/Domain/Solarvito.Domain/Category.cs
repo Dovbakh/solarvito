@@ -14,24 +14,24 @@ namespace Solarvito.Domain
         public int Id { get; set; }
 
         /// <summary>
-        /// Идентификатор родительской категории.
-        /// </summary>
-        //public int ParentCategoryId { get; set; }
-
-        /// <summary>
         /// Название категории.
         /// </summary>
         public string Name { get; set; }
-        
+
+        /// <summary>
+        /// Идентификатор родительской категории.
+        /// </summary>
+        public int? ParentId { get; set; }
+
         /// <summary>
         /// Родительская категория.
         /// </summary>
-        //public Category ParentCategory { get; set; }
+        public Category Parent { get; set; }
 
         /// <summary>
         /// Коллекция подкатегорий.
         /// </summary>
-        //public ICollection<Category> ChildCategories { get; set; }
+        public ICollection<Category> Children { get; set; }
 
         /// <summary>
         /// Коллекция обьявлений в категории.

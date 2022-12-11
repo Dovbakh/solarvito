@@ -6,22 +6,13 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.Advertisement
 {
-    public class AdvertisementDto
+    public class AdvertisementResponseDto
     {
         /// <summary>
         /// Идентификатор обьявления.
         /// </summary>
         public int Id { get; set; }
 
-        /// <summary>
-        /// Идентификатор категории.
-        /// </summary>
-        public int CategoryId { get; set; }
-
-        /// <summary>
-        /// Идентификатор пользователя.
-        /// </summary>
-        public int UserId { get; set; }
 
         /// <summary>
         /// Название обьявления.
@@ -33,10 +24,14 @@ namespace Solarvito.Contracts.Advertisement
         /// </summary>
         public string Description { get; set; }
 
-        ///// <summary>
-        ///// Адресс, указанный в обьявлении.
-        ///// </summary>
-        //public string Address { get; set; }
+        public decimal Price { get; set; }
+
+        /// <summary>
+        /// Адресс, указанный в обьявлении.
+        /// </summary>
+        public string Address { get; set; }
+
+        public string Phone { get; set; }
 
         /// <summary>
         /// Путь к картинке обьявления.
@@ -58,6 +53,17 @@ namespace Solarvito.Contracts.Advertisement
         /// </summary>
         public int NumberOfViews { get; set; }
 
+
+        /// <summary>
+        /// Идентификатор категории.
+        /// </summary>
+        public int CategoryId { get; set; }
+
+        /// <summary>
+        /// Идентификатор пользователя.
+        /// </summary>
+        public int UserId { get; set; }
+
         /// <summary>
         /// Название категории обьявления
         /// </summary>
@@ -67,6 +73,10 @@ namespace Solarvito.Contracts.Advertisement
         /// Имя пользователя, разместившего обьявление
         /// </summary>
         public string UserName { get; set; }
+
+        public float UserRating { get; set; }
+
+        public int UserNumberOfRates { get; set; }
 
     }
 }

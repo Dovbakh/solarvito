@@ -17,5 +17,10 @@ namespace Solarvito.Contracts.Category
         /// Название категории.
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Идентификатор родительской категории.
+        /// </summary>
+        public int? ParentId { get; set; }
     }
 }

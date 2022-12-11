@@ -25,6 +25,10 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
 
             builder.Property(a => a.Description).HasMaxLength(2000);
 
+            builder.Property(a => a.Address).HasMaxLength(2000);
+
+            builder.Property(a => a.Phone).HasMaxLength(50);
+
             //builder.HasOne(a => a.Category)
             //    .WithMany(c => c.Advertisements)
             //    .HasForeignKey(a => a.CategoryId);

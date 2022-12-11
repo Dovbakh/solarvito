@@ -38,6 +38,8 @@ namespace Solarvito.AppServices.User.Services
         /// <returns>Текущий пользователь.</returns>
         Task<UserDto> GetCurrent(CancellationToken cancellationToken);
 
+        Task UpdateAsync(UserUpdateRequestDto request, CancellationToken cancellationToken);
+
         Task DeleteAsync(int id, CancellationToken cancellationToken);
 
 

@@ -14,16 +14,6 @@ namespace Solarvito.Domain
         public int Id { get; set; }
 
         /// <summary>
-        /// Идентификатор категории.
-        /// </summary>
-        public int CategoryId { get; set; }
-
-        /// <summary>
-        /// Идентификатор пользователя.
-        /// </summary>
-        public int UserId { get; set; }
-
-        /// <summary>
         /// Название обьявления.
         /// </summary>
         public string Name { get; set; }
@@ -31,12 +21,20 @@ namespace Solarvito.Domain
         /// <summary>
         /// Текст обьявления.
         /// </summary>
-        public string Description {get; set; }
+        public string Description { get; set; }
 
-        ///// <summary>
-        ///// Адресс, указанный в обьявлении.
-        ///// </summary>
-        //public string Address { get; set; }
+
+        public decimal Price { get; set; }
+
+        /// <summary>
+        /// Адрес, указанный в обьявлении.
+        /// </summary>
+        public string Address { get; set; }
+
+        /// <summary>
+        /// Телефон, указанный в обьявлении.
+        /// </summary>
+        public string Phone { get; set; }
 
         /// <summary>
         /// Путь к картинке обьявления.
@@ -57,6 +55,17 @@ namespace Solarvito.Domain
         /// Количество просмотров обьявления.
         /// </summary>
         public int NumberOfViews { get; set; }
+
+        /// <summary>
+        /// Идентификатор категории.
+        /// </summary>
+        public int CategoryId { get; set; }
+
+        /// <summary>
+        /// Идентификатор пользователя.
+        /// </summary>
+        public int UserId { get; set; }
+
 
         /// <summary>
         /// Категория обьявления.

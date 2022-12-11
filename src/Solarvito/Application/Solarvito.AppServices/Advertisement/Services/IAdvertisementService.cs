@@ -1,4 +1,5 @@
-﻿using Solarvito.Contracts.Advertisement;
+﻿using Minio.DataModel;
+using Solarvito.Contracts.Advertisement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +10,7 @@ namespace Solarvito.AppServices.Advertisement.Services
 {
     public interface IAdvertisementService
     {
-        /// <summary>
-        /// Получить все обьявления с пагинацией.
-        /// </summary>
-        /// <param name="take">Количество получаемых обьявлений.</param>
-        /// <param name="skip">Количество пропускаемых обьявлений.</param>
-        /// <param name="cancellation">Токен отмены.</param>
-        /// <returns>Коллекция элементов <see cref="AdvertisementDto"/>.</returns>
-        Task<IReadOnlyCollection<AdvertisementDto>> GetAllAsync(int take, int skip, CancellationToken cancellation);
-
-        //// TODO
-        //Task<IReadOnlyCollection<AdvertisementDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, int take, int skip, CancellationToken cancellation);
+        Task<byte[]> GetImage(CancellationToken cancellation);
 
         /// <summary>
         /// Получить все обьявления с пагинацией.
@@ -27,17 +18,11 @@ namespace Solarvito.AppServices.Advertisement.Services
         /// <param name="take">Количество получаемых обьявлений.</param>
         /// <param name="skip">Количество пропускаемых обьявлений.</param>
         /// <param name="cancellation">Токен отмены.</param>
-        /// <returns>Коллекция элементов <see cref="AdvertisementDto"/>.</returns>
-        Task<IReadOnlyCollection<AdvertisementDto>> GetAllByUserIdAsync(int userId, int take, int skip, CancellationToken cancellation);
+        /// <returns>Коллекция элементов <see cref="AdvertisementResponseDto"/>.</returns>
+        Task<IReadOnlyCollection<AdvertisementResponseDto>> GetAllAsync(CancellationToken cancellation, int? page);
 
-        /// <summary>
-        /// Получить все обьявления с пагинацией.
-        /// </summary>
-        /// <param name="take">Количество получаемых обьявлений.</param>
-        /// <param name="skip">Количество пропускаемых обьявлений.</param>
-        /// <param name="cancellation">Токен отмены.</param>
-        /// <returns>Коллекция элементов <see cref="AdvertisementDto"/>.</returns>
-        Task<IReadOnlyCollection<AdvertisementDto>> GetAllByCategoryIdAsync(int categoryId, int take, int skip, CancellationToken cancellation);
+        // TODO
+        Task<IReadOnlyCollection<AdvertisementResponseDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, CancellationToken cancellation, int? page);
 
         /// <summary>
         /// Получить обьявление по идентификатору.
@@ -45,22 +30,22 @@ namespace Solarvito.AppServices.Advertisement.Services
         /// <param name="id">Идентификатор обьявления.</param>
         /// <param name="cancellation">Токен отмены</param>
         /// <returns>Элемент <see cref="AdvertisementDto"/>.</returns>
-        Task<AdvertisementDto> GetByIdAsync(int id, CancellationToken cancellation);
+        Task<AdvertisementResponseDto> GetByIdAsync(int id, CancellationToken cancellation);
 
         /// <summary>
         /// Добавить новое обьявление.
         /// </summary>
-        /// <param name="advertisementDto">Элемент <see cref="AdvertisementDto"/>.</param>
+        /// <param name="advertisementRequestDto">Элемент <see cref="AdvertisementRequestDto"/>.</param>
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Идентификатор нового обьявления.</returns>
-        Task<int> AddAsync(AdvertisementDto advertisementDto, CancellationToken cancellation);
+        Task<int> AddAsync(AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation);
 
         /// <summary>
         /// Изменить обьявление.
         /// </summary>
         /// <param name="id">Идентификатор обьявления.</param>
         /// <param name="advertisementDto">Элемент <see cref="AdvertisementDto"/>.</param>
-        Task UpdateAsync(int id, AdvertisementDto advertisementDto, CancellationToken cancellation);
+        Task UpdateAsync(int id, AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить обьявление.

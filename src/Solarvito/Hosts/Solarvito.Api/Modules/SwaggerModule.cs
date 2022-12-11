@@ -16,7 +16,7 @@ namespace Solarvito.Api.Modules
                 options.CustomSchemaIds(type => type.FullName.Replace("+", "_"));
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Solarvito Api", Version = "V1" });
                 options.IncludeXmlComments(Path.Combine(Path.Combine(AppContext.BaseDirectory,
-                    $"{typeof(AdvertisementDto).Assembly.GetName().Name}.xml")));
+                    $"{typeof(AdvertisementResponseDto).Assembly.GetName().Name}.xml")));
                 options.IncludeXmlComments(Path.Combine(Path.Combine(AppContext.BaseDirectory, "Documentation.xml")));
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {

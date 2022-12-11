@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Solarvito.AppServices.Category.Repositories;
+using Solarvito.Contracts;
 using Solarvito.Contracts.Category;
 using Solarvito.Infrastructure.Repository;
 using System;
@@ -26,7 +27,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Category
         /// <inheritdoc/>
         public async Task<int> AddAsync(CategoryDto categoryDto, CancellationToken cancellation)
         {
-            var category = new Domain.Category() { Name = categoryDto.Name  };
+            var category = categoryDto.MapToEntity();
             await _repository.AddAsync(category);
 
             return category.Id;
@@ -47,8 +48,8 @@ namespace Solarvito.DataAccess.EntityConfigurations.Category
         public async Task<IReadOnlyCollection<CategoryDto>> GetAllAsync(int take, int skip, CancellationToken cancellation)
         {
             return await _repository.GetAll()
-                .Select(c => new CategoryDto() { Id = c.Id, Name = c.Name })
-                .Take(take).Skip(skip).ToListAsync();
+                .Select(c => c.MapToDto())
+                .Skip(skip).Take(take).ToListAsync();
         }
 
         /// <inheritdoc/>
@@ -60,7 +61,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Category
                 throw new Exception($"Не найдена категория с идентификатором '{id}'");
             }
 
-            var categoryDto = new CategoryDto() { Id = category.Id, Name = category.Name};
+            var categoryDto = category.MapToDto();
             return categoryDto;
         }
 
@@ -74,6 +75,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Category
             }
 
             category.Name = categoryDto.Name;
+
             await _repository.UpdateAsync(category);
         }
     }

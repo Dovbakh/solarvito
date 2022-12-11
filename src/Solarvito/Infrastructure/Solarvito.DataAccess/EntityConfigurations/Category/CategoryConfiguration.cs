@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection.Emit;
 
 namespace Solarvito.DataAccess.EntityConfigurations.Category
 {
@@ -27,7 +28,9 @@ namespace Solarvito.DataAccess.EntityConfigurations.Category
                 .WithOne(a => a.Category)
                 .HasForeignKey(a => a.CategoryId);
 
-
+            builder.HasOne(c => c.Parent)
+                .WithMany(c => c.Children)
+                .HasForeignKey(c => c.ParentId);
 
         }
     }

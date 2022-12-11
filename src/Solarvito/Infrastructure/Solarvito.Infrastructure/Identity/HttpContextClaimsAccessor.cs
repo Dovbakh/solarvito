@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Solarvito.AppServices.User.Additional;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,12 @@ namespace Solarvito.Infrastructure.Identity
 
         public async Task<IEnumerable<Claim>> GetClaims(CancellationToken cancellation)
         {
-            return _contextAccessor.HttpContext.User.Claims;
+            return _contextAccessor.HttpContext.User.Claims;           
+        }
+
+        public async Task SetClaims(ClaimsPrincipal principal, CancellationToken cancellation)
+        {
+            await _contextAccessor.HttpContext.SignInAsync(principal);
         }
     }
 }

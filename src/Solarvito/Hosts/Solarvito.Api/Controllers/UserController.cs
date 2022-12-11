@@ -29,6 +29,7 @@ namespace Solarvito.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetAll(int take, int skip, CancellationToken cancellation)
         {
             var users = await _userService.GetAll(take, skip, cancellation);
@@ -38,7 +39,7 @@ namespace Solarvito.Api.Controllers
 
 
         [HttpGet("{id:int}")]
-
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellation)
         {
@@ -54,6 +55,7 @@ namespace Solarvito.Api.Controllers
         /// <returns></returns>
         [HttpGet("current")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize]
         public async Task<IActionResult> GetCurrent(CancellationToken cancellation)
         {
             var user = await _userService.GetCurrent(cancellation);
@@ -65,6 +67,7 @@ namespace Solarvito.Api.Controllers
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellation)
         {
             await _userService.DeleteAsync(id, cancellation);
@@ -83,6 +86,7 @@ namespace Solarvito.Api.Controllers
         /// <returns></returns>
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(UserCredsDto userCreds, CancellationToken cancellation)
         {
             var userId = await _userService.Register(userCreds, cancellation);
@@ -99,6 +103,7 @@ namespace Solarvito.Api.Controllers
         /// <returns></returns>
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(UserCredsDto userCreds, CancellationToken cancellation)
         {
             var token = await _userService.Login(userCreds, cancellation);

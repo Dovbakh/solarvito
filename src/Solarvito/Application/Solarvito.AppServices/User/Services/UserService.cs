@@ -83,6 +83,8 @@ namespace Solarvito.AppServices.User.Services
 
             var token = GenerateToken(existingUser);
 
+
+
             return token;
         }
 
@@ -119,13 +121,22 @@ namespace Solarvito.AppServices.User.Services
             return userDto;
         }
 
+        public Task UpdateAsync(UserUpdateRequestDto request, CancellationToken cancellationToken)
+        {
+            return _userRepository.UpdateAsync(request, cancellationToken);
+        }
 
+        public Task DeleteAsync(int id, CancellationToken cancellationToken)
+        {
+            return _userRepository.DeleteAsync(id, cancellationToken);
+        }
 
         private string GenerateToken(UserHashDto user)
         {
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.RoleName)
             };
 
             var secretKey = _configuration["AuthToken:SecretKey"];
@@ -146,9 +157,6 @@ namespace Solarvito.AppServices.User.Services
             return result;
         }
 
-        public Task DeleteAsync(int id, CancellationToken cancellationToken)
-        {
-            return _userRepository.DeleteAsync(id, cancellationToken);
-        }
+
     }
 }

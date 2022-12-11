@@ -25,6 +25,9 @@ using Solarvito.AppServices.User.Validators;
 using Microsoft.AspNetCore.Identity;
 using Solarvito.Contracts.User;
 using Solarvito.AppServices.User.Additional;
+using Solarvito.Contracts.Advertisement;
+using Solarvito.AppServices.Advertisement.Validators;
+using Solarvito.Infrastructure.ObjectStorage;
 
 namespace Solarvito.Registrar
 {
@@ -57,9 +60,12 @@ namespace Solarvito.Registrar
 
 
             services.AddScoped<IValidator<UserCredsDto>, UserValidator>();
+            services.AddScoped<IValidator<AdvertisementRequestDto>, AdvertisementValidator>();
 
             services.AddScoped(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
 
+
+            services.AddScoped<IObjectStorage, MinioStorage>();
 
             return services;
         }

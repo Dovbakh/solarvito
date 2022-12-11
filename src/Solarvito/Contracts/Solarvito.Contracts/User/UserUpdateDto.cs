@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.User
 {
-    public class UserHashDto
+    public class UserUpdateRequestDto
     {
         /// <summary>
         /// Идентификатор пользователя.
@@ -14,15 +14,20 @@ namespace Solarvito.Contracts.User
         public int Id { get; set; }
 
         /// <summary>
-        /// Электронная почта пользователя.
+        /// Имя пользователя.
         /// </summary>
-        public string Email { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
-        /// Хэш пароля пользователя.
+        /// Номер телефона пользователя.
         /// </summary>
-        public string PasswordHash { get; set; }
+        public string? Phone { get; set; }
 
-        public string RoleName { get; set; }
+        /// <summary>
+        /// Адрес пользователя.
+        /// </summary>
+        public string? Address { get; set; }
+
+
     }
 }

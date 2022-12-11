@@ -37,7 +37,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
                     NumberOfRates = u.NumberOfRates,
                     CreatedAt = u.CreatedAt
                 })
-                .Take(take).Skip(skip).ToListAsync(cancellationToken);
+                .Skip(skip).Take(take).ToListAsync(cancellationToken);
         }
 
         public async Task<IReadOnlyCollection<UserDto>> GetAllFiltered(Expression<Func<Domain.User, bool>> predicate, CancellationToken cancellationToken)
@@ -79,10 +79,12 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
         public async Task<UserHashDto> GetWithHashByEmail(string email, CancellationToken cancellationToken)
         {
             var userHashDto = await _repository.GetAllFiltered(user => user.Email == email)
+                .Include(u => u.Role)
                 .Select(u => new UserHashDto() {
                     Id = u.Id,
                     Email = u.Email,
-                    PasswordHash = u.PasswordHash
+                    PasswordHash = u.PasswordHash,
+                    RoleName = u.Role.Name
                 }).FirstOrDefaultAsync(cancellationToken);
 
             return userHashDto;              
@@ -91,10 +93,28 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
         public async Task<int> AddAsync(UserHashDto userHashDto, CancellationToken cancellationToken)
         {
             var user = new Domain.User() { 
-                Email = userHashDto.Email, PasswordHash = userHashDto.PasswordHash, CreatedAt = DateTime.UtcNow 
+                Email = userHashDto.Email, PasswordHash = userHashDto.PasswordHash, CreatedAt = DateTime.UtcNow, RoleId = 1
             };
 
             await _repository.AddAsync(user);
+
+            return user.Id;
+        }
+
+        public async Task<int> UpdateAsync(UserUpdateRequestDto request, CancellationToken cancellationToken)
+        {
+            var user = await _repository.GetByIdAsync(request.Id);
+
+            if (user == null)
+            {
+                throw new Exception($"Не найден пользователь с идентификатором '{request.Id}'");
+            }
+
+            user.Address = request.Address;
+            user.Phone = request.Phone;
+            user.Name = request.Name;
+
+            await _repository.UpdateAsync(user);
 
             return user.Id;
         }
