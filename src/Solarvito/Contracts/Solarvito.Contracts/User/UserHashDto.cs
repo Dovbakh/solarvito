@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.User
 {
+    /// <summary>
+    /// DTO пользователя с хэшем пароля.
+    /// </summary>
     public class UserHashDto
     {
         /// <summary>

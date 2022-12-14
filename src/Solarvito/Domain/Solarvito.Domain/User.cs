@@ -53,9 +53,15 @@ namespace Solarvito.Domain
         /// Дата создания пользователя.
         /// </summary>
         public DateTime CreatedAt { get; set; }
-
+        
+        /// <summary>
+        /// Роль пользователя.
+        /// </summary>
         public Role Role { get; set; }
 
+        /// <summary>
+        /// Идентификатор роли пользователя.
+        /// </summary>
         public int RoleId {get; set; }
 
         /// <summary>

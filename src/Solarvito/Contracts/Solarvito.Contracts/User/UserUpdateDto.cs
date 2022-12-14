@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.User
 {
+    /// <summary>
+    /// DTO пользователя с изменяемыми данными.
+    /// </summary>
     public class UserUpdateRequestDto
     {
         /// <summary>

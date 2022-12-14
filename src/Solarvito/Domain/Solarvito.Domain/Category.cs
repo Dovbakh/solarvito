@@ -26,7 +26,7 @@ namespace Solarvito.Domain
         /// <summary>
         /// Родительская категория.
         /// </summary>
-        public Category Parent { get; set; }
+        public Category? Parent { get; set; }
 
         /// <summary>
         /// Коллекция подкатегорий.

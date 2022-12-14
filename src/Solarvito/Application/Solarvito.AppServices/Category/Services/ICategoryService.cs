@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Solarvito.AppServices.Category.Services
 {
+    /// <summary>
+    /// Сервис для работы с категориями.
+    /// </summary>
     public interface ICategoryService
     {
         /// <summary>
@@ -40,12 +43,14 @@ namespace Solarvito.AppServices.Category.Services
         /// </summary>
         /// <param name="id">Идентификатор категории.</param>
         /// <param name="categoryDto">Элемент <see cref="CategoryDto"/>.</param>
+        /// <param name="cancellation">Токен отмены.</param>
         Task UpdateAsync(int id, CategoryDto categoryDto, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить категорию.
         /// </summary>
         /// <param name="id">Идентификатор категории.</param>
+        /// <param name="cancellation">Токен отмены.</param>
         Task DeleteAsync(int id, CancellationToken cancellation);
     }
 }

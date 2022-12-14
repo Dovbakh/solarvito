@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.Category
 {
+    /// <summary>
+    /// DTO добавляемой\получаемой категории.
+    /// </summary>
     public class CategoryDto
     {
         /// <summary>

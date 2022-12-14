@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.Advertisement
 {
+    /// <summary>
+    /// DTO получаемого обьявления.
+    /// </summary>
     public class AdvertisementResponseDto
     {
         /// <summary>
@@ -24,19 +27,25 @@ namespace Solarvito.Contracts.Advertisement
         /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// Цена.
+        /// </summary>
         public decimal Price { get; set; }
 
         /// <summary>
-        /// Адресс, указанный в обьявлении.
+        /// Адрес.
         /// </summary>
         public string Address { get; set; }
 
+        /// <summary>
+        /// Номер телефона.
+        /// </summary>
         public string Phone { get; set; }
 
         /// <summary>
-        /// Путь к картинке обьявления.
+        /// Ссылки на изображения из обьявления.
         /// </summary>
-        public string ImagePath { get; set; }
+        public ICollection<string> ImagePathes { get; set; }
 
         /// <summary>
         /// Дата создания обьявления.
@@ -53,7 +62,6 @@ namespace Solarvito.Contracts.Advertisement
         /// </summary>
         public int NumberOfViews { get; set; }
 
-
         /// <summary>
         /// Идентификатор категории.
         /// </summary>
@@ -65,18 +73,23 @@ namespace Solarvito.Contracts.Advertisement
         public int UserId { get; set; }
 
         /// <summary>
-        /// Название категории обьявления
+        /// Название категории обьявления.
         /// </summary>
         public string CategoryName { get; set; }
 
         /// <summary>
-        /// Имя пользователя, разместившего обьявление
+        /// Имя пользователя, разместившего обьявление.
         /// </summary>
         public string UserName { get; set; }
 
+        /// <summary>
+        /// Рейтинг пользователя, разместившего обьявление.
+        /// </summary>
         public float UserRating { get; set; }
 
+        /// <summary>
+        /// Количество отзывов о пользователе, разместившем обьявление.
+        /// </summary>
         public int UserNumberOfRates { get; set; }
-
     }
 }

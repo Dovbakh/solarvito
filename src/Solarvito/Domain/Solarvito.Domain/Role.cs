@@ -8,9 +8,19 @@ namespace Solarvito.Domain
 {
     public class Role
     {
+        /// <summary>
+        /// Идентификатор роли.
+        /// </summary>
         public int Id { get; set; }
+
+        /// <summary>
+        /// Название роли.
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Коллекция пользователей, имеющих роль.
+        /// </summary>
         public ICollection<User> Users { get; set; }
 
     }

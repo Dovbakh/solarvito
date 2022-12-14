@@ -9,8 +9,13 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts
 {
+    /// <summary>
+    /// Ручной маппер.
+    /// </summary>
     public static class Mapper
     {
+        /// <param name="advertisement">Элемент <see cref="Domain.Advertisement"/>.</param>
+        /// <returns>Элемент <see cref="AdvertisementResponseDto"/>.</returns>
         public static AdvertisementResponseDto MapToDto(this Domain.Advertisement advertisement) => new()
         {
             Id = advertisement.Id,
@@ -19,7 +24,7 @@ namespace Solarvito.Contracts
             Price = advertisement.Price,
             Address = advertisement.Address,
             Phone = advertisement.Phone,
-            ImagePath = advertisement.ImagePath,
+            ImagePathes = advertisement.AdvertisementImages.Select(ai => ai.FileName).ToList(),
             CreatedAt = advertisement.CreatedAt,
             ExpireAt = advertisement.ExpireAt,
             NumberOfViews = advertisement.NumberOfViews,
@@ -29,6 +34,8 @@ namespace Solarvito.Contracts
             CategoryId = advertisement.CategoryId                        
         };
 
+        /// <param name="advertisementRequestDto">Элемент <see cref="AdvertisementRequestDto"/>.</param>
+        /// <returns>Элемент <see cref="Domain.Advertisement"/>.</returns>
         public static Domain.Advertisement MapToEntity(this AdvertisementRequestDto advertisementRequestDto) => new()
         {
             Name = advertisementRequestDto.Name,
@@ -36,7 +43,6 @@ namespace Solarvito.Contracts
             Price = advertisementRequestDto.Price,
             Address = advertisementRequestDto.Address,
             Phone = advertisementRequestDto.Phone,
-            ImagePath = advertisementRequestDto.ImagePath,
             CreatedAt = DateTime.UtcNow,
             ExpireAt = DateTime.UtcNow.AddDays(30),
             NumberOfViews = 0,
@@ -44,12 +50,16 @@ namespace Solarvito.Contracts
             UserId = advertisementRequestDto.UserId
         };
 
+        /// <param name="categoryDto">Элемент <see cref="CategoryDto"/>.</param>
+        /// <returns>Элемент <see cref="Domain.Category"/>.</returns>
         public static Domain.Category MapToEntity(this CategoryDto categoryDto) => new()
         {
             Name = categoryDto.Name,
             ParentId = categoryDto.ParentId
         };
 
+        /// <param name="category">Элемент <see cref="Domain.Category"/>.</param>
+        /// <returns>Элемент <see cref="CategoryDto"/>.</returns>
         public static CategoryDto MapToDto(this Domain.Category category) => new()
         {
             Id = category.Id,

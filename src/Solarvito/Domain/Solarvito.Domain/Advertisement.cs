@@ -23,23 +23,20 @@ namespace Solarvito.Domain
         /// </summary>
         public string Description { get; set; }
 
-
+        /// <summary>
+        /// Цена.
+        /// </summary>
         public decimal Price { get; set; }
 
         /// <summary>
-        /// Адрес, указанный в обьявлении.
+        /// Адрес.
         /// </summary>
         public string Address { get; set; }
 
         /// <summary>
-        /// Телефон, указанный в обьявлении.
+        /// Номер телефона.
         /// </summary>
         public string Phone { get; set; }
-
-        /// <summary>
-        /// Путь к картинке обьявления.
-        /// </summary>
-        public string ImagePath { get; set; }
 
         /// <summary>
         /// Дата создания обьявления.
@@ -66,7 +63,6 @@ namespace Solarvito.Domain
         /// </summary>
         public int UserId { get; set; }
 
-
         /// <summary>
         /// Категория обьявления.
         /// </summary>
@@ -76,5 +72,10 @@ namespace Solarvito.Domain
         /// Пользователь, подавший обьявление.
         /// </summary>
         public User User { get; set; }
+
+        /// <summary>
+        /// Коллекция изображений обьявления.
+        /// </summary>
+        public ICollection<AdvertisementImage> AdvertisementImages { get; set; }
     }
 }

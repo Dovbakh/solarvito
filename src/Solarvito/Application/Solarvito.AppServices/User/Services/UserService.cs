@@ -24,16 +24,23 @@ namespace Solarvito.AppServices.User.Services
         private readonly IUserRepository _userRepository;
         private readonly IClaimsAccessor _claimsAccessor;
         private readonly IConfiguration _configuration;
-        private readonly IValidator<UserCredsDto> _validator;
-        private readonly IPasswordHasher<UserCredsDto> _hasher;
+        private readonly IValidator<UserCredentialsDto> _validator;
+        private readonly IPasswordHasher<UserCredentialsDto> _hasher;
 
-
+        /// <summary>
+        /// Инициализировать экземпляр <see cref="UserService"/>
+        /// </summary>
+        /// <param name="userRepository">Репозиторий для работы с <see cref="UserDto"/>.</param>
+        /// <param name="claimsAccessor">Аксессор для работы с клеймами.</param>
+        /// <param name="configuration">Конфигурация проекта.</param>
+        /// <param name="validator">Валидатор данных для работы с <see cref="UserCredentialsDto"/>.</param>
+        /// <param name="hasher">Хэшер пароля для работы с <see cref="UserCredentialsDto"/>.</param>
         public UserService(
             IUserRepository userRepository,
             IClaimsAccessor claimsAccessor,
             IConfiguration configuration,
-            IValidator<UserCredsDto> validator,
-            IPasswordHasher<UserCredsDto> hasher)
+            IValidator<UserCredentialsDto> validator,
+            IPasswordHasher<UserCredentialsDto> hasher)
         {
             _userRepository = userRepository;
             _claimsAccessor = claimsAccessor;
@@ -42,7 +49,8 @@ namespace Solarvito.AppServices.User.Services
             _hasher = hasher;
         }
 
-        public async Task<int> Register(UserCredsDto userCreds, CancellationToken cancellationToken)
+        /// <inheritdoc/>
+        public async Task<int> Register(UserCredentialsDto userCreds, CancellationToken cancellationToken)
         {
 
             var validationResult = _validator.Validate(userCreds);
@@ -65,8 +73,8 @@ namespace Solarvito.AppServices.User.Services
 
         }
 
-
-        public async Task<string> Login(UserCredsDto userCreds, CancellationToken cancellationToken)
+        /// <inheritdoc/>
+        public async Task<string> Login(UserCredentialsDto userCreds, CancellationToken cancellationToken)
         {
 
             var existingUser = await _userRepository.GetWithHashByEmail(userCreds.Email, cancellationToken);           
@@ -88,7 +96,7 @@ namespace Solarvito.AppServices.User.Services
             return token;
         }
 
-
+        /// <inheritdoc/>
         public Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellationToken)
         {
             return _userRepository.GetAll(take, skip, cancellationToken);
@@ -99,7 +107,7 @@ namespace Solarvito.AppServices.User.Services
             return _userRepository.GetById(id, cancellationToken);
         }
 
-
+        /// <inheritdoc/>
         public async Task<UserDto> GetCurrent(CancellationToken cancellationToken)
         {
             var claims = await _claimsAccessor.GetClaims(cancellationToken);
@@ -121,16 +129,23 @@ namespace Solarvito.AppServices.User.Services
             return userDto;
         }
 
+        /// <inheritdoc/>
         public Task UpdateAsync(UserUpdateRequestDto request, CancellationToken cancellationToken)
         {
             return _userRepository.UpdateAsync(request, cancellationToken);
         }
 
+        /// <inheritdoc/>
         public Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             return _userRepository.DeleteAsync(id, cancellationToken);
         }
 
+        /// <summary>
+        /// Генератор JWT-токена.
+        /// </summary>
+        /// <param name="user">Элемент <see cref="UserHashDto"/>.</param>
+        /// <returns>Токен.</returns>
         private string GenerateToken(UserHashDto user)
         {
             var claims = new List<Claim> {

@@ -1,9 +1,18 @@
+using Serilog;
+using Serilog.Formatting.Json;
+using Serilog.Sinks.File;
 using Solarvito.Api.Modules;
 using Solarvito.Registrar;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Host.UseSerilog((context, services, configuration) =>
+configuration.ReadFrom.Configuration(context.Configuration)
+.Enrich.FromLogContext()
+.WriteTo.Console()
+.WriteTo.Seq("http://localhost:5341"));
 
 builder.Services.AddServiceRegistrationModule();
 

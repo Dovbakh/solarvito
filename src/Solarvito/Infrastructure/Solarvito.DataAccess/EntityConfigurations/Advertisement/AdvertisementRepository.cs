@@ -31,10 +31,6 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
             _repository = repository;
             _objectStorage = objectStorage;
         }
-        public async Task<byte[]> GetImage(CancellationToken cancellation)
-        {
-            return await _objectStorage.Create();
-        }
 
         /// <inheritdoc/>
         public async Task<int> AddAsync(AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation)
@@ -64,6 +60,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
             return await _repository.GetAll()
                 .Include(a => a.Category)
                 .Include(a => a.User)
+                .Include(a => a.AdvertisementImages)
                 .OrderByDescending(a => a.CreatedAt)
                 .Select(a => a.MapToDto())
                 .Skip(skip).Take(take).ToListAsync();
@@ -124,6 +121,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
             return await query
                 .Include(a => a.Category)
                 .Include(a => a.User)
+                .Include(a => a.AdvertisementImages)
                 .Select(a => a.MapToDto())
                 .Skip(skip).Take(take).ToListAsync(cancellation);
         }
@@ -134,6 +132,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
             var advertisement = await _repository.GetAllFiltered(a => a.Id.Equals(id))
                 .Include(a => a.Category)
                 .Include(a => a.User)
+                .Include(a => a.AdvertisementImages)
                 .Select(a => a.MapToDto())
                 .FirstOrDefaultAsync();
 
@@ -159,7 +158,6 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
             advertisement.Price = advertisementRequestDto.Price;
             advertisement.Address = advertisementRequestDto.Address;
             advertisement.Phone = advertisementRequestDto.Phone;
-            advertisement.ImagePath = advertisementRequestDto.ImagePath;
             advertisement.CategoryId = advertisementRequestDto.CategoryId;               
 
             await _repository.UpdateAsync(advertisement);

@@ -15,48 +15,46 @@ namespace Solarvito.Api.Controllers
     public class AdvertisementController : ControllerBase
     {
         private readonly IAdvertisementService _advertisementService;
+        private readonly ILogger<AdvertisementController> _logger;
 
-        public AdvertisementController(IAdvertisementService advertisementService)
+        /// <summary>
+        /// Работа с обьявлениями.
+        /// </summary>
+        /// <param name="advertisementService">Сервис для работы с обьявлениями.</param>
+        /// <param name="logger">Логгер.</param>
+        public AdvertisementController(IAdvertisementService advertisementService, ILogger<AdvertisementController> logger)
         {
             _advertisementService = advertisementService;
+            _logger = logger;
         }
-
-        [HttpGet("image")]
-        [ProducesResponseType(typeof(IReadOnlyCollection<AdvertisementResponseDto>), (int)HttpStatusCode.OK)]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetImage(CancellationToken cancellation)
-        {
-            var result = await _advertisementService.GetImage(cancellation);
-            return File(result, "image/png");
-
-            return Ok(result);
-            //Byte[] b = System.IO.File.ReadAllBytes(@"E:\\Test.jpg");
-            //Byte[] b = System.IO.File.ReadAllBytes()
-            //return File(b, "image/jpeg");
-
-        }
-
 
         /// <summary>
         /// Получить все обьявления отсортированные по дате добавления по убыванию и с пагинацией.
         /// </summary>
-        /// <param name="take">Количество получаемых обьявлений.</param>
-        /// <param name="skip">Количество пропускаемых обьявлений.</param>
+        /// <param name="page">Номер страницы.</param>
         /// <param name="cancellation">Токен отмены.</param>
-        /// <returns>Коллекция элементов <see cref="AdvertisementDto"/>.</returns>
+        /// <returns>Коллекция элементов <see cref="AdvertisementResponseDto"/>.</returns>
         [HttpGet]
         [ProducesResponseType(typeof(IReadOnlyCollection<AdvertisementResponseDto>), (int)HttpStatusCode.OK)]
         [AllowAnonymous]
         public async Task<IActionResult> GetAll(int? page, CancellationToken cancellation)
         {
+            _logger.LogInformation("Log: information");
+            _logger.LogWarning("Log: warning");
             var result = await _advertisementService.GetAllAsync(cancellation, page);
 
             return Ok(result);
         }
 
-        // TODO
+        /// <summary>
+        /// Получить все обьявления по фильтру и с пагинацией.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="page"></param>
+        /// <param name="cancellation"></param>
+        /// <returns>Элемент <see cref="AdvertisementResponseDto"/>.</returns>
         [HttpGet("filter")]
-        [ProducesResponseType(typeof(AdvertisementResponseDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AdvertisementResponseDto), StatusCodes.Status200OK)]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllFiltered([FromQuery] AdvertisementFilterRequest filter, int? page, CancellationToken cancellation)
         {
@@ -73,7 +71,8 @@ namespace Solarvito.Api.Controllers
         /// <param name="cancellation">Токен отмены</param>
         /// <returns>Элемент <see cref="AdvertisementResponseDto"/>.</returns>
         [HttpGet("{id:int}")]
-        [ProducesResponseType(typeof(AdvertisementResponseDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AdvertisementResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellation)
         {
@@ -86,16 +85,14 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Добавить новое обьявление.
         /// </summary>
-        /// <param name="name">Название обьявления.</param>
-        /// <param name="description">Описание обьявления.</param>
-        /// <param name="categoryId">Идентификатор категории обьявления.</param>
-        /// <param name="imagePath">Путь к картинке в обьявлении.</param>
+        /// <param name="advertisementRequestDto">Элемент <see cref="AdvertisementRequestDto"/>.</param>
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Идентификатор нового обьявления.</returns>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [Authorize]
-        public async Task<IActionResult> Add(AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation)
+        public async Task<IActionResult> Add([FromForm] AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation)
         {
             var advertisementId = await _advertisementService.AddAsync(advertisementRequestDto, cancellation);
             return Created("", advertisementId);
@@ -105,15 +102,14 @@ namespace Solarvito.Api.Controllers
         /// Изменить обьявление.
         /// </summary>
         /// <param name="id">Идентификатор обьявления.</param>
-        /// <param name="name">Название обьявления.</param>
-        /// <param name="description">Описание обьявления.</param>
-        /// <param name="categoryId">Идентификатор категории обьявления.</param>
-        /// <param name="imagePath">Путь к картинке в обьявлении.</param>
+        /// <param name="advertisementRequestDto">Элемент <see cref="AdvertisementRequestDto"/>.</param>
         /// <param name="cancellation">Токен отмены.</param>
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [Authorize]
-        public async Task<IActionResult> Update([FromBody] AdvertisementRequestDto advertisementRequestDto, int id, CancellationToken cancellation)
+        public async Task<IActionResult> Update([FromForm] AdvertisementRequestDto advertisementRequestDto, int id, CancellationToken cancellation)
         {
             await _advertisementService.UpdateAsync(id, advertisementRequestDto, cancellation);
 
@@ -127,6 +123,7 @@ namespace Solarvito.Api.Controllers
         /// <param name="cancellation">Токен отмены.</param>
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellation)
         {

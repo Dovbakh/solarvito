@@ -9,14 +9,29 @@
             Работа с обьявлениями.
             </summary>
         </member>
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.#ctor(Solarvito.AppServices.Advertisement.Services.IAdvertisementService,Microsoft.Extensions.Logging.ILogger{Solarvito.Api.Controllers.AdvertisementController})">
+            <summary>
+            Работа с обьявлениями.
+            </summary>
+            <param name="advertisementService">Сервис для работы с обьявлениями.</param>
+            <param name="logger">Логгер.</param>
+        </member>
         <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetAll(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Получить все обьявления отсортированные по дате добавления по убыванию и с пагинацией.
             </summary>
-            <param name="take">Количество получаемых обьявлений.</param>
-            <param name="skip">Количество пропускаемых обьявлений.</param>
+            <param name="page">Номер страницы.</param>
             <param name="cancellation">Токен отмены.</param>
-            <returns>Коллекция элементов <see cref="!:AdvertisementDto"/>.</returns>
+            <returns>Коллекция элементов <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementResponseDto"/>.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetAllFiltered(Solarvito.Contracts.Advertisement.AdvertisementFilterRequest,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Получить все обьявления по фильтру и с пагинацией.
+            </summary>
+            <param name="filter"></param>
+            <param name="page"></param>
+            <param name="cancellation"></param>
+            <returns>Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementResponseDto"/>.</returns>
         </member>
         <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetById(System.Int32,System.Threading.CancellationToken)">
             <summary>
@@ -30,10 +45,7 @@
             <summary>
             Добавить новое обьявление.
             </summary>
-            <param name="name">Название обьявления.</param>
-            <param name="description">Описание обьявления.</param>
-            <param name="categoryId">Идентификатор категории обьявления.</param>
-            <param name="imagePath">Путь к картинке в обьявлении.</param>
+            <param name="advertisementRequestDto">Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementRequestDto"/>.</param>
             <param name="cancellation">Токен отмены.</param>
             <returns>Идентификатор нового обьявления.</returns>
         </member>
@@ -42,10 +54,7 @@
             Изменить обьявление.
             </summary>
             <param name="id">Идентификатор обьявления.</param>
-            <param name="name">Название обьявления.</param>
-            <param name="description">Описание обьявления.</param>
-            <param name="categoryId">Идентификатор категории обьявления.</param>
-            <param name="imagePath">Путь к картинке в обьявлении.</param>
+            <param name="advertisementRequestDto">Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementRequestDto"/>.</param>
             <param name="cancellation">Токен отмены.</param>
         </member>
         <member name="M:Solarvito.Api.Controllers.AdvertisementController.Delete(System.Int32,System.Threading.CancellationToken)">
@@ -59,6 +68,12 @@
             <summary>
             Работа с категориями.
             </summary>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CategoryController.#ctor(Solarvito.AppServices.Category.Services.ICategoryService)">
+            <summary>
+            Работа с категориями.
+            </summary>
+            <param name="categoryService">Сервис для работы с категориями</param>
         </member>
         <member name="M:Solarvito.Api.Controllers.CategoryController.GetAll(System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
@@ -81,7 +96,7 @@
             <summary>
             Добавить новую категорию.
             </summary>
-            <param name="name">Название категории.</param>
+            <param name="categoryDto">Элемент <see cref="T:Solarvito.Contracts.Category.CategoryDto"/>.</param>
             <param name="cancellation">Токен отмены.</param>
             <returns>Идентификатор новой категории.</returns>
         </member>
@@ -90,7 +105,7 @@
             Изменить категорию.
             </summary>
             <param name="id">Идентификатор категории.</param>
-            <param name="name">Название категории.</param>
+            <param name="categoryDto">Элемент <see cref="T:Solarvito.Contracts.Category.CategoryDto"/>.</param>
             <param name="cancellation">Токен отмены.</param>
         </member>
         <member name="M:Solarvito.Api.Controllers.CategoryController.Delete(System.Int32,System.Threading.CancellationToken)">
@@ -118,7 +133,7 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.Register(Solarvito.Contracts.User.UserCredsDto,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.Register(Solarvito.Contracts.User.UserCredentialsDto,System.Threading.CancellationToken)">
             <summary>
             Зарегистрировать пользователя.
             </summary>
@@ -127,7 +142,7 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.Login(Solarvito.Contracts.User.UserCredsDto,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.Login(Solarvito.Contracts.User.UserCredentialsDto,System.Threading.CancellationToken)">
             <summary>
             Залогинить пользователя.
             </summary>

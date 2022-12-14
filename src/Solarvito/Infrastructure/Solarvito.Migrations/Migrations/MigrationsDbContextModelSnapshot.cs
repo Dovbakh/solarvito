@@ -49,10 +49,6 @@ namespace Solarvito.Migrations.Migrations
                     b.Property<DateTime>("ExpireAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ImagePath")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -81,6 +77,29 @@ namespace Solarvito.Migrations.Migrations
                     b.ToTable("Advertisements", (string)null);
                 });
 
+            modelBuilder.Entity("Solarvito.Domain.AdvertisementImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdvertisementId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdvertisementId");
+
+                    b.ToTable("AdvertisementImages", (string)null);
+                });
+
             modelBuilder.Entity("Solarvito.Domain.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -95,7 +114,6 @@ namespace Solarvito.Migrations.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.Property<int?>("ParentId")
-                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -194,13 +212,22 @@ namespace Solarvito.Migrations.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Solarvito.Domain.AdvertisementImage", b =>
+                {
+                    b.HasOne("Solarvito.Domain.Advertisement", "Advertisement")
+                        .WithMany("AdvertisementImages")
+                        .HasForeignKey("AdvertisementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Advertisement");
+                });
+
             modelBuilder.Entity("Solarvito.Domain.Category", b =>
                 {
                     b.HasOne("Solarvito.Domain.Category", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ParentId");
 
                     b.Navigation("Parent");
                 });
@@ -214,6 +241,11 @@ namespace Solarvito.Migrations.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Solarvito.Domain.Advertisement", b =>
+                {
+                    b.Navigation("AdvertisementImages");
                 });
 
             modelBuilder.Entity("Solarvito.Domain.Category", b =>

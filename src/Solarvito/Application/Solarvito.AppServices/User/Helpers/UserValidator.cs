@@ -9,8 +9,14 @@ using Solarvito.Contracts.User;
 
 namespace Solarvito.AppServices.User.Validators
 {
-    public class UserValidator : AbstractValidator<UserCredsDto>
+    /// <summary>
+    /// Валидатор данных для <see cref="UserCredentialsDto"/>
+    /// </summary>
+    public class UserValidator : AbstractValidator<UserCredentialsDto>
     {
+        /// <summary>
+        /// Правила для валидации <see cref="UserCredentialsDto"/>
+        /// </summary>
         public UserValidator()
         {
             RuleFor(x => x.Email)

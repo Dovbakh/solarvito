@@ -21,14 +21,21 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Работа с пользователями.
         /// </summary>
-        /// <param name="userService"></param>
+        /// <param name="userService">Сервис для работы с пользователями.</param>
         public UserController(IUserService userService)
         {
             _userService = userService;
         }
 
+        /// <summary>
+        /// Получить список всех пользователей с пагинацией.
+        /// </summary>
+        /// <param name="take">Количество получаемых пользователей.</param>
+        /// <param name="skip">Количество пропускаемых пользователей.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Коллекция элементов <see cref="UserDto"/>.</returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IReadOnlyCollection<UserDto>), StatusCodes.Status200OK)]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetAll(int take, int skip, CancellationToken cancellation)
         {
@@ -37,10 +44,16 @@ namespace Solarvito.Api.Controllers
             return Ok(users);
         }
 
-
-        [HttpGet("{id:int}")]
+        /// <summary>
+        /// Получить пользователя по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Элемент <see cref="UserDto"/>.</returns>
+        [HttpGet("{id:int}")]        
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellation)
         {
             var user = await _userService.GetById(id, cancellation);
@@ -49,12 +62,13 @@ namespace Solarvito.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Получить текущего пользователя.
         /// </summary>
-        /// <param name="cancellation"></param>
-        /// <returns></returns>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Элемент <see cref="UserDto"/>.</returns>
         [HttpGet("current")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
         public async Task<IActionResult> GetCurrent(CancellationToken cancellation)
         {
@@ -64,9 +78,14 @@ namespace Solarvito.Api.Controllers
         }
 
 
-
+        /// <summary>
+        /// Удалить пользователя по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="cancellation">Токен отмены.</param>
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellation)
         {
@@ -80,14 +99,14 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Зарегистрировать пользователя.
         /// </summary>
-        /// <param name="login"></param>
-        /// <param name="password"></param>
-        /// <param name="cancellation"></param>
-        /// <returns></returns>
+        /// <param name="userCreds">Элемент <see cref="UserCredentialsDto"/>.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Идентификатор нового пользователя.</returns>
         [HttpPost("register")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(UserCredsDto userCreds, CancellationToken cancellation)
+        public async Task<IActionResult> Register(UserCredentialsDto userCreds, CancellationToken cancellation)
         {
             var userId = await _userService.Register(userCreds, cancellation);
 
@@ -97,14 +116,14 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Залогинить пользователя.
         /// </summary>
-        /// <param name="login"></param>
-        /// <param name="password"></param>
+        /// <param name="userCreds">Элемент <see cref="UserCredentialsDto"/>.</param>
         /// <param name="cancellation"></param>
-        /// <returns></returns>
+        /// <returns>Токен аутентификации.</returns>
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(UserCredsDto userCreds, CancellationToken cancellation)
+        public async Task<IActionResult> Login(UserCredentialsDto userCreds, CancellationToken cancellation)
         {
             var token = await _userService.Login(userCreds, cancellation);
 

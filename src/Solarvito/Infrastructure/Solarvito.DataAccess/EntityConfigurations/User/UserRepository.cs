@@ -25,6 +25,8 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
         {
             _repository = repository;
         }
+
+        /// <inheritdoc />
         public async Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellationToken)
         {
             return await _repository.GetAll()
@@ -40,6 +42,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
                 .Skip(skip).Take(take).ToListAsync(cancellationToken);
         }
 
+        /// <inheritdoc />
         public async Task<IReadOnlyCollection<UserDto>> GetAllFiltered(Expression<Func<Domain.User, bool>> predicate, CancellationToken cancellationToken)
         {
             return await _repository.GetAllFiltered(predicate)
@@ -55,6 +58,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
                 .ToListAsync(cancellationToken);
         }
 
+        /// <inheritdoc />
         public async Task<UserDto> GetById(int id, CancellationToken cancellationToken)
         {
             var user = await _repository.GetByIdAsync(id);
@@ -76,6 +80,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
             return userDto;
         }
 
+        /// <inheritdoc />
         public async Task<UserHashDto> GetWithHashByEmail(string email, CancellationToken cancellationToken)
         {
             var userHashDto = await _repository.GetAllFiltered(user => user.Email == email)
@@ -90,6 +95,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
             return userHashDto;              
         }
 
+        /// <inheritdoc />
         public async Task<int> AddAsync(UserHashDto userHashDto, CancellationToken cancellationToken)
         {
             var user = new Domain.User() { 
@@ -101,7 +107,8 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
             return user.Id;
         }
 
-        public async Task<int> UpdateAsync(UserUpdateRequestDto request, CancellationToken cancellationToken)
+        /// <inheritdoc />
+        public async Task UpdateAsync(UserUpdateRequestDto request, CancellationToken cancellationToken)
         {
             var user = await _repository.GetByIdAsync(request.Id);
 
@@ -115,10 +122,9 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
             user.Name = request.Name;
 
             await _repository.UpdateAsync(user);
-
-            return user.Id;
         }
 
+        /// <inheritdoc />
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             var user = await _repository.GetByIdAsync(id);

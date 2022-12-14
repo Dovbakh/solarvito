@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.Advertisement
 {
+    /// <summary>
+    /// DTO добавляемого обьявления.
+    /// </summary>
     public class AdvertisementRequestDto
     {
 
@@ -19,19 +23,25 @@ namespace Solarvito.Contracts.Advertisement
         /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// Цена.
+        /// </summary>
         public decimal Price { get; set; }
 
         /// <summary>
-        /// Адресс, указанный в обьявлении.
+        /// Адрес.
         /// </summary>
         public string Address { get; set; }
 
+        /// <summary>
+        /// Номер телефона.
+        /// </summary>
         public string Phone { get; set; }
 
         /// <summary>
-        /// Путь к картинке обьявления.
+        /// Коллекция прикрепленных изображений.
         /// </summary>
-        public string ImagePath { get; set; }
+        public ICollection<IFormFile> Images { get; set; }
 
         /// <summary>
         /// Идентификатор категории.
@@ -39,7 +49,7 @@ namespace Solarvito.Contracts.Advertisement
         public int CategoryId { get; set; }
 
         /// <summary>
-        /// Идентификатор категории.
+        /// Идентификатор пользователя.
         /// </summary>
         public int UserId { get; set; }
 

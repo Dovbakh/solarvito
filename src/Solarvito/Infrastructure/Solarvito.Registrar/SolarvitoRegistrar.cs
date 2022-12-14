@@ -28,6 +28,12 @@ using Solarvito.AppServices.User.Additional;
 using Solarvito.Contracts.Advertisement;
 using Solarvito.AppServices.Advertisement.Validators;
 using Solarvito.Infrastructure.ObjectStorage;
+using Minio;
+using Solarvito.AppServices.File.Services;
+using Solarvito.AppServices.File.Repositories;
+using Solarvito.DataAccess.EntityConfigurations.File;
+using Solarvito.AppServices.AdvertisementImage.Repositories;
+using Solarvito.DataAccess.EntityConfigurations.AdvertisementImage;
 
 namespace Solarvito.Registrar
 {
@@ -59,13 +65,21 @@ namespace Solarvito.Registrar
             services.AddTransient<IUserRepository, UserRepository>();
 
 
-            services.AddScoped<IValidator<UserCredsDto>, UserValidator>();
+            services.AddScoped<IValidator<UserCredentialsDto>, UserValidator>();
             services.AddScoped<IValidator<AdvertisementRequestDto>, AdvertisementValidator>();
 
             services.AddScoped(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
 
 
             services.AddScoped<IObjectStorage, MinioStorage>();
+
+            services.AddTransient<IFileService, FileService>();
+            services.AddTransient<IFileRepository, FileRepository>();
+
+            services.AddTransient<IAdvertisementImageRepository, AdvertisementImageRepository>();
+
+            //services.AddScoped<IBucketOperations>(mc => new MinioClient().WithEndpoint("127.0.0.1:9000").WithCredentials("7d0OSrPdBpU0Iabo", "53jc7XIX5o5BfqxhE2ToCBJQcZCiu80f").Build());
+            //services.AddScoped((Func<IMinioClient, MinioClient>)(mc => mc.WithEndpoint("127.0.0.1:9000").WithCredentials("7d0OSrPdBpU0Iabo", "53jc7XIX5o5BfqxhE2ToCBJQcZCiu80f").Build()));
 
             return services;
         }

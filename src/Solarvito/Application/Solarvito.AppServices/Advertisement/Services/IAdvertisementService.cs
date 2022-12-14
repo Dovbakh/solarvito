@@ -8,20 +8,26 @@ using System.Threading.Tasks;
 
 namespace Solarvito.AppServices.Advertisement.Services
 {
+    /// <summary>
+    /// Сервис для работы с обьявлениями.
+    /// </summary>
     public interface IAdvertisementService
     {
-        Task<byte[]> GetImage(CancellationToken cancellation);
-
         /// <summary>
         /// Получить все обьявления с пагинацией.
         /// </summary>
-        /// <param name="take">Количество получаемых обьявлений.</param>
-        /// <param name="skip">Количество пропускаемых обьявлений.</param>
+        /// <param name="page">Номер страницы.</param>
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Коллекция элементов <see cref="AdvertisementResponseDto"/>.</returns>
         Task<IReadOnlyCollection<AdvertisementResponseDto>> GetAllAsync(CancellationToken cancellation, int? page);
 
-        // TODO
+        /// <summary>
+        /// Получить все обьявления по фильтру и с пагинацией.
+        /// </summary>
+        /// <param name="request">Фильтр <see cref="AdvertisementFilterRequest"/> для поиска.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <param name="page">Номер страницы.</param>
+        /// <returns>Коллекция элементов <see cref="AdvertisementResponseDto"/>.</returns>
         Task<IReadOnlyCollection<AdvertisementResponseDto>> GetAllFilteredAsync(AdvertisementFilterRequest request, CancellationToken cancellation, int? page);
 
         /// <summary>
@@ -29,7 +35,7 @@ namespace Solarvito.AppServices.Advertisement.Services
         /// </summary>
         /// <param name="id">Идентификатор обьявления.</param>
         /// <param name="cancellation">Токен отмены</param>
-        /// <returns>Элемент <see cref="AdvertisementDto"/>.</returns>
+        /// <returns>Элемент <see cref="AdvertisementResponseDto"/>.</returns>
         Task<AdvertisementResponseDto> GetByIdAsync(int id, CancellationToken cancellation);
 
         /// <summary>
@@ -44,13 +50,15 @@ namespace Solarvito.AppServices.Advertisement.Services
         /// Изменить обьявление.
         /// </summary>
         /// <param name="id">Идентификатор обьявления.</param>
-        /// <param name="advertisementDto">Элемент <see cref="AdvertisementDto"/>.</param>
+        /// <param name="advertisementRequestDto">Элемент <see cref="AdvertisementRequestDto"/>.</param>
+        /// <param name="cancellation">Токен отмены.</param>
         Task UpdateAsync(int id, AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить обьявление.
         /// </summary>
         /// <param name="id">Идентификатор обьявления.</param>
+        /// <param name="cancellation">Токен отмены.</param>
         Task DeleteAsync(int id, CancellationToken cancellation);
     }
 }

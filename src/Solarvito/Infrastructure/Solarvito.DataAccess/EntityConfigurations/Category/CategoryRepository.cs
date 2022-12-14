@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Solarvito.DataAccess.EntityConfigurations.Category
 {
+    /// <inheritdoc/>
     public class CategoryRepository : ICategoryRepository
     {
         private readonly IRepository<Domain.Category> _repository;
