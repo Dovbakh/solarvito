@@ -19,7 +19,7 @@ namespace Solarvito.Infrastructure.ObjectStorage
         /// <param name="objectName">Имя обьекта.</param>
         /// <param name="bucketName">Имя корзины.</param>
         /// <returns>Массив байтов с содержимым обьекта.</returns>
-        public Task<byte[]> Get(string objectName, string bucketName);
+        Task<byte[]> Get(string objectName, string bucketName);
 
         /// <summary>
         /// Добавить обьект с указанным именем, корзиной и типом контента.
@@ -29,5 +29,13 @@ namespace Solarvito.Infrastructure.ObjectStorage
         /// <param name="contentType">Тип контента.</param>
         /// <param name="bytes">Массив байтов с содержимым обьекта.</param>
         Task Upload(string objectName, string bucketName, string contentType, byte[] bytes);
+
+        /// <summary>
+        /// Удалить обьект с указанным именем из указанной корзины.
+        /// </summary>
+        /// <param name="objectName"></param>
+        /// <param name="bucketName"></param>
+        /// <returns></returns>
+        Task Delete(string objectName, string bucketName);
     }
 }

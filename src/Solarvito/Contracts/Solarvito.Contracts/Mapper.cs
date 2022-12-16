@@ -1,5 +1,7 @@
 ﻿using Solarvito.Contracts.Advertisement;
+using Solarvito.Contracts.AdvertisementImage;
 using Solarvito.Contracts.Category;
+using Solarvito.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,21 +36,21 @@ namespace Solarvito.Contracts
             CategoryId = advertisement.CategoryId                        
         };
 
-        /// <param name="advertisementRequestDto">Элемент <see cref="AdvertisementRequestDto"/>.</param>
-        /// <returns>Элемент <see cref="Domain.Advertisement"/>.</returns>
-        public static Domain.Advertisement MapToEntity(this AdvertisementRequestDto advertisementRequestDto) => new()
-        {
-            Name = advertisementRequestDto.Name,
-            Description = advertisementRequestDto.Description,
-            Price = advertisementRequestDto.Price,
-            Address = advertisementRequestDto.Address,
-            Phone = advertisementRequestDto.Phone,
-            CreatedAt = DateTime.UtcNow,
-            ExpireAt = DateTime.UtcNow.AddDays(30),
-            NumberOfViews = 0,
-            CategoryId = advertisementRequestDto.CategoryId,
-            UserId = advertisementRequestDto.UserId
-        };
+        ///// <param name="advertisementRequestDto">Элемент <see cref="AdvertisementRequestDto"/>.</param>
+        ///// <returns>Элемент <see cref="Domain.Advertisement"/>.</returns>
+        //public static Domain.Advertisement MapToEntity(this AdvertisementRequestDto advertisementRequestDto) => new()
+        //{
+        //    Name = advertisementRequestDto.Name,
+        //    Description = advertisementRequestDto.Description,
+        //    Price = advertisementRequestDto.Price,
+        //    Address = advertisementRequestDto.Address,
+        //    Phone = advertisementRequestDto.Phone,
+        //    CreatedAt = DateTime.UtcNow,
+        //    ExpireAt = DateTime.UtcNow.AddDays(30),
+        //    NumberOfViews = 0,
+        //    CategoryId = advertisementRequestDto.CategoryId,
+        //    UserId = advertisementRequestDto.UserId
+        //};
 
         /// <param name="categoryDto">Элемент <see cref="CategoryDto"/>.</param>
         /// <returns>Элемент <see cref="Domain.Category"/>.</returns>
@@ -66,5 +68,103 @@ namespace Solarvito.Contracts
             Name = category.Name,
             ParentId = category.ParentId
         };
+
+
+
+
+
+        public static Domain.Advertisement MapToEntity(this AdvertisementRequestDto advertisementRequestDto, Domain.Advertisement advertisement) => new()
+        {
+            Id = advertisement.Id,
+            Name = advertisementRequestDto.Name,
+            Description = advertisementRequestDto.Description,
+            Price = advertisementRequestDto.Price,
+            Address = advertisementRequestDto.Address,
+            Phone = advertisementRequestDto.Phone,
+            CreatedAt = advertisement.CreatedAt,
+            ExpireAt = advertisement.ExpireAt,
+            NumberOfViews = advertisement.NumberOfViews,
+            CategoryId = advertisementRequestDto.CategoryId,
+            UserId = advertisement.UserId
+        };
+
+        public static Domain.Advertisement MapToEntity(this AdvertisementDto advertisementDto) => new()
+        {
+            Id = advertisementDto.Id,
+            Name = advertisementDto.Name,
+            Description = advertisementDto.Description,
+            Price = advertisementDto.Price,
+            Address = advertisementDto.Address,
+            Phone = advertisementDto.Phone,
+            CreatedAt = advertisementDto.CreatedAt,
+            ExpireAt = advertisementDto.ExpireAt,
+            NumberOfViews = advertisementDto.NumberOfViews,
+            CategoryId = advertisementDto.CategoryId,
+            UserId = advertisementDto.UserId
+        };
+
+        public static AdvertisementDto MapToDto(this AdvertisementRequestDto advertisementRequestDto, int advertisementId) => new()
+        {
+            Id = advertisementId,
+            Name = advertisementRequestDto.Name,
+            Description = advertisementRequestDto.Description,
+            Price = advertisementRequestDto.Price,
+            Address = advertisementRequestDto.Address,
+            Phone = advertisementRequestDto.Phone,
+            CategoryId = advertisementRequestDto.CategoryId
+        };
+
+        public static AdvertisementDto MapToDto(this AdvertisementUpdateRequestDto advertisementUpdateRequestDto, int advertisementId) => new()
+        {
+            Id = advertisementId,
+            Name = advertisementUpdateRequestDto.Name,
+            Description = advertisementUpdateRequestDto.Description,
+            Price = advertisementUpdateRequestDto.Price,
+            Address = advertisementUpdateRequestDto.Address,
+            Phone = advertisementUpdateRequestDto.Phone,
+            CategoryId = advertisementUpdateRequestDto.CategoryId,
+            UserId = advertisementUpdateRequestDto.UserId,
+
+        };
+
+        public static AdvertisementDto MapToDto(this AdvertisementRequestDto advertisementRequestDto) => new()
+        {
+            Name = advertisementRequestDto.Name,
+            Description = advertisementRequestDto.Description,
+            Price = advertisementRequestDto.Price,
+            Address = advertisementRequestDto.Address,
+            Phone = advertisementRequestDto.Phone,
+            CategoryId = advertisementRequestDto.CategoryId
+        };
+
+        public static AdvertisementDto MapToDto(this AdvertisementResponseDto advertisementResponseDto) => new()
+        {
+            Id = advertisementResponseDto.Id,
+            Name = advertisementResponseDto.Name,
+            Description = advertisementResponseDto.Description,
+            Price = advertisementResponseDto.Price,
+            Address = advertisementResponseDto.Address,
+            Phone = advertisementResponseDto.Phone,
+            CreatedAt = advertisementResponseDto.CreatedAt,
+            ExpireAt = advertisementResponseDto.ExpireAt,
+            NumberOfViews = advertisementResponseDto.NumberOfViews,
+            CategoryId = advertisementResponseDto.CategoryId,
+            UserId = advertisementResponseDto.UserId
+        };
+
+        public static Domain.AdvertisementImage MapToEntity(this AdvertisementImageDto advertisementImageDto) => new()
+        {
+            Id = advertisementImageDto.Id,
+            FileName = advertisementImageDto.FileName,
+            AdvertisementId = advertisementImageDto.AdvertisementId
+        };
+
+        public static AdvertisementImageDto MapToDto(this Domain.AdvertisementImage advertisementImage) => new()
+        {
+            Id = advertisementImage.Id,
+            FileName = advertisementImage.FileName,
+            AdvertisementId = advertisementImage.AdvertisementId
+        };
+
     }
 }

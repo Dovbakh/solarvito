@@ -52,7 +52,7 @@ namespace Solarvito.AppServices.Advertisement.Services
         /// <param name="id">Идентификатор обьявления.</param>
         /// <param name="advertisementRequestDto">Элемент <see cref="AdvertisementRequestDto"/>.</param>
         /// <param name="cancellation">Токен отмены.</param>
-        Task UpdateAsync(int id, AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation);
+        Task UpdateAsync(int id, AdvertisementUpdateRequestDto advertisementUpdateRequestDto, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить обьявление.

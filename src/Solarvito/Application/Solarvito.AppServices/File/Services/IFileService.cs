@@ -45,5 +45,9 @@ namespace Solarvito.AppServices.File.Services
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Название файла-изображения.</returns>
         Task<string> UploadImage(IFormFile file, CancellationToken cancellation);
+
+        Task Delete(string fileName, string folderName);
+
+        Task DeleteImage(string fileName);
     }
 }

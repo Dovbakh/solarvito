@@ -1,12 +1,17 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Minio.DataModel;
+using SixLabors.ImageSharp.Advanced;
 using Solarvito.AppServices.Advertisement.Repositories;
 using Solarvito.AppServices.AdvertisementImage.Repositories;
 using Solarvito.AppServices.File.Services;
 using Solarvito.AppServices.User.Services;
+using Solarvito.Contracts;
 using Solarvito.Contracts.Advertisement;
+using Solarvito.Contracts.AdvertisementImage;
 using Solarvito.Contracts.User;
+using Solarvito.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +28,10 @@ namespace Solarvito.AppServices.Advertisement.Services
         private readonly IAdvertisementRepository _advertisementRepository;
         private readonly IUserService _userService;
         private readonly IValidator<AdvertisementRequestDto> _validator;
+        private readonly IValidator<AdvertisementUpdateRequestDto> _validatorUpdate;
         private readonly IFileService _fileService;
         private readonly IAdvertisementImageRepository _advertisementImageRepository;
+        private readonly ILogger<AdvertisementService> _logger;
         private const int numByPage = 20; // количество обьявлений на одной странице
 
         /// <summary>
@@ -35,29 +42,38 @@ namespace Solarvito.AppServices.Advertisement.Services
             IAdvertisementRepository advertisementRepository,
             IUserService userService,
             IValidator<AdvertisementRequestDto> validator,
+            IValidator<AdvertisementUpdateRequestDto> validatorUpdate,
             IFileService fileService,
-            IAdvertisementImageRepository advertisementImageRepository)
+            IAdvertisementImageRepository advertisementImageRepository,
+            ILogger<AdvertisementService> logger)
         {
             _advertisementRepository = advertisementRepository;
             _userService = userService;
             _validator = validator;
+            _validatorUpdate = validatorUpdate;
             _fileService = fileService;
             _advertisementImageRepository = advertisementImageRepository;
+            _logger = logger;
         }
 
         /// <inheritdoc/>
         public async Task<int> AddAsync(AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation)
         {
             // Валидация полученных данных
+            _logger.LogInformation($"Валидация полученных данных '{advertisementRequestDto}'.", advertisementRequestDto.ToString());
+
             var validationResult = _validator.Validate(advertisementRequestDto);
             if (!validationResult.IsValid)
             {
+                _logger.LogError($"Полученные данные не прошли валидацию со следующими ошибками: '{validationResult}'", validationResult.Errors.ToList());
                 throw new Exception(validationResult.ToString("~"));
             }
 
 
             // Обновить информацию о пользователе новыми данными из обьявления
+            
             var currentUser = await _userService.GetCurrent(cancellation);
+            
             currentUser.Address = advertisementRequestDto.Address;
             currentUser.Phone = advertisementRequestDto.Phone;
             currentUser.Name = advertisementRequestDto.Name;
@@ -69,12 +85,22 @@ namespace Solarvito.AppServices.Advertisement.Services
                 Phone = currentUser.Phone,
                 Name = currentUser.Name
             };
+
+            
             await _userService.UpdateAsync(updatedUser, cancellation);
 
 
             // Добавить обьявление в БД
-            advertisementRequestDto.UserId = currentUser.Id;
-            var advertisementId = await _advertisementRepository.AddAsync(advertisementRequestDto, cancellation);
+            
+            var advertisementDto = advertisementRequestDto.MapToDto();
+            advertisementDto.CreatedAt = DateTime.UtcNow;
+            advertisementDto.ExpireAt = DateTime.UtcNow.AddDays(30);
+            advertisementDto.NumberOfViews = 0;
+            advertisementDto.UserId = currentUser.Id;
+
+           
+            
+            var advertisementId = await _advertisementRepository.AddAsync(advertisementDto, cancellation);
 
 
 
@@ -83,7 +109,7 @@ namespace Solarvito.AppServices.Advertisement.Services
             {
                 var imageName = await _fileService.UploadImage(file, cancellation);
 
-                var advertisementImage = new Domain.AdvertisementImage()
+                var advertisementImage = new AdvertisementImageDto()
                 {
                     FileName = imageName,
                     AdvertisementId = advertisementId
@@ -106,6 +132,7 @@ namespace Solarvito.AppServices.Advertisement.Services
             int take = numByPage;
             int skip = page.GetValueOrDefault() * take - take;
 
+            _logger.LogInformation("Получение всех записей {AdvertisementResponseDto} на странице {page}", typeof(AdvertisementResponseDto), page);
             return _advertisementRepository.GetAllAsync(take, skip, cancellation);
         }
 
@@ -121,14 +148,19 @@ namespace Solarvito.AppServices.Advertisement.Services
         /// <inheritdoc/>
         public async Task<AdvertisementResponseDto> GetByIdAsync(int id, CancellationToken cancellation)
         {
-            var advertisement = await _advertisementRepository.GetByIdAsync(id, cancellation);
-            if (advertisement == null)
+            var advertisementResponseDto = await _advertisementRepository.GetByIdAsync(id, cancellation);
+
+            var currentUser = await _userService.GetCurrent(cancellation);
+
+            if (advertisementResponseDto.UserId != currentUser.Id)
             {
-                throw new KeyNotFoundException($"Обьявление с идентификатором '{id}' не найдено.");
+                advertisementResponseDto.NumberOfViews += 1;
             }
 
+            var advertisementDto = advertisementResponseDto.MapToDto();
+            await _advertisementRepository.UpdateAsync(id, advertisementDto, cancellation);
 
-            return advertisement;
+            return advertisementResponseDto;
         }
 
         /// <inheritdoc/>
@@ -140,12 +172,64 @@ namespace Solarvito.AppServices.Advertisement.Services
                 throw new Exception(validationResult.ToString("~"));
             }
 
+            var advertisementDto = advertisementRequestDto.MapToDto(id);
+
             return _advertisementRepository.UpdateAsync(id, advertisementRequestDto, cancellation);
         }
 
-        public Task IncreaseViewNumbers(int id, CancellationToken cancellation)
+        /// <inheritdoc/>
+        public async Task UpdateAsync(int id, AdvertisementUpdateRequestDto advertisementUpdateRequestDto, CancellationToken cancellation)
         {
-            return null;
+
+            var validationResult = _validatorUpdate.Validate(advertisementUpdateRequestDto);
+            if (!validationResult.IsValid)
+            {
+                throw new Exception(validationResult.ToString("~"));
+            }
+
+            var existingImages = await _advertisementImageRepository.GetAllByAdvertisementId(id, cancellation);
+
+            // добавить новые изображения
+            if (advertisementUpdateRequestDto.Images != null)
+            {
+                foreach (var image in advertisementUpdateRequestDto.Images)
+                {
+                    var imageName = await _fileService.UploadImage(image, cancellation);
+
+                    var advertisementImageDto = new AdvertisementImageDto() { 
+                        AdvertisementId = id, 
+                        FileName = Guid.NewGuid().ToString() 
+                    };
+                    await _advertisementImageRepository.AddAsync(advertisementImageDto, cancellation);
+                }
+            }
+
+            // удалить лишние изображения
+            if (advertisementUpdateRequestDto.ImagePathes != null)
+            {
+                foreach (var image in existingImages)
+                {
+                    if (!advertisementUpdateRequestDto.ImagePathes.Contains(image.FileName))
+                    {
+                        await _advertisementImageRepository.DeleteAsync(image.Id, cancellation);
+                        await _fileService.DeleteImage(image.FileName);
+                    }
+                }
+            }
+
+            var currentUser = await _userService.GetCurrent(cancellation);
+            advertisementUpdateRequestDto.UserId = currentUser.Id;
+
+            var advertisement = await _advertisementRepository.GetByIdAsync(id, cancellation);
+
+            var advertisementDto = advertisementUpdateRequestDto.MapToDto(id);
+
+            advertisementDto.CreatedAt = advertisement.CreatedAt;
+            advertisementDto.ExpireAt = advertisement.ExpireAt;
+            advertisementDto.NumberOfViews = advertisement.NumberOfViews;
+
+            await _advertisementRepository.UpdateAsync(id, advertisementDto, cancellation);
         }
+
     }
 }

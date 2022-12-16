@@ -67,7 +67,9 @@ namespace Solarvito.Registrar
 
             services.AddScoped<IValidator<UserCredentialsDto>, UserValidator>();
             services.AddScoped<IValidator<AdvertisementRequestDto>, AdvertisementValidator>();
+            services.AddScoped<IValidator<AdvertisementUpdateRequestDto>, AdvertisementUpdateValidator>();
 
+            
             services.AddScoped(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
 
 

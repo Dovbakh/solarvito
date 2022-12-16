@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.Extensions.Logging;
 using Minio;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
@@ -21,14 +22,16 @@ namespace Solarvito.AppServices.File.Services
     public class FileService : IFileService
     {
         private readonly IFileRepository _fileRepository;
+        private readonly ILogger<FileService> _logger;
 
         /// <summary>
         /// Инициализировать экземпляр <see cref="FileService"/>
         /// </summary>
         /// <param name="fileRepository">Репозиторий для работы с файлами.</param>
-        public FileService(IFileRepository fileRepository)
+        public FileService(IFileRepository fileRepository, ILogger<FileService> logger)
         {
             _fileRepository = fileRepository;
+            _logger = logger;
         }
 
         /// <inheritdoc/>
@@ -78,6 +81,16 @@ namespace Solarvito.AppServices.File.Services
             await _fileRepository.Upload(fileName, fileFolder, file.ContentType, resizedBytes, cancellation);
 
             return fileName;
+        }
+
+        public Task Delete(string fileName, string folderName)
+        {
+            return _fileRepository.Delete(fileName, folderName);
+        }
+
+        public Task DeleteImage(string fileName)
+        {
+            return _fileRepository.Delete(fileName, "images");
         }
 
         /// <summary>

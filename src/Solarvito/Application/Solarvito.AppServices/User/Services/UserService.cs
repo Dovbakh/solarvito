@@ -15,6 +15,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 using Solarvito.Domain;
 using Solarvito.AppServices.User.Additional;
+using Microsoft.Extensions.Logging;
 
 namespace Solarvito.AppServices.User.Services
 {
@@ -26,6 +27,7 @@ namespace Solarvito.AppServices.User.Services
         private readonly IConfiguration _configuration;
         private readonly IValidator<UserCredentialsDto> _validator;
         private readonly IPasswordHasher<UserCredentialsDto> _hasher;
+        private readonly ILogger<UserService> _logger;
 
         /// <summary>
         /// Инициализировать экземпляр <see cref="UserService"/>
@@ -40,13 +42,15 @@ namespace Solarvito.AppServices.User.Services
             IClaimsAccessor claimsAccessor,
             IConfiguration configuration,
             IValidator<UserCredentialsDto> validator,
-            IPasswordHasher<UserCredentialsDto> hasher)
+            IPasswordHasher<UserCredentialsDto> hasher,
+            ILogger<UserService> logger)
         {
             _userRepository = userRepository;
             _claimsAccessor = claimsAccessor;
             _configuration = configuration;
             _validator = validator;
             _hasher = hasher;
+            _logger = logger;
         }
 
         /// <inheritdoc/>
@@ -110,6 +114,8 @@ namespace Solarvito.AppServices.User.Services
         /// <inheritdoc/>
         public async Task<UserDto> GetCurrent(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Получение данных о текущем пользователе и их обновление.");
+
             var claims = await _claimsAccessor.GetClaims(cancellationToken);
             var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -121,10 +127,11 @@ namespace Solarvito.AppServices.User.Services
             var id = int.Parse(claimId);
             var userDto = await _userRepository.GetById(id, cancellationToken);
 
-            if (userDto == null)
-            {
-                throw new Exception($"Не найден пользователь с идентификатором '{id}'");
-            }
+            //if (userDto == null)
+            //{
+            //    _logger.LogWarning($"Не найден пользователь с идентификатором ID: '{id}'", id);
+            //    throw new Exception($"Не найден пользователь с идентификатором '{id}'");
+            //}
 
             return userDto;
         }

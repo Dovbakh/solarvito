@@ -109,9 +109,9 @@ namespace Solarvito.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [Authorize]
-        public async Task<IActionResult> Update([FromForm] AdvertisementRequestDto advertisementRequestDto, int id, CancellationToken cancellation)
+        public async Task<IActionResult> Update([FromForm] AdvertisementUpdateRequestDto advertisementUpdateRequestDto, int id, CancellationToken cancellation)
         {
-            await _advertisementService.UpdateAsync(id, advertisementRequestDto, cancellation);
+            await _advertisementService.UpdateAsync(id, advertisementUpdateRequestDto, cancellation);
 
             return Ok();
         }

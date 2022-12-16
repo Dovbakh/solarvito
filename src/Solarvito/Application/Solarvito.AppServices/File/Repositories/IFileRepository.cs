@@ -31,5 +31,7 @@ namespace Solarvito.AppServices.File.Repositories
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns></returns>
         Task Upload(string fileName, string fileFolder, string contentType, byte[] bytes, CancellationToken cancellation);
+
+        Task Delete(string fileName, string folderName);
     }
 }

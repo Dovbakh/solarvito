@@ -79,5 +79,16 @@ namespace Solarvito.Infrastructure.ObjectStorage
                 await _storage.PutObjectAsync(args);
             } 
         }
+
+        public async Task Delete(string objectName, string bucketName)
+        {
+            await CreateBucket(bucketName);
+
+            var args = new RemoveObjectArgs()
+                .WithBucket(bucketName)
+                .WithObject(objectName);
+
+            await _storage.RemoveObjectAsync(args);           
+        }
     }
 }

@@ -1,6 +1,7 @@
 using Serilog;
 using Serilog.Formatting.Json;
 using Serilog.Sinks.File;
+using Solarvito.Api.Middlewares;
 using Solarvito.Api.Modules;
 using Solarvito.Registrar;
 
@@ -35,10 +36,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllers();
 
