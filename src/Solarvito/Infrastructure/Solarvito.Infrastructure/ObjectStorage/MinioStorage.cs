@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel;
 using System;
@@ -20,35 +22,24 @@ namespace Solarvito.Infrastructure.ObjectStorage
     public class MinioStorage : IObjectStorage
     {
         protected MinioClient _storage { get; }
+        private readonly IConfiguration _configuration;
 
-        string endpoint = "127.0.0.1:9000";
-        string accessKey = "7d0OSrPdBpU0Iabo";
-        string secretKey = "53jc7XIX5o5BfqxhE2ToCBJQcZCiu80f";
+        private const string MinioAccessName = "MinioFileStorage";
 
-        public MinioStorage()
+        public MinioStorage(IConfiguration configuration)
         {
-            _storage = new MinioClient();
-            _storage.WithEndpoint(endpoint)
-                    .WithCredentials(accessKey, secretKey)
-                    .Build();
-
+            _configuration = configuration;
+            _storage = CreateStorage();
         }
 
-        public async Task CreateBucket(string bucketName)
+        public async Task<byte[]> Get(string objectName, string bucketName)
         {
             var bktExistArgs = new BucketExistsArgs().WithBucket(bucketName);
             var found = await _storage.BucketExistsAsync(bktExistArgs);
             if (!found)
             {
-                var mkBktArgs = new MakeBucketArgs()
-                    .WithBucket(bucketName);
-                await _storage.MakeBucketAsync(mkBktArgs);
+                throw new DirectoryNotFoundException("Не найдена директория.");
             }
-        }
-
-        public async Task<byte[]> Get(string objectName, string bucketName)
-        {
-            await CreateBucket(bucketName);
 
             MemoryStream memoryStream = new MemoryStream();
 
@@ -64,7 +55,14 @@ namespace Solarvito.Infrastructure.ObjectStorage
 
         public async Task Upload(string objectName, string bucketName, string contentType, byte[] bytes)
         {
-            await CreateBucket(bucketName);
+            var bktExistArgs = new BucketExistsArgs().WithBucket(bucketName);
+            var found = await _storage.BucketExistsAsync(bktExistArgs);
+            if (!found)
+            {
+                var mkBktArgs = new MakeBucketArgs()
+                    .WithBucket(bucketName);
+                await _storage.MakeBucketAsync(mkBktArgs);
+            }
 
             using (var memoryStream = new MemoryStream(bytes))
             {
@@ -82,7 +80,12 @@ namespace Solarvito.Infrastructure.ObjectStorage
 
         public async Task Delete(string objectName, string bucketName)
         {
-            await CreateBucket(bucketName);
+            var bktExistArgs = new BucketExistsArgs().WithBucket(bucketName);
+            var found = await _storage.BucketExistsAsync(bktExistArgs);
+            if (!found)
+            {
+                throw new DirectoryNotFoundException("Директория не найдена.");
+            }
 
             var args = new RemoveObjectArgs()
                 .WithBucket(bucketName)
@@ -90,5 +93,20 @@ namespace Solarvito.Infrastructure.ObjectStorage
 
             await _storage.RemoveObjectAsync(args);           
         }
+
+        private MinioClient CreateStorage()
+        {
+            var endpoint = _configuration.GetSection(MinioAccessName).GetRequiredSection("Endpoint").Value;
+            var accessKey = _configuration.GetSection(MinioAccessName).GetRequiredSection("AccessKey").Value;
+            var secretKey = _configuration.GetSection(MinioAccessName).GetRequiredSection("SecretKey").Value;
+
+            var minioCLient = new MinioClient();
+            minioCLient.WithEndpoint(_configuration.GetSection(MinioAccessName).GetRequiredSection("Endpoint").Value)
+                    .WithCredentials(accessKey, secretKey)
+                    .Build();
+
+            return minioCLient;
+        }
+
     }
 }

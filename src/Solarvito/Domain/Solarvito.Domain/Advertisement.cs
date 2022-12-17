@@ -39,6 +39,11 @@ namespace Solarvito.Domain
         public string Phone { get; set; }
 
         /// <summary>
+        /// Имя пользователя.
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Дата создания обьявления.
         /// </summary>
         public DateTime CreatedAt { get; set; }

@@ -40,48 +40,41 @@ namespace Solarvito.Registrar
     public static class SolarvitoRegistrar
     {
         public static IServiceCollection AddServiceRegistrationModule(this IServiceCollection services)
-        {
-            services.AddSingleton<IDateTimeService, DateTimeService>();
-
+        {                   
+            // Регистрация сервисов работы с БД
             services.AddSingleton<IDbContextOptionsConfigurator<SolarvitoContext>, ShoppingCartContextConfiguration>();
-
             services.AddDbContext<SolarvitoContext>((Action<IServiceProvider, DbContextOptionsBuilder>)
                 ((sp, dbOptions) => sp.GetRequiredService<IDbContextOptionsConfigurator<SolarvitoContext>>()
                    .Configure((DbContextOptionsBuilder<SolarvitoContext>)dbOptions)));
-
             services.AddScoped((Func<IServiceProvider, DbContext>)(sp => sp.GetRequiredService<SolarvitoContext>()));
 
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
-            services.AddTransient<IAdvertisementService, AdvertisementService>();
-            services.AddTransient<IAdvertisementRepository, AdvertisementRepository>();
-
-            services.AddTransient<ICategoryService, CategoryService>();
-            services.AddTransient<ICategoryRepository, CategoryRepository>();
-
-            services.AddScoped<IClaimsAccessor, HttpContextClaimsAccessor>();
-
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IUserRepository, UserRepository>();
-
-
-            services.AddScoped<IValidator<UserCredentialsDto>, UserValidator>();
-            services.AddScoped<IValidator<AdvertisementRequestDto>, AdvertisementValidator>();
-            services.AddScoped<IValidator<AdvertisementUpdateRequestDto>, AdvertisementUpdateValidator>();
-
-            
-            services.AddScoped(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
-
-
+            // Регистрация сервисов работы с обьектным хранилищем
             services.AddScoped<IObjectStorage, MinioStorage>();
 
-            services.AddTransient<IFileService, FileService>();
-            services.AddTransient<IFileRepository, FileRepository>();
 
+            // Регистрация репозиториев
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient<IAdvertisementRepository, AdvertisementRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IFileRepository, FileRepository>();
             services.AddTransient<IAdvertisementImageRepository, AdvertisementImageRepository>();
 
-            //services.AddScoped<IBucketOperations>(mc => new MinioClient().WithEndpoint("127.0.0.1:9000").WithCredentials("7d0OSrPdBpU0Iabo", "53jc7XIX5o5BfqxhE2ToCBJQcZCiu80f").Build());
-            //services.AddScoped((Func<IMinioClient, MinioClient>)(mc => mc.WithEndpoint("127.0.0.1:9000").WithCredentials("7d0OSrPdBpU0Iabo", "53jc7XIX5o5BfqxhE2ToCBJQcZCiu80f").Build()));
+
+            // Регистрация application-сервисов
+            services.AddTransient<IAdvertisementService, AdvertisementService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IFileService, FileService>();
+
+            // Регистрация вспомогательных сервисов
+            services.AddSingleton<IDateTimeService, DateTimeService>();
+            services.AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
+            services.AddScoped<IClaimsAccessor, HttpContextClaimsAccessor>();
+            services.AddTransient<IValidator<UserCredentialsDto>, UserValidator>();
+            services.AddTransient<IValidator<AdvertisementRequestDto>, AdvertisementValidator>();
+            services.AddTransient<IValidator<AdvertisementUpdateRequestDto>, AdvertisementUpdateValidator>();
+
 
             return services;
         }

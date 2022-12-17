@@ -28,7 +28,7 @@ namespace Solarvito.AppServices.Advertisement.Validators
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Имя обязательно для заполнения.")
-                .Matches(@"([А-Я]{1}[а-яё]{1,23})").WithMessage("Неправильный формат имени");
+                .Matches(@"([A-ZА-Я0-9]([a-zA-Z0-9а-яА-Я]|[- @\.#&!№;%:?*()_])*)").WithMessage("Неправильный формат названия обьявления.");
 
             RuleFor(x => x.Description)
                 .NotEmpty().WithMessage("Описание обязательно для заполнения.");
@@ -39,12 +39,14 @@ namespace Solarvito.AppServices.Advertisement.Validators
 
             RuleFor(x => x.Address)
                 .NotEmpty().WithMessage("Адрес обязателен для заполнения.");
-
-       
+     
             RuleFor(x => x.Price)
                 .NotEmpty().WithMessage("Цена обязательна для заполнения.")
                 .GreaterThanOrEqualTo(0).WithMessage("Цена не может быть отрицательной.");
 
+            RuleFor(x => x.UserName)
+                .NotEmpty().WithMessage("Имя обязательно для заполнения.")
+                .Matches(@"([А-Я]{1}[а-яё]{1,23})").WithMessage("Неправильный формат имени");
 
             RuleFor(x => x.Images)
                 .NotEmpty().WithMessage("Прикрепите хотя бы одно изображение.")
@@ -56,16 +58,16 @@ namespace Solarvito.AppServices.Advertisement.Validators
                     var imageInfo = Image.Identify(stream);
                     if (imageInfo == null)
                     {
-                        throw new Exception("Неподдерживаемый формат изображения.");
+                        throw new ValidationException("Неподдерживаемый формат изображения.");
                     }
-                    if (imageInfo.Width < 800) return false;
-                    if (imageInfo.Height < 600) return false;
+                    if (imageInfo.Width < 600) return false;
+                    if (imageInfo.Height < 300) return false;
 
                     stream.Position = 0;
                     var imageFormat = Image.DetectFormat(stream);
                     if (imageFormat.DefaultMimeType != "image/png" && imageFormat.DefaultMimeType != "image/jpeg") return false;
                     return true;
-                })).WithMessage("Размер изображения должен быть минимум 800х600.");
+                })).WithMessage("Размер изображения должен быть минимум 600х300.");
                 
 
             RuleFor(x => x.CategoryId)

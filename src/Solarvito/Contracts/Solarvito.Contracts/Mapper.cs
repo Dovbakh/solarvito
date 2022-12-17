@@ -30,27 +30,12 @@ namespace Solarvito.Contracts
             CreatedAt = advertisement.CreatedAt,
             ExpireAt = advertisement.ExpireAt,
             NumberOfViews = advertisement.NumberOfViews,
-            UserName = advertisement.User.Name,
+            UserName = advertisement.UserName,
             UserId = advertisement.UserId,
             CategoryName = advertisement.Category.Name,
             CategoryId = advertisement.CategoryId                        
         };
 
-        ///// <param name="advertisementRequestDto">Элемент <see cref="AdvertisementRequestDto"/>.</param>
-        ///// <returns>Элемент <see cref="Domain.Advertisement"/>.</returns>
-        //public static Domain.Advertisement MapToEntity(this AdvertisementRequestDto advertisementRequestDto) => new()
-        //{
-        //    Name = advertisementRequestDto.Name,
-        //    Description = advertisementRequestDto.Description,
-        //    Price = advertisementRequestDto.Price,
-        //    Address = advertisementRequestDto.Address,
-        //    Phone = advertisementRequestDto.Phone,
-        //    CreatedAt = DateTime.UtcNow,
-        //    ExpireAt = DateTime.UtcNow.AddDays(30),
-        //    NumberOfViews = 0,
-        //    CategoryId = advertisementRequestDto.CategoryId,
-        //    UserId = advertisementRequestDto.UserId
-        //};
 
         /// <param name="categoryDto">Элемент <see cref="CategoryDto"/>.</param>
         /// <returns>Элемент <see cref="Domain.Category"/>.</returns>
@@ -70,9 +55,6 @@ namespace Solarvito.Contracts
         };
 
 
-
-
-
         public static Domain.Advertisement MapToEntity(this AdvertisementRequestDto advertisementRequestDto, Domain.Advertisement advertisement) => new()
         {
             Id = advertisement.Id,
@@ -81,6 +63,7 @@ namespace Solarvito.Contracts
             Price = advertisementRequestDto.Price,
             Address = advertisementRequestDto.Address,
             Phone = advertisementRequestDto.Phone,
+            UserName = advertisementRequestDto.UserName,
             CreatedAt = advertisement.CreatedAt,
             ExpireAt = advertisement.ExpireAt,
             NumberOfViews = advertisement.NumberOfViews,
@@ -96,6 +79,7 @@ namespace Solarvito.Contracts
             Price = advertisementDto.Price,
             Address = advertisementDto.Address,
             Phone = advertisementDto.Phone,
+            UserName = advertisementDto.UserName,
             CreatedAt = advertisementDto.CreatedAt,
             ExpireAt = advertisementDto.ExpireAt,
             NumberOfViews = advertisementDto.NumberOfViews,
@@ -111,6 +95,7 @@ namespace Solarvito.Contracts
             Price = advertisementRequestDto.Price,
             Address = advertisementRequestDto.Address,
             Phone = advertisementRequestDto.Phone,
+            UserName= advertisementRequestDto.UserName,
             CategoryId = advertisementRequestDto.CategoryId
         };
 
@@ -122,6 +107,7 @@ namespace Solarvito.Contracts
             Price = advertisementUpdateRequestDto.Price,
             Address = advertisementUpdateRequestDto.Address,
             Phone = advertisementUpdateRequestDto.Phone,
+            UserName = advertisementUpdateRequestDto.UserName,
             CategoryId = advertisementUpdateRequestDto.CategoryId,
             UserId = advertisementUpdateRequestDto.UserId,
 
@@ -134,6 +120,7 @@ namespace Solarvito.Contracts
             Price = advertisementRequestDto.Price,
             Address = advertisementRequestDto.Address,
             Phone = advertisementRequestDto.Phone,
+            UserName= advertisementRequestDto.UserName,
             CategoryId = advertisementRequestDto.CategoryId
         };
 
@@ -145,6 +132,7 @@ namespace Solarvito.Contracts
             Price = advertisementResponseDto.Price,
             Address = advertisementResponseDto.Address,
             Phone = advertisementResponseDto.Phone,
+            UserName = advertisementResponseDto.UserName,
             CreatedAt = advertisementResponseDto.CreatedAt,
             ExpireAt = advertisementResponseDto.ExpireAt,
             NumberOfViews = advertisementResponseDto.NumberOfViews,

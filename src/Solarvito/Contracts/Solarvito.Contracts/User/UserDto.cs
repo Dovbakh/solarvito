@@ -45,5 +45,10 @@ namespace Solarvito.Contracts.User
         /// Дата создания пользователя.
         /// </summary>
         public DateTime CreatedAt { get; set; }
+
+        /// <summary>
+        /// Роль пользователя.
+        /// </summary>
+        public int RoleId { get; set; }
     }
 }

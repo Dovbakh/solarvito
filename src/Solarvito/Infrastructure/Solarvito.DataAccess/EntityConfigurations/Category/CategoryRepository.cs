@@ -59,7 +59,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Category
                 if (category == null)
                 {
                     _logger.LogError("Не найдена категория с идентификатором {CategoryId}.", id);
-                    throw new Exception($"Не найдена категория с идентификатором '{id}'");
+                    throw new KeyNotFoundException($"Не найдена категория с идентификатором '{id}'");
                 }
                 await _repository.DeleteAsync(category);
             }
@@ -99,7 +99,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Category
                 if (category == null)
                 {
                     _logger.LogError("Не найдена категория с идентификатором {CategoryId}", id);
-                    throw new Exception($"Не найдена категория с идентификатором '{id}'");
+                    throw new KeyNotFoundException($"Не найдена категория с идентификатором '{id}'");
                 }
 
                 var categoryDto = category.MapToDto();
@@ -123,7 +123,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Category
                 if (category == null)
                 {
                     _logger.LogError("Не найдена категория с идентификатором {CategoryId}", id);
-                    throw new Exception($"Не найдена категория с идентификатором '{id}'");
+                    throw new KeyNotFoundException($"Не найдена категория с идентификатором '{id}'");
                 }
 
                 category.Name = categoryDto.Name;

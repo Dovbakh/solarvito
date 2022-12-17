@@ -29,10 +29,11 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
 
             builder.Property(a => a.Phone).HasMaxLength(50);
 
+            builder.Property(a => a.UserName).HasMaxLength(100);
+
             builder.HasMany(a => a.AdvertisementImages)
                 .WithOne(ai => ai.Advertisement)
                 .HasForeignKey(ai => ai.AdvertisementId);
-
         }
     }
 }

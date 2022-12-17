@@ -66,7 +66,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.AdvertisementImage
                 if (advertisementImage == null)
                 {
                     _logger.LogError("Не найдено изображение с ID: {AdvertisementImageId}.", id);
-                    throw new Exception($"Не найдено изображение с ID '{id}'");
+                    throw new KeyNotFoundException($"Не найдено изображение с ID '{id}'");
                 }
 
                 await _repository.DeleteAsync(advertisementImage);

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Solarvito.Domain;
 using Solarvito.AppServices.User.Additional;
 using Microsoft.Extensions.Logging;
+using Solarvito.AppServices.Advertisement.Repositories;
 
 namespace Solarvito.AppServices.User.Services
 {
@@ -65,7 +66,8 @@ namespace Solarvito.AppServices.User.Services
 
             var existingUser = await _userRepository.GetWithHashByEmail(userCreds.Email, cancellationToken);
             if (existingUser != null) {
-                throw new Exception($"Пользователь с почтой '{userCreds.Email}' уже зарегистрирован!");
+
+                throw new ArgumentException($"Пользователь с почтой '{userCreds.Email}' уже зарегистрирован!");
             }
 
 
@@ -84,13 +86,13 @@ namespace Solarvito.AppServices.User.Services
             var existingUser = await _userRepository.GetWithHashByEmail(userCreds.Email, cancellationToken);           
             if (existingUser == null)
             {
-                throw new Exception("Введен неверный email или пароль.");
+                throw new ArgumentException("Введен неверный email или пароль.");
             }
 
             var isPasswordVerified = _hasher.VerifyHashedPassword(userCreds, existingUser.PasswordHash, userCreds.Password) != PasswordVerificationResult.Failed;
             if (!isPasswordVerified)
             {
-                throw new Exception("Введен неверный email или пароль.");
+                throw new ArgumentException("Введен неверный email или пароль.");
             }
 
             var token = GenerateToken(existingUser);
@@ -127,12 +129,6 @@ namespace Solarvito.AppServices.User.Services
             var id = int.Parse(claimId);
             var userDto = await _userRepository.GetById(id, cancellationToken);
 
-            //if (userDto == null)
-            //{
-            //    _logger.LogWarning($"Не найден пользователь с идентификатором ID: '{id}'", id);
-            //    throw new Exception($"Не найден пользователь с идентификатором '{id}'");
-            //}
-
             return userDto;
         }
 
@@ -143,9 +139,14 @@ namespace Solarvito.AppServices.User.Services
         }
 
         /// <inheritdoc/>
-        public Task DeleteAsync(int id, CancellationToken cancellationToken)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            return _userRepository.DeleteAsync(id, cancellationToken);
+            var currentUser = await GetCurrent(cancellationToken);
+
+            if (currentUser.Id == id || currentUser.RoleId != 1)
+            {
+                await _userRepository.DeleteAsync(id, cancellationToken);
+            }
         }
 
         /// <summary>
@@ -155,28 +156,38 @@ namespace Solarvito.AppServices.User.Services
         /// <returns>Токен.</returns>
         private string GenerateToken(UserHashDto user)
         {
-            var claims = new List<Claim> {
+            _logger.LogInformation("Генерация JWT-токена для пользователя с идентификатором {UserId}", user.Id);
+
+            try
+            {
+                var claims = new List<Claim> {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.RoleName)
             };
 
-            var secretKey = _configuration["AuthToken:SecretKey"];
+                var secretKey = _configuration["AuthToken:SecretKey"];
 
-            var token = new JwtSecurityToken
-                (
-                claims: claims,
-                expires: DateTime.UtcNow.AddDays(1),
-                notBefore: DateTime.UtcNow,
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-                    SecurityAlgorithms.HmacSha256
-                    )
-                );
+                var token = new JwtSecurityToken
+                    (
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddDays(1),
+                    notBefore: DateTime.UtcNow,
+                    signingCredentials: new SigningCredentials(
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                        SecurityAlgorithms.HmacSha256
+                        )
+                    );
 
-            var result = new JwtSecurityTokenHandler().WriteToken(token);
+                var result = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return result;
+                return result;
+            }
+            catch(Exception e)
+            {
+                _logger.LogError("Ошибка при генерации токена для пользователя с идентификатором {UserId}: {ErrorMessage}", user.Id, e.Message);
+                throw;
+            }
         }
 
 

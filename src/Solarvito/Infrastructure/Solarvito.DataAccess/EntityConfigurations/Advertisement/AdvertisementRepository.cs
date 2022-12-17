@@ -67,7 +67,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
                 if (advertisement == null)
                 {
                     _logger.LogError("Не найдено обьявление с идентификатором: {AdvertisementId}", id);
-                    throw new Exception($"Не найдено обьявление с идентификатором '{id}'");
+                    throw new KeyNotFoundException($"Не найдено обьявление с идентификатором '{id}'");
                 }
 
                 await _repository.DeleteAsync(advertisement);
@@ -185,7 +185,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
 
                 if (advertisement == null)
                 {
-                    throw new Exception($"Не найдено обьявление с идентификатором '{id}'");
+                    throw new KeyNotFoundException($"Не найдено обьявление с идентификатором '{id}'");
                 }
 
                 return advertisement;
@@ -209,7 +209,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
                 if (advertisement == null)
                 {
                     _logger.LogError("Не найдено обьявление с идентификатором: {AdvertisementId}.", id);
-                    throw new Exception($"Не найдено обьявление с идентификатором '{id}'");
+                    throw new KeyNotFoundException($"Не найдено обьявление с идентификатором '{id}'");
                 }
 
                 advertisement.Name = advertisementDto.Name;
@@ -242,7 +242,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
                 var advertisement = await _repository.GetByIdAsync(id);
                 if (advertisement == null)
                 {
-                    throw new Exception($"Не найдено обьявление с идентификатором '{id}'");
+                    throw new KeyNotFoundException($"Не найдено обьявление с идентификатором '{id}'");
                 }
 
                 advertisement.Name = advertisementRequestDto.Name;

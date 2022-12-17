@@ -95,7 +95,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
                 if (user == null)
                 {
                     _logger.LogError("Не найден пользователь с идентификатором {UserId}", id);
-                    throw new Exception($"Не найден пользователь с идентификатором '{id}'");
+                    throw new KeyNotFoundException($"Не найден пользователь с идентификатором '{id}'");
                 }
 
                 var userDto = new UserDto()
@@ -182,7 +182,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
                 if (user == null)
                 {
                     _logger.LogError("Не найден пользователь с идентификатором {UserId}", request.Id);
-                    throw new Exception($"Не найден пользователь с идентификатором '{request.Id}'");
+                    throw new KeyNotFoundException($"Не найден пользователь с идентификатором '{request.Id}'");
                 }
 
                 user.Address = request.Address;
@@ -209,7 +209,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
                 if (user == null)
                 {
                     _logger.LogError("Не найден пользователь с идентификатором {UserId}", id);
-                    throw new Exception($"Не найден пользователь с идентификатором '{id}'");
+                    throw new KeyNotFoundException($"Не найден пользователь с идентификатором '{id}'");
                 }
 
                 await _repository.DeleteAsync(user);

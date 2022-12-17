@@ -39,6 +39,11 @@ namespace Solarvito.Contracts.Advertisement
         public string Phone { get; set; }
 
         /// <summary>
+        /// Имя пользователя.
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Коллекция новых прикрепленных изображений.
         /// </summary>
         public ICollection<IFormFile>? Images { get; set; }

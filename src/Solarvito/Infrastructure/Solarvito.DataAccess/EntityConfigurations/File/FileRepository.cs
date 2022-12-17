@@ -38,7 +38,6 @@ namespace Solarvito.DataAccess.EntityConfigurations.File
             {
                 _logger.LogError("Ошибка при получении файла '{FileName}' из корзины '{FolderName}'.", fileName, fileFolder);
                 throw;
-
             }
         }
 

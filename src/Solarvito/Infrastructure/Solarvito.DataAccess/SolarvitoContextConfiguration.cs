@@ -14,7 +14,7 @@ namespace Solarvito.DataAccess;
 /// </summary>
 public class ShoppingCartContextConfiguration : IDbContextOptionsConfigurator<SolarvitoContext>
 {
-    private const string PostgesConnectionStringName = "PostgresShoppingCartDb";
+    private const string PostgesConnectionStringName = "PostgresSolarvitoDb";
     private readonly IConfiguration _configuration;
     private readonly ILoggerFactory _loggerFactory;
 

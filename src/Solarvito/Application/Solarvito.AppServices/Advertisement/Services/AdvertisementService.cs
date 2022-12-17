@@ -60,23 +60,21 @@ namespace Solarvito.AppServices.Advertisement.Services
         public async Task<int> AddAsync(AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation)
         {
             // Валидация полученных данных
-            _logger.LogInformation($"Валидация полученных данных '{advertisementRequestDto}'.", advertisementRequestDto.ToString());
+            _logger.LogInformation("Валидация полученных данных из фильтра {FilterType}.", advertisementRequestDto.ToString());
 
             var validationResult = _validator.Validate(advertisementRequestDto);
             if (!validationResult.IsValid)
             {
-                _logger.LogError($"Полученные данные не прошли валидацию со следующими ошибками: '{validationResult}'", validationResult.Errors.ToList());
-                throw new Exception(validationResult.ToString("~"));
+                _logger.LogError("Полученные данные не прошли валидацию со следующими ошибками: {ErrorMessage}", string.Join("~", validationResult.Errors.ToList()));
+                throw new ArgumentException(validationResult.ToString("~"));
             }
 
 
-            // Обновить информацию о пользователе новыми данными из обьявления
-            
-            var currentUser = await _userService.GetCurrent(cancellation);
-            
+            // Обновить информацию о пользователе новыми данными из обьявления            
+            var currentUser = await _userService.GetCurrent(cancellation);            
             currentUser.Address = advertisementRequestDto.Address;
             currentUser.Phone = advertisementRequestDto.Phone;
-            currentUser.Name = advertisementRequestDto.Name;
+            currentUser.Name = advertisementRequestDto.UserName;
 
             var updatedUser = new UserUpdateRequestDto()
             {
@@ -85,23 +83,18 @@ namespace Solarvito.AppServices.Advertisement.Services
                 Phone = currentUser.Phone,
                 Name = currentUser.Name
             };
-
-            
+           
             await _userService.UpdateAsync(updatedUser, cancellation);
 
 
-            // Добавить обьявление в БД
-            
+            // Добавить обьявление в БД           
             var advertisementDto = advertisementRequestDto.MapToDto();
             advertisementDto.CreatedAt = DateTime.UtcNow;
             advertisementDto.ExpireAt = DateTime.UtcNow.AddDays(30);
             advertisementDto.NumberOfViews = 0;
             advertisementDto.UserId = currentUser.Id;
-
-           
-            
+                    
             var advertisementId = await _advertisementRepository.AddAsync(advertisementDto, cancellation);
-
 
 
             // Добавить все картинки в обьектное хранилище и их названия в БД
@@ -121,9 +114,15 @@ namespace Solarvito.AppServices.Advertisement.Services
         }
 
         /// <inheritdoc/>
-        public Task DeleteAsync(int id, CancellationToken cancellation)
+        public async Task DeleteAsync(int id, CancellationToken cancellation)
         {
-            return _advertisementRepository.DeleteAsync(id, cancellation);
+            var currentUser = await _userService.GetCurrent(cancellation);
+            var advertisement = await _advertisementRepository.GetByIdAsync(id, cancellation);
+
+            if (advertisement.UserId == currentUser.Id || currentUser.RoleId != 1)
+            {
+                await _advertisementRepository.DeleteAsync(id, cancellation);
+            }
         }
 
         /// <inheritdoc/>
@@ -132,7 +131,6 @@ namespace Solarvito.AppServices.Advertisement.Services
             int take = numByPage;
             int skip = page.GetValueOrDefault() * take - take;
 
-            _logger.LogInformation("Получение всех записей {AdvertisementResponseDto} на странице {page}", typeof(AdvertisementResponseDto), page);
             return _advertisementRepository.GetAllAsync(take, skip, cancellation);
         }
 
@@ -150,6 +148,7 @@ namespace Solarvito.AppServices.Advertisement.Services
         {
             var advertisementResponseDto = await _advertisementRepository.GetByIdAsync(id, cancellation);
 
+            _logger.LogInformation("Изменение количества просмотров обьявления с идентификатором {AdvertisementId}.", id);
             var currentUser = await _userService.GetCurrent(cancellation);
 
             if (advertisementResponseDto.UserId != currentUser.Id)
@@ -169,7 +168,8 @@ namespace Solarvito.AppServices.Advertisement.Services
             var validationResult = _validator.Validate(advertisementRequestDto);
             if (!validationResult.IsValid)
             {
-                throw new Exception(validationResult.ToString("~"));
+                _logger.LogError("Полученные данные не прошли валидацию со следующими ошибками: {ErrorMessage}", validationResult.Errors.ToList().ToString());
+                throw new ArgumentException(validationResult.ToString("~"));
             }
 
             var advertisementDto = advertisementRequestDto.MapToDto(id);
@@ -184,7 +184,8 @@ namespace Solarvito.AppServices.Advertisement.Services
             var validationResult = _validatorUpdate.Validate(advertisementUpdateRequestDto);
             if (!validationResult.IsValid)
             {
-                throw new Exception(validationResult.ToString("~"));
+                _logger.LogError("Полученные данные не прошли валидацию со следующими ошибками: {ErrorMessage}", validationResult.Errors.ToList().ToString());
+                throw new ArgumentException(validationResult.ToString("~"));
             }
 
             var existingImages = await _advertisementImageRepository.GetAllByAdvertisementId(id, cancellation);
