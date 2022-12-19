@@ -77,6 +77,71 @@ namespace Solarvito.Api.Controllers
             return Ok(user);
         }
 
+        /// <summary>
+        /// Изменить пользователя по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        public async Task<IActionResult> Update(int id, UserUpdateRequestDto userUpdateRequestDto, CancellationToken cancellation)
+        {
+            await _userService.UpdateAsync(id, userUpdateRequestDto, cancellation);
+
+            return Ok();
+        }
+
+        ///// <summary>
+        ///// Изменить пользователя по идентификатору.
+        ///// </summary>
+        ///// <param name="id">Идентификатор пользователя.</param>
+        ///// <param name="cancellation">Токен отмены.</param>
+        //[HttpPut("email/{id:int}")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[Authorize]
+        //public async Task<IActionResult> ChangeEmail(UserChangeConfirmDto userChangeConfirmDto, CancellationToken cancellation)
+        //{
+        //    await _userService.ChangeEmailAsync(userChangeConfirmDto, cancellation);
+
+        //    return Ok();
+        //}
+
+        ///// <summary>
+        ///// Изменить пользователя по идентификатору.
+        ///// </summary>
+        ///// <param name="id">Идентификатор пользователя.</param>
+        ///// <param name="cancellation">Токен отмены.</param>
+        //[HttpPut("password/{id:int}")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[Authorize]
+        //public async Task<IActionResult> ChangePassword(UserChangePasswordDto userChangePasswordDto, CancellationToken cancellation)
+        //{
+        //    await _userService.ChangePasswordAsync(userChangePasswordDto, cancellation);
+
+        //    return Ok();
+        //}
+
+        ///// <summary>
+        ///// Изменить пользователя по идентификатору.
+        ///// </summary>
+        ///// <param name="id">Идентификатор пользователя.</param>
+        ///// <param name="cancellation">Токен отмены.</param>
+        //[HttpPut("password/reset/{id:int}")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[Authorize]
+        //public async Task<IActionResult> ResetPassword(string email, CancellationToken cancellation)
+        //{
+        //    await _userService.ResetPasswordAsync(email, cancellation);
+
+        //    return Ok();
+        //}
+
+
 
         /// <summary>
         /// Удалить пользователя по идентификатору.

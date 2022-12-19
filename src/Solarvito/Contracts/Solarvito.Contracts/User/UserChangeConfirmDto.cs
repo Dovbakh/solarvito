@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.User
 {
-    /// <summary>
-    /// DTO пользователя с учетными данными для регистрации.
-    /// </summary>
-    public class UserRegisterDto
+    public class UserChangeConfirmDto
     {
         /// <summary>
         /// Почта пользователя.
@@ -25,6 +22,5 @@ namespace Solarvito.Contracts.User
         /// Подтверждение пароля пользователя.
         /// </summary>
         public string? PasswordConfirm { get; set; }
-
     }
 }

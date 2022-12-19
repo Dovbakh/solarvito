@@ -40,16 +40,6 @@ namespace Solarvito.Domain
         public string? Address { get; set; }
 
         /// <summary>
-        /// Рейтинг пользователя.
-        /// </summary>
-        public float Rating { get; set; }
-
-        /// <summary>
-        /// Количество оценок.
-        /// </summary>
-        public int NumberOfRates { get; set; }
-
-        /// <summary>
         /// Дата создания пользователя.
         /// </summary>
         public DateTime CreatedAt { get; set; }
@@ -75,7 +65,7 @@ namespace Solarvito.Domain
         public ICollection<Comment> CommentsBy { get; set; }
 
         /// <summary>
-        /// Коллекция отзывов, написанных пользователем.
+        /// Коллекция отзывов, написанных о пользователе.
         /// </summary>
         public ICollection<Comment> CommentsFor { get; set; }
 

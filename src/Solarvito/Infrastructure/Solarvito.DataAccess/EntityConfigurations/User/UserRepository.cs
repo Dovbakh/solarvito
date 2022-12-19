@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Solarvito.AppServices.User.Repositories;
+using Solarvito.Contracts;
 using Solarvito.Contracts.Category;
 using Solarvito.Contracts.User;
 using Solarvito.Domain;
@@ -38,17 +39,11 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
                 _logger.LogInformation("Запрос в репозиторий на получение всех пользователей.");
 
                 return await _repository.GetAll()
-                .Select(u => new UserDto()
-                {
-                    Id = u.Id,
-                    Name = u.Name,
-                    Phone = u.Phone,
-                    Address = u.Address,
-                    Rating = u.Rating,
-                    NumberOfRates = u.NumberOfRates,
-                    CreatedAt = u.CreatedAt
-                })
-                .Skip(skip).Take(take).ToListAsync(cancellationToken);
+                    .Include(u => u.CommentsFor)
+                    .Include(u => u.Advertisements)
+                    .Include(u => u.Role)
+                    .Select(u => u.MapToDto())
+                    .Skip(skip).Take(take).ToListAsync(cancellationToken);
             }
             catch (Exception e)
             {
@@ -65,17 +60,11 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
                 _logger.LogInformation("Запрос в репозиторий на получение всех пользователей по фильтру.");
 
                 return await _repository.GetAllFiltered(predicate)
-                .Select(u => new UserDto()
-                {
-                    Id = u.Id,
-                    Name = u.Name,
-                    Phone = u.Phone,
-                    Address = u.Address,
-                    Rating = u.Rating,
-                    NumberOfRates = u.NumberOfRates,
-                    CreatedAt = u.CreatedAt
-                })
-                .ToListAsync(cancellationToken);
+                    .Include(u => u.CommentsFor)
+                    .Include(u => u.Advertisements)
+                    .Include(u => u.Role)
+                    .Select(u => u.MapToDto())
+                    .ToListAsync(cancellationToken);
             }
             catch (Exception e)
             {
@@ -91,26 +80,20 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
             {
                 _logger.LogInformation("Запрос в репозиторий на получение пользователя с идентификатором {UserId}.", id);
 
-                var user = await _repository.GetByIdAsync(id);
+                var user = await _repository.GetAllFiltered(u => u.Id.Equals(id))
+                    .Include(u => u.CommentsFor)
+                    .Include(u => u.Advertisements)
+                    .Include(u => u.Role)
+                    .Select(u => u.MapToDto())
+                    .FirstOrDefaultAsync(cancellationToken);
+
                 if (user == null)
                 {
                     _logger.LogError("Не найден пользователь с идентификатором {UserId}", id);
                     throw new KeyNotFoundException($"Не найден пользователь с идентификатором '{id}'");
                 }
 
-                var userDto = new UserDto()
-                {
-                    Id = user.Id,
-                    Name = user.Name,
-                    Phone = user.Phone,
-                    Address = user.Address,
-                    Rating = user.Rating,
-                    NumberOfRates = user.NumberOfRates,
-                    CreatedAt = user.CreatedAt,
-                    RoleId = user.RoleId
-                };
-
-                return userDto;
+                return user;
             }
             catch (Exception e)
             {
@@ -120,70 +103,66 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
         }
 
         /// <inheritdoc />
-        public async Task<UserHashDto> GetWithHashByEmail(string email, CancellationToken cancellationToken)
+        public async Task<UserDto> GetByEmail(string email, CancellationToken cancellationToken)
         {
             try
             {
-                _logger.LogInformation("Запрос в репозиторий на получение пользователя с почтой {UserEmail} и хэш его пароля.", email);
+                _logger.LogInformation("Запрос в репозиторий на получение пользователя с почтой {UserEmail}.", email);
 
-                var userHashDto = await _repository.GetAllFiltered(user => user.Email == email)
-                .Include(u => u.Role)
-                .Select(u => new UserHashDto()
+                var user = await _repository.GetAllFiltered(u => u.Email.Equals(email))
+                    .Include(u => u.CommentsFor)
+                    .Include(u => u.Advertisements)
+                    .Include(u => u.Role)
+                    .Select(u => u.MapToDto())
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (user == null)
                 {
-                    Id = u.Id,
-                    Email = u.Email,
-                    PasswordHash = u.PasswordHash,
-                    RoleName = u.Role.Name
-                }).FirstOrDefaultAsync(cancellationToken);
+                    _logger.LogWarning("Не найден пользователь с почтой {UserEmail}", email);
+                }
 
-                return userHashDto;
+                return user;
             }
             catch (Exception e)
             {
                 _logger.LogError("Ошибка при получении пользователя с почтой {UserEmail}: {ErrorMessage}", email, e.Message);
                 throw;
-            }                         
+            }
         }
 
+
         /// <inheritdoc />
-        public async Task<int> AddAsync(UserHashDto userHashDto, CancellationToken cancellationToken)
+        public async Task<int> AddAsync(UserDto userDto, CancellationToken cancellationToken)
         {
             try
             {
-                _logger.LogInformation("Запрос в репозиторий на добавление нового пользователя с почтой {UserEmail} и хэш его пароля.", userHashDto.Email);
+                _logger.LogInformation("Запрос в репозиторий на добавление нового пользователя с почтой {UserEmail} и хэш его пароля.", userDto.Email);
 
-                var user = new Domain.User()
-                {
-                    Email = userHashDto.Email,
-                    PasswordHash = userHashDto.PasswordHash,
-                    CreatedAt = DateTime.UtcNow,
-                    RoleId = 1
-                };
-
+                var user = userDto.MapToEntity();
                 await _repository.AddAsync(user);
 
                 return user.Id;
             }
             catch (Exception e)
             {
-                _logger.LogError("Ошибка при добавлении нового пользователя с почтой {UserEmail}: {ErrorMessage}", userHashDto.Email, e.Message);
+                _logger.LogError("Ошибка при добавлении нового пользователя с почтой {UserEmail}: {ErrorMessage}", userDto.Email, e.Message);
                 throw;
             }            
         }
 
         /// <inheritdoc />
-        public async Task UpdateAsync(UserUpdateRequestDto request, CancellationToken cancellationToken)
+        public async Task UpdateAsync(int id, UserUpdateRequestDto request, CancellationToken cancellationToken)
         {
             try
             {
-                _logger.LogInformation("Запрос в репозиторий на изменение пользователя с идентификатором {UserId}.", request.Id);
+                _logger.LogInformation("Запрос в репозиторий на изменение пользователя с идентификатором {UserId}.", id);
 
-                var user = await _repository.GetByIdAsync(request.Id);
+                var user = await _repository.GetByIdAsync(id);
 
                 if (user == null)
                 {
-                    _logger.LogError("Не найден пользователь с идентификатором {UserId}", request.Id);
-                    throw new KeyNotFoundException($"Не найден пользователь с идентификатором '{request.Id}'");
+                    _logger.LogError("Не найден пользователь с идентификатором {UserId}", id);
+                    throw new KeyNotFoundException($"Не найден пользователь с идентификатором '{id}'");
                 }
 
                 user.Address = request.Address;
@@ -194,7 +173,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
             }
             catch (Exception e)
             {
-                _logger.LogError("Ошибка при изменении пользователя с идентификатором {UserId}: {ErrorMessage}", request.Id, e.Message);
+                _logger.LogError("Ошибка при изменении пользователя с идентификатором {UserId}: {ErrorMessage}", id, e.Message);
                 throw;
             }            
         }
@@ -218,8 +197,6 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
                 user.Phone = request.Phone;
                 user.Name = request.Name;
                 user.CreatedAt = request.CreatedAt;
-                user.Rating = request.Rating;
-                user.NumberOfRates = request.NumberOfRates;
                 user.RoleId = request.RoleId;
 
                 await _repository.UpdateAsync(user);

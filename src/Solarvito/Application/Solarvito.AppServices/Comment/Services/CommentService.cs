@@ -88,15 +88,6 @@ namespace Solarvito.AppServices.Category.Services
             var commentId = await _commentRepository.AddAsync(commentDto, cancellation);
 
 
-            var filter = new CommentFilterRequest() { UserId = commentRequestDto.UserId };
-            var userComments = await _commentRepository.GetAllFilteredAsync(filter, cancellation);
-            var userRatingUpdated = (float)userComments.Sum(x => x.Rating) / (float)userComments.Count;
-
-            user = await _userRepository.GetById(commentRequestDto.UserId, cancellation);
-            user.NumberOfRates = userComments.Count;
-            user.Rating = userRatingUpdated;
-            await _userRepository.UpdateAsync(user, cancellation);
-
             return commentId;
         }
 
@@ -107,14 +98,7 @@ namespace Solarvito.AppServices.Category.Services
             var filter = new CommentFilterRequest() { UserId = comment.UserId };
             var user = await _userRepository.GetById(comment.UserId, cancellation);
 
-            await _commentRepository.DeleteAsync(id, cancellation);          
-            
-            var userComments = await _commentRepository.GetAllFilteredAsync(filter, cancellation);
-            var userRatingUpdated = (float)userComments.Sum(x => x.Rating) / (float)userComments.Count;
-          
-            user.NumberOfRates = userComments.Count;
-            user.Rating = userRatingUpdated;
-            await _userRepository.UpdateAsync(user, cancellation);
+            await _commentRepository.DeleteAsync(id, cancellation);                     
         }
 
         /// <inheritdoc/>
@@ -173,17 +157,6 @@ namespace Solarvito.AppServices.Category.Services
 
             var commentDto = сommentUpdateRequestDto.MapToDto();
             await _commentRepository.UpdateAsync(id, commentDto, cancellation);
-
-
-            var comment = await _commentRepository.GetByIdAsync(id, cancellation);
-            var filter = new CommentFilterRequest() { UserId = comment.UserId };
-            var userComments = await _commentRepository.GetAllFilteredAsync(filter, cancellation);
-            var userRatingUpdated = (float)userComments.Sum(x => x.Rating) / (float)userComments.Count;
-
-            var user = await _userRepository.GetById(comment.UserId, cancellation);
-            user.NumberOfRates = userComments.Count;
-            user.Rating = userRatingUpdated;
-            await _userRepository.UpdateAsync(user, cancellation);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Solarvito.AppServices.Advertisement.Repositories
         /// <summary>
         /// Добавить новое обьявление.
         /// </summary>
-        /// <param name="advertisementRequestDto">Элемент <see cref="AdvertisementRequestDto"/>.</param>
+        /// <param name="advertisementDto">Элемент <see cref="AdvertisementDto"/>.</param>
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Идентификатор нового обьявления.</returns>
         Task<int> AddAsync(AdvertisementDto advertisementDto, CancellationToken cancellation);
@@ -55,8 +55,6 @@ namespace Solarvito.AppServices.Advertisement.Repositories
         /// <param name="advertisementDto">Элемент <see cref="AdvertisementDto"/>.</param>
         /// <param name="cancellation">Токен отмены.</param>
         Task UpdateAsync(int id, AdvertisementDto advertisementDto, CancellationToken cancellation);
-
-        Task UpdateAsync(int id, AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить обьявление.

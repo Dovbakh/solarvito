@@ -235,6 +235,13 @@
             <param name="cancellation">Токен отмены.</param>
             <returns>Элемент <see cref="T:Solarvito.Contracts.User.UserDto"/>.</returns>
         </member>
+        <member name="M:Solarvito.Api.Controllers.UserController.Update(System.Int32,Solarvito.Contracts.User.UserUpdateRequestDto,System.Threading.CancellationToken)">
+            <summary>
+            Изменить пользователя по идентификатору.
+            </summary>
+            <param name="id">Идентификатор пользователя.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
         <member name="M:Solarvito.Api.Controllers.UserController.Delete(System.Int32,System.Threading.CancellationToken)">
             <summary>
             Удалить пользователя по идентификатору.

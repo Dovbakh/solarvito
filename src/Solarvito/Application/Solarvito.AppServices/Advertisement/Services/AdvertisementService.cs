@@ -78,13 +78,12 @@ namespace Solarvito.AppServices.Advertisement.Services
 
             var updatedUser = new UserUpdateRequestDto()
             {
-                Id = currentUser.Id,
                 Address = currentUser.Address,
                 Phone = currentUser.Phone,
                 Name = currentUser.Name
             };
            
-            await _userService.UpdateAsync(updatedUser, cancellation);
+            await _userService.UpdateAsync(currentUser.Id, updatedUser, cancellation);
 
 
             // Добавить обьявление в БД           
@@ -163,21 +162,6 @@ namespace Solarvito.AppServices.Advertisement.Services
         }
 
         /// <inheritdoc/>
-        public Task UpdateAsync(int id, AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation)
-        {
-            var validationResult = _validator.Validate(advertisementRequestDto);
-            if (!validationResult.IsValid)
-            {
-                _logger.LogError("Полученные данные не прошли валидацию со следующими ошибками: {ErrorMessage}", validationResult.Errors.ToList().ToString());
-                throw new ArgumentException(validationResult.ToString("~"));
-            }
-
-            var advertisementDto = advertisementRequestDto.MapToDto(id);
-
-            return _advertisementRepository.UpdateAsync(id, advertisementRequestDto, cancellation);
-        }
-
-        /// <inheritdoc/>
         public async Task UpdateAsync(int id, AdvertisementUpdateRequestDto advertisementUpdateRequestDto, CancellationToken cancellation)
         {
 
@@ -206,8 +190,8 @@ namespace Solarvito.AppServices.Advertisement.Services
             }
 
             // удалить лишние изображения
-            if (advertisementUpdateRequestDto.ImagePathes != null)
-            {
+            
+           
                 foreach (var image in existingImages)
                 {
                     if (!advertisementUpdateRequestDto.ImagePathes.Contains(image.FileName))
@@ -216,10 +200,10 @@ namespace Solarvito.AppServices.Advertisement.Services
                         await _fileService.DeleteImage(image.FileName);
                     }
                 }
-            }
+           
 
-            var currentUser = await _userService.GetCurrent(cancellation);
-            advertisementUpdateRequestDto.UserId = currentUser.Id;
+
+
 
             var advertisement = await _advertisementRepository.GetByIdAsync(id, cancellation);
 
@@ -228,6 +212,7 @@ namespace Solarvito.AppServices.Advertisement.Services
             advertisementDto.CreatedAt = advertisement.CreatedAt;
             advertisementDto.ExpireAt = advertisement.ExpireAt;
             advertisementDto.NumberOfViews = advertisement.NumberOfViews;
+            advertisementDto.UserId = advertisement.UserId;
 
             await _advertisementRepository.UpdateAsync(id, advertisementDto, cancellation);
         }

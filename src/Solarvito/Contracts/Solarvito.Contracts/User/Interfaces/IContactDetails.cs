@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solarvito.Contracts.User
+namespace Solarvito.Contracts.User.Interfaces
 {
-    /// <summary>
-    /// DTO пользователя с изменяемыми данными.
-    /// </summary>
-    public class UserUpdateRequestDto
+    public interface IContactDetails
     {
         /// <summary>
         /// Имя пользователя.
@@ -25,7 +22,5 @@ namespace Solarvito.Contracts.User
         /// Адрес пользователя.
         /// </summary>
         public string? Address { get; set; }
-
-
     }
 }

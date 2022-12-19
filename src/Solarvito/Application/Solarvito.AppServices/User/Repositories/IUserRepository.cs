@@ -40,27 +40,27 @@ namespace Solarvito.AppServices.User.Repositories
         Task<UserDto> GetById(int id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Получить пользователя с хэшем пароля по электронной почте.
+        /// Получить пользователя по почте.
         /// </summary>
-        /// <param name="email">Электронная почта.</param>
-        /// <param name="cancellationToken">Токен отмены.</param>
-        /// <returns>Элемент <see cref="UserHashDto"/>.</returns>
-        Task<UserHashDto> GetWithHashByEmail(string email, CancellationToken cancellationToken);
+        /// <param name="email"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Элемент <see cref="UserDto"/>.</returns>
+        Task<UserDto> GetByEmail(string email, CancellationToken cancellationToken);
 
         /// <summary>
         /// Добавить пользователя с хэшем пароля.
         /// </summary>
-        /// <param name="userHashDto">Элемент <see cref="UserHashDto"/>.</param>
+        /// <param name="userDto">Элемент <see cref="UserDto"/>.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Идентификатор нового пользователя.</returns>
-        Task<int> AddAsync(UserHashDto userHashDto, CancellationToken cancellationToken);
+        Task<int> AddAsync(UserDto userDto, CancellationToken cancellationToken);
 
         /// <summary>
         /// Изменить пользователя.
         /// </summary>
         /// <param name="request">Элемент <see cref="UserUpdateRequestDto"/>.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
-        Task UpdateAsync(UserUpdateRequestDto request, CancellationToken cancellationToken);
+        Task UpdateAsync(int id, UserUpdateRequestDto request, CancellationToken cancellationToken);
 
         /// <summary>
         /// Изменить пользователя.

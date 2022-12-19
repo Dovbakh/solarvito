@@ -58,10 +58,5 @@ namespace Solarvito.Contracts.Advertisement
         /// </summary>
         public int CategoryId { get; set; }
 
-        /// <summary>
-        /// Идентификатор пользователя.
-        /// </summary>
-        public int UserId { get; set; }
-
     }
 }

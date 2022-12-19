@@ -2,6 +2,7 @@
 using Solarvito.Contracts.AdvertisementImage;
 using Solarvito.Contracts.Category;
 using Solarvito.Contracts.Comment;
+using Solarvito.Contracts.User;
 using Solarvito.Domain;
 using System;
 using System.Collections.Generic;
@@ -109,9 +110,7 @@ namespace Solarvito.Contracts
             Address = advertisementUpdateRequestDto.Address,
             Phone = advertisementUpdateRequestDto.Phone,
             UserName = advertisementUpdateRequestDto.UserName,
-            CategoryId = advertisementUpdateRequestDto.CategoryId,
-            UserId = advertisementUpdateRequestDto.UserId,
-
+            CategoryId = advertisementUpdateRequestDto.CategoryId
         };
 
         public static AdvertisementDto MapToDto(this AdvertisementRequestDto advertisementRequestDto) => new()
@@ -202,6 +201,34 @@ namespace Solarvito.Contracts
         {
             Text = commentUpdateRequestDto.Text,
             Rating = commentUpdateRequestDto.Rating
+        };
+
+        public static UserDto MapToDto(this Domain.User user) => new()
+        {
+            Id = user.Id,
+            Email = user.Email,
+            PasswordHash = user.PasswordHash,
+            Name = user.Name,
+            Phone = user.Phone,
+            Address = user.Address,           
+            Rating = (float)user.CommentsFor.Sum(u => u.Rating) / (float)user.CommentsFor.Count,
+            CommentsCount = user.CommentsFor.Count,
+            AdvertisementCount = user.Advertisements.Count,
+            CreatedAt = user.CreatedAt,
+            RoleId = user.RoleId,
+            RoleName = user.Role.Name
+        };
+
+        public static Domain.User MapToEntity(this UserDto userDto) => new()
+        {
+            Id = userDto.Id,
+            Email = userDto.Email,
+            PasswordHash = userDto.PasswordHash,
+            Name = userDto.Name,
+            Phone = userDto.Phone,
+            Address = userDto.Address,
+            CreatedAt = userDto.CreatedAt,
+            RoleId = userDto.RoleId
         };
     }
 }

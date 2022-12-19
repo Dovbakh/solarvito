@@ -107,6 +107,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
         public async Task<IReadOnlyCollection<AdvertisementResponseDto>> GetAllFilteredAsync(AdvertisementFilterRequest filter, int take, int skip, CancellationToken cancellation)
         {
             var query = _repository.GetAll();
+                
 
             if (filter.UserId.HasValue)
             {
@@ -135,7 +136,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
 
             if (filter.highRating.HasValue)
             {
-                query = query.Where(p => p.User.Rating >= 4);
+                query = query.Where(p => (p.User.CommentsFor.Sum(u => u.Rating) / p.User.CommentsFor.Count) >= 4);
             }
 
             if (filter.SortBy.HasValue)
@@ -159,6 +160,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
                 return await query
                     .Include(a => a.Category)
                     .Include(a => a.User)
+                    .Include(a => a.User.CommentsFor)
                     .Include(a => a.AdvertisementImages)
                     .Select(a => a.MapToDto())
                     .Skip(skip).Take(take).ToListAsync(cancellation);
@@ -222,40 +224,12 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
                 advertisement.NumberOfViews = advertisementDto.NumberOfViews;
                 advertisement.CategoryId = advertisementDto.CategoryId;
                 advertisement.UserId = advertisementDto.UserId;
+                advertisement.UserName = advertisementDto.UserName;
 
 
                 await _repository.UpdateAsync(advertisement);
             }
             catch (Exception e)
-            {
-                _logger.LogError("Ошибка при изменении обьявления c ID {AdvertisementId}: {ErrorMessage}.", id, e.Message);
-                throw;
-            }
-        }
-
-        public async Task UpdateAsync(int id, AdvertisementRequestDto advertisementRequestDto, CancellationToken cancellation)
-        {
-            try
-            {
-                _logger.LogInformation("Запрос в репозиторий на изменение обьявления с ID: {AdvertisementId}.", id);
-
-                var advertisement = await _repository.GetByIdAsync(id);
-                if (advertisement == null)
-                {
-                    throw new KeyNotFoundException($"Не найдено обьявление с идентификатором '{id}'");
-                }
-
-                advertisement.Name = advertisementRequestDto.Name;
-                advertisement.Description = advertisementRequestDto.Description;
-                advertisement.Price = advertisementRequestDto.Price;
-                advertisement.Address = advertisementRequestDto.Address;
-                advertisement.Phone = advertisementRequestDto.Phone;
-                advertisement.CategoryId = advertisementRequestDto.CategoryId;
-
-
-                await _repository.UpdateAsync(advertisement);
-            }
-            catch(Exception e)
             {
                 _logger.LogError("Ошибка при изменении обьявления c ID {AdvertisementId}: {ErrorMessage}.", id, e.Message);
                 throw;

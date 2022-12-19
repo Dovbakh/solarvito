@@ -17,6 +17,16 @@ namespace Solarvito.Contracts.User
         public int Id { get; set; }
 
         /// <summary>
+        /// Электронная почта пользователя.
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Хэш пароля пользователя.
+        /// </summary>
+        public string PasswordHash { get; set; }
+
+        /// <summary>
         /// Имя пользователя.
         /// </summary>
         public string? Name { get; set; }
@@ -37,9 +47,14 @@ namespace Solarvito.Contracts.User
         public float Rating { get; set; }
 
         /// <summary>
-        /// Количество оценок.
+        /// Количество отзывов о пользователе.
         /// </summary>
-        public int NumberOfRates { get; set; }
+        public int CommentsCount { get; set; }
+
+        /// <summary>
+        /// Количество отзывов о пользователе.
+        /// </summary>
+        public int AdvertisementCount { get; set; }
 
         /// <summary>
         /// Дата создания пользователя.
@@ -47,8 +62,13 @@ namespace Solarvito.Contracts.User
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
-        /// Роль пользователя.
+        /// Идентификатор роли пользователя.
         /// </summary>
         public int RoleId { get; set; }
+
+        /// <summary>
+        /// Название роли пользователя.
+        /// </summary>
+        public string RoleName { get; set; }
     }
 }

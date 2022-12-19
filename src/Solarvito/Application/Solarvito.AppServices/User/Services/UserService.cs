@@ -17,6 +17,8 @@ using Solarvito.Domain;
 using Solarvito.AppServices.User.Additional;
 using Microsoft.Extensions.Logging;
 using Solarvito.AppServices.Advertisement.Repositories;
+using Solarvito.Contracts.User.Interfaces;
+using FluentValidation.Validators;
 
 namespace Solarvito.AppServices.User.Services
 {
@@ -28,8 +30,10 @@ namespace Solarvito.AppServices.User.Services
         private readonly IConfiguration _configuration;
         private readonly IValidator<UserRegisterDto> _validatorRegister;
         private readonly IValidator<UserLoginDto> _validatorLogin;
+
         private readonly IPasswordHasher<UserRegisterDto> _hasherRegister;
         private readonly IPasswordHasher<UserLoginDto> _hasherLogin;
+        private readonly IPasswordHasher<UserDto> _hasher;
         private readonly ILogger<UserService> _logger;
 
         /// <summary>
@@ -48,7 +52,8 @@ namespace Solarvito.AppServices.User.Services
             IValidator<UserLoginDto> validatorLogin,
             IPasswordHasher<UserRegisterDto> hasherRegister,
             IPasswordHasher<UserLoginDto> hasherLogin,
-            ILogger<UserService> logger)
+            ILogger<UserService> logger,
+            IPasswordHasher<UserDto> hasher)
         {
             _userRepository = userRepository;
             _claimsAccessor = claimsAccessor;
@@ -58,61 +63,9 @@ namespace Solarvito.AppServices.User.Services
             _hasherRegister = hasherRegister;
             _hasherLogin = hasherLogin;
             _logger = logger;
-        }
-
-        /// <inheritdoc/>
-        public async Task<int> Register(UserRegisterDto userRegisterDto, CancellationToken cancellationToken)
-        {
-
-            var validationResult = _validatorRegister.Validate(userRegisterDto);
-            if (!validationResult.IsValid) {
-                throw new Exception(validationResult.ToString("~"));
-            }
-
-
-            var existingUser = await _userRepository.GetWithHashByEmail(userRegisterDto.Email, cancellationToken);
-            if (existingUser != null) {
-
-                throw new ArgumentException($"Пользователь с почтой '{userRegisterDto.Email}' уже зарегистрирован!");
-            }
-
-
-            var passwordHash = _hasherRegister.HashPassword(userRegisterDto, userRegisterDto.Password); 
-            
-            var user = new UserHashDto { Email = userRegisterDto.Email, PasswordHash = passwordHash };           
-            
-            return await _userRepository.AddAsync(user, cancellationToken);
+            _hasher = hasher;
 
         }
-
-        /// <inheritdoc/>
-        public async Task<string> Login(UserLoginDto userLoginDto, CancellationToken cancellationToken)
-        {
-            var validationResult = _validatorLogin.Validate(userLoginDto);
-            if (!validationResult.IsValid)
-            {
-                throw new Exception(validationResult.ToString("~"));
-            }
-
-            var existingUser = await _userRepository.GetWithHashByEmail(userLoginDto.Email, cancellationToken);           
-            if (existingUser == null)
-            {
-                throw new ArgumentException("Введен неверный email или пароль.");
-            }
-
-            var isPasswordVerified = _hasherLogin.VerifyHashedPassword(userLoginDto, existingUser.PasswordHash, userLoginDto.Password) != PasswordVerificationResult.Failed;
-            if (!isPasswordVerified)
-            {
-                throw new ArgumentException("Введен неверный email или пароль.");
-            }
-
-            var token = GenerateToken(existingUser);
-
-
-
-            return token;
-        }
-
         /// <inheritdoc/>
         public Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellationToken)
         {
@@ -144,17 +97,119 @@ namespace Solarvito.AppServices.User.Services
         }
 
         /// <inheritdoc/>
-        public Task UpdateAsync(UserUpdateRequestDto request, CancellationToken cancellationToken)
+        public async Task<int> Register(UserRegisterDto userRegisterDto, CancellationToken cancellationToken)
         {
-            return _userRepository.UpdateAsync(request, cancellationToken);
+
+            var validationResult = _validatorRegister.Validate(userRegisterDto);
+            if (!validationResult.IsValid) {
+                throw new Exception(validationResult.ToString("~"));
+            }
+
+
+            var existingUser = await _userRepository.GetByEmail(userRegisterDto.Email, cancellationToken);
+            if (existingUser != null) {
+
+                throw new ArgumentException($"Пользователь с почтой '{userRegisterDto.Email}' уже зарегистрирован!");
+            }
+
+
+            var passwordHash = _hasherRegister.HashPassword(userRegisterDto, userRegisterDto.Password);
+
+            var user = new UserDto
+            {
+                Email = userRegisterDto.Email,
+                PasswordHash = passwordHash,
+                CreatedAt = DateTime.UtcNow,
+                RoleId = 1
+            };           
+            
+            return await _userRepository.AddAsync(user, cancellationToken);
+
         }
+
+        /// <inheritdoc/>
+        public async Task<string> Login(UserLoginDto userLoginDto, CancellationToken cancellationToken)
+        {
+            var validationResult = _validatorLogin.Validate(userLoginDto);
+            if (!validationResult.IsValid)
+            {
+                throw new Exception(validationResult.ToString("~"));
+            }
+
+            var existingUser = await _userRepository.GetByEmail(userLoginDto.Email, cancellationToken);           
+            if (existingUser == null)
+            {
+                throw new ArgumentException("Введен неверный email или пароль.");
+            }
+
+            var isPasswordVerified = _hasherLogin.VerifyHashedPassword(userLoginDto, existingUser.PasswordHash, userLoginDto.Password) != PasswordVerificationResult.Failed;
+            if (!isPasswordVerified)
+            {
+                throw new ArgumentException("Введен неверный email или пароль.");
+            }
+
+            var token = GenerateToken(existingUser);
+
+
+
+            return token;
+        }
+
+        /// <inheritdoc/>
+        public Task UpdateAsync(int id, UserUpdateRequestDto request, CancellationToken cancellationToken)
+        {
+            return _userRepository.UpdateAsync(id, request, cancellationToken);
+        }
+
+        ///// <inheritdoc/>
+        //public async Task ChangePasswordAsync(UserChangePasswordDto userChangePasswordDto, CancellationToken cancellationToken)
+        //{
+        //    var currentUser = await GetCurrent(cancellationToken);
+
+        //    var isPasswordVerified = _hasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash, userChangePasswordDto.Password) != PasswordVerificationResult.Failed;
+        //    if (!isPasswordVerified)
+        //    {
+        //        throw new ArgumentException("Введен неверный пароль.");
+        //    }
+
+        //    var validationResult = _validatorPassword.Validate(userChangePasswordDto);
+        //    if (!validationResult.IsValid)
+        //    {
+        //        throw new Exception(validationResult.ToString("~"));
+        //    }
+
+        //    var newPasswordHash = _hasher.HashPassword(currentUser, userChangePasswordDto.NewPassword);
+        //    currentUser.PasswordHash = newPasswordHash;
+
+        //    await _userRepository.UpdateAsync(currentUser, cancellationToken);
+        //}
+
+        ///// <inheritdoc/>
+        //public async Task ChangeEmailRequestAsync(UserEmailDto userEmailDto, CancellationToken cancellationToken)
+        //{
+        //    var currentUser = await GetCurrent(cancellationToken);
+
+        //    if(currentUser.Email == userEmailDto.Email)
+        //    {
+        //        throw new ArgumentException("Электронные адреса не должны совпадать.");
+        //    }
+
+        //    var validationResult = _validatorEmail.Validate(userEmailDto);
+        //    if (!validationResult.IsValid)
+        //    {
+        //        throw new Exception(validationResult.ToString("~"));
+        //    }
+
+
+        //    // TODO generate token and Email notify
+        //}
 
         /// <inheritdoc/>
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             var currentUser = await GetCurrent(cancellationToken);
 
-            if (currentUser.Id == id || currentUser.RoleId != 1)
+            if (currentUser.Id == id || currentUser.RoleName == "admin")
             {
                 await _userRepository.DeleteAsync(id, cancellationToken);
             }
@@ -165,7 +220,7 @@ namespace Solarvito.AppServices.User.Services
         /// </summary>
         /// <param name="user">Элемент <see cref="UserHashDto"/>.</param>
         /// <returns>Токен.</returns>
-        private string GenerateToken(UserHashDto user)
+        private string GenerateToken(UserDto user)
         {
             _logger.LogInformation("Генерация JWT-токена для пользователя с идентификатором {UserId}", user.Id);
 
