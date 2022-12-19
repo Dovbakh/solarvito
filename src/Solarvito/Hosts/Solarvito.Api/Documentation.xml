@@ -115,6 +115,64 @@
             <param name="id">Идентификатор категории.</param>
             <param name="cancellation">Токен отмены.</param>
         </member>
+        <member name="T:Solarvito.Api.Controllers.CommentController">
+            <summary>
+            Работа с комментариями.
+            </summary>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CommentController.#ctor(Solarvito.AppServices.Category.Services.ICommentService)">
+            <summary>
+            Работа с комментариями.
+            </summary>
+            <param name="commentService">Сервис для работы с комментариями.</param>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CommentController.GetAll(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Получить все комментарии с пагинацией.
+            </summary>
+            <param name="page">Номер страницы с комментариями.</param>
+            <param name="cancellation">Токен отмены.</param>
+            <returns>Коллекция элементов <see cref="T:Solarvito.Contracts.Comment.CommentDto"/>.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CommentController.GetAllFiltered(Solarvito.Contracts.Comment.CommentFilterRequest,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Получить все комментарии по фильтру и с пагинацией.
+            </summary>
+            <param name="page">Номер страницы с комментариями.</param>
+            <param name="cancellation">Токен отмены.</param>
+            <returns>Коллекция элементов <see cref="T:Solarvito.Contracts.Comment.CommentDto"/>.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CommentController.GetById(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Получить комментарий по идентификатору.
+            </summary>
+            <param name="id">Идентификатор комментария.</param>
+            <param name="cancellation">Токен отмены</param>
+            <returns>Элемент <see cref="T:Solarvito.Contracts.Comment.CommentDto"/>.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CommentController.Add(Solarvito.Contracts.Comment.CommentRequestDto,System.Threading.CancellationToken)">
+            <summary>
+            Добавить новый комментарий.
+            </summary>
+            <param name="commentRequestDto">Элемент <see cref="T:Solarvito.Contracts.Comment.CommentDto"/>.</param>
+            <param name="cancellation">Токен отмены.</param>
+            <returns>Идентификатор нового комментария.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CommentController.Update(System.Int32,Solarvito.Contracts.Comment.CommentUpdateRequestDto,System.Threading.CancellationToken)">
+            <summary>
+            Изменить комментарий.
+            </summary>
+            <param name="id">Идентификатор комментария.</param>
+            <param name="сommentUpdateRequestDto">Элемент <see cref="T:Solarvito.Contracts.Comment.CommentDto"/>.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.CommentController.Delete(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Удалить комментарий.
+            </summary>
+            <param name="id">Идентификатор комментария.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
         <member name="T:Solarvito.Api.Controllers.FileController">
             <summary>
             Работа с файлами.
@@ -184,19 +242,19 @@
             <param name="id">Идентификатор пользователя.</param>
             <param name="cancellation">Токен отмены.</param>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.Register(Solarvito.Contracts.User.UserCredentialsDto,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.Register(Solarvito.Contracts.User.UserRegisterDto,System.Threading.CancellationToken)">
             <summary>
             Зарегистрировать пользователя.
             </summary>
-            <param name="userCreds">Элемент <see cref="T:Solarvito.Contracts.User.UserCredentialsDto"/>.</param>
+            <param name="userRegisterDto">Элемент <see cref="T:Solarvito.Contracts.User.UserRegisterDto"/>.</param>
             <param name="cancellation">Токен отмены.</param>
             <returns>Идентификатор нового пользователя.</returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.Login(Solarvito.Contracts.User.UserCredentialsDto,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.Login(Solarvito.Contracts.User.UserLoginDto,System.Threading.CancellationToken)">
             <summary>
             Залогинить пользователя.
             </summary>
-            <param name="userCreds">Элемент <see cref="T:Solarvito.Contracts.User.UserCredentialsDto"/>.</param>
+            <param name="userLoginDto">Элемент <see cref="T:Solarvito.Contracts.User.UserLoginDto"/>.</param>
             <param name="cancellation"></param>
             <returns>Токен аутентификации.</returns>
         </member>

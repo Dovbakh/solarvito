@@ -34,6 +34,8 @@ using Solarvito.AppServices.File.Repositories;
 using Solarvito.DataAccess.EntityConfigurations.File;
 using Solarvito.AppServices.AdvertisementImage.Repositories;
 using Solarvito.DataAccess.EntityConfigurations.AdvertisementImage;
+using Solarvito.Contracts.Comment;
+using Solarvito.AppServices.Comment.Helpers;
 
 namespace Solarvito.Registrar
 {
@@ -58,6 +60,7 @@ namespace Solarvito.Registrar
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IFileRepository, FileRepository>();
+            services.AddTransient<ICommentRepository, CommentRepository>();
             services.AddTransient<IAdvertisementImageRepository, AdvertisementImageRepository>();
 
 
@@ -66,14 +69,18 @@ namespace Solarvito.Registrar
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IFileService, FileService>();
+            services.AddTransient<ICommentService, CommentService>();
 
             // Регистрация вспомогательных сервисов
             services.AddSingleton<IDateTimeService, DateTimeService>();
             services.AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
             services.AddScoped<IClaimsAccessor, HttpContextClaimsAccessor>();
-            services.AddTransient<IValidator<UserCredentialsDto>, UserValidator>();
+            services.AddTransient<IValidator<UserRegisterDto>, UserRegisterValidator>();
+            services.AddTransient<IValidator<UserLoginDto>, UserLoginValidator>();
             services.AddTransient<IValidator<AdvertisementRequestDto>, AdvertisementValidator>();
             services.AddTransient<IValidator<AdvertisementUpdateRequestDto>, AdvertisementUpdateValidator>();
+            services.AddTransient<IValidator<CommentRequestDto>, CommentValidator>();
+            services.AddTransient<IValidator<CommentUpdateRequestDto>, CommentUpdateValidator>();
 
 
             return services;

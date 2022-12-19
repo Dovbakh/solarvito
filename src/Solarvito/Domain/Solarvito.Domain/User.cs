@@ -69,5 +69,15 @@ namespace Solarvito.Domain
         /// </summary>
         public ICollection<Advertisement> Advertisements { get; set; }
 
+        /// <summary>
+        /// Коллекция отзывов, написанных пользователем.
+        /// </summary>
+        public ICollection<Comment> CommentsBy { get; set; }
+
+        /// <summary>
+        /// Коллекция отзывов, написанных пользователем.
+        /// </summary>
+        public ICollection<Comment> CommentsFor { get; set; }
+
     }
 }

@@ -99,16 +99,16 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Зарегистрировать пользователя.
         /// </summary>
-        /// <param name="userCreds">Элемент <see cref="UserCredentialsDto"/>.</param>
+        /// <param name="userRegisterDto">Элемент <see cref="UserRegisterDto"/>.</param>
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Идентификатор нового пользователя.</returns>
         [HttpPost("register")]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(UserCredentialsDto userCreds, CancellationToken cancellation)
+        public async Task<IActionResult> Register(UserRegisterDto userRegisterDto, CancellationToken cancellation)
         {
-            var userId = await _userService.Register(userCreds, cancellation);
+            var userId = await _userService.Register(userRegisterDto, cancellation);
 
             return Ok(userId);
         }
@@ -116,16 +116,16 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Залогинить пользователя.
         /// </summary>
-        /// <param name="userCreds">Элемент <see cref="UserCredentialsDto"/>.</param>
+        /// <param name="userLoginDto">Элемент <see cref="UserLoginDto"/>.</param>
         /// <param name="cancellation"></param>
         /// <returns>Токен аутентификации.</returns>
         [HttpPost("login")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(UserCredentialsDto userCreds, CancellationToken cancellation)
+        public async Task<IActionResult> Login(UserLoginDto userLoginDto, CancellationToken cancellation)
         {
-            var token = await _userService.Login(userCreds, cancellation);
+            var token = await _userService.Login(userLoginDto, cancellation);
 
             return Ok(token);
         }

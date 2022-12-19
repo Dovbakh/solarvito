@@ -63,6 +63,13 @@ namespace Solarvito.AppServices.User.Repositories
         Task UpdateAsync(UserUpdateRequestDto request, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Изменить пользователя.
+        /// </summary>
+        /// <param name="request">Элемент <see cref="UserDto"/>.</param>
+        /// <param name="cancellationToken">Токен отмены.</param>
+        Task UpdateAsync(UserDto request, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Удалить пользователя по идентификатору.
         /// </summary>
         /// <param name="id">Идентификатор.</param>

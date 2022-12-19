@@ -32,7 +32,13 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
                 .WithOne(a => a.User)
                 .HasForeignKey(a => a.UserId);
 
+            builder.HasMany(u => u.CommentsBy)
+                .WithOne(c => c.Author)
+                .HasForeignKey(c => c.AuthorId);
 
+            builder.HasMany(u => u.CommentsFor)
+                .WithOne(c => c.User)
+                .HasForeignKey(c => c.UserId);
         }
     }
 }

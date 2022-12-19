@@ -1,6 +1,7 @@
 ﻿using Solarvito.Contracts.Advertisement;
 using Solarvito.Contracts.AdvertisementImage;
 using Solarvito.Contracts.Category;
+using Solarvito.Contracts.Comment;
 using Solarvito.Domain;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace Solarvito.Contracts
             UserName = advertisement.UserName,
             UserId = advertisement.UserId,
             CategoryName = advertisement.Category.Name,
-            CategoryId = advertisement.CategoryId                        
+            CategoryId = advertisement.CategoryId
         };
 
 
@@ -95,7 +96,7 @@ namespace Solarvito.Contracts
             Price = advertisementRequestDto.Price,
             Address = advertisementRequestDto.Address,
             Phone = advertisementRequestDto.Phone,
-            UserName= advertisementRequestDto.UserName,
+            UserName = advertisementRequestDto.UserName,
             CategoryId = advertisementRequestDto.CategoryId
         };
 
@@ -120,7 +121,7 @@ namespace Solarvito.Contracts
             Price = advertisementRequestDto.Price,
             Address = advertisementRequestDto.Address,
             Phone = advertisementRequestDto.Phone,
-            UserName= advertisementRequestDto.UserName,
+            UserName = advertisementRequestDto.UserName,
             CategoryId = advertisementRequestDto.CategoryId
         };
 
@@ -154,5 +155,53 @@ namespace Solarvito.Contracts
             AdvertisementId = advertisementImage.AdvertisementId
         };
 
+        public static CommentDto MapToDto(this Domain.Comment comment) => new()
+        {
+            Id = comment.Id,
+            Text = comment.Text,
+            Rating = comment.Rating,
+            CreatedAt = comment.CreatedAt,
+            UserId = comment.UserId,
+            AuthorId = comment.AuthorId,
+            AdvertisementId = comment.AdvertisementId,
+            UserName = comment.User.Name,
+            AuthorName = comment.Author.Name,
+            AdvertisementName = comment.Advertisement.Name
+        };
+
+        public static Domain.Comment MapToEntity(this CommentDto commentDto) => new()
+        {
+            Id = commentDto.Id,
+            Text = commentDto.Text,
+            Rating = commentDto.Rating,
+            CreatedAt = commentDto.CreatedAt,
+            UserId = commentDto.UserId,
+            AuthorId = commentDto.AuthorId,
+            AdvertisementId = commentDto.AdvertisementId
+        };
+
+        public static Domain.Comment MapToEntity(this CommentRequestDto сommentRequestDto) => new()
+        {
+            Text = сommentRequestDto.Text,
+            Rating = сommentRequestDto.Rating,
+            AuthorId = сommentRequestDto.AuthorId,
+            UserId = сommentRequestDto.UserId,
+            AdvertisementId = сommentRequestDto.AdvertisementId
+        };
+
+        public static CommentDto MapToDto(this CommentRequestDto сommentRequestDto) => new()
+        {
+            Text = сommentRequestDto.Text,
+            Rating = сommentRequestDto.Rating,
+            AuthorId = сommentRequestDto.AuthorId,
+            UserId = сommentRequestDto.UserId,
+            AdvertisementId = сommentRequestDto.AdvertisementId
+        };
+
+        public static CommentDto MapToDto(this CommentUpdateRequestDto commentUpdateRequestDto) => new()
+        {
+            Text = commentUpdateRequestDto.Text,
+            Rating = commentUpdateRequestDto.Rating
+        };
     }
 }

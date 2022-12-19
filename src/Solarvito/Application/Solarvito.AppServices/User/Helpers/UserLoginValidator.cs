@@ -10,14 +10,14 @@ using Solarvito.Contracts.User;
 namespace Solarvito.AppServices.User.Validators
 {
     /// <summary>
-    /// Валидатор данных для <see cref="UserCredentialsDto"/>
+    /// Валидатор данных для <see cref="UserLoginDto"/>
     /// </summary>
-    public class UserValidator : AbstractValidator<UserCredentialsDto>
+    public class UserLoginValidator : AbstractValidator<UserLoginDto>
     {
         /// <summary>
-        /// Правила для валидации <see cref="UserCredentialsDto"/>
+        /// Правила для валидации <see cref="UserLoginDto"/>
         /// </summary>
-        public UserValidator()
+        public UserLoginValidator()
         {
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Электронная почта обязательна для заполнения.")
@@ -27,8 +27,6 @@ namespace Solarvito.AppServices.User.Validators
                 .Matches(@"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)").WithMessage("Пароль должен содержать цифры, латинские заглавные и строчные буквы.")
                 .MinimumLength(8).WithMessage("Пароль должен состоять минимум из 8 символов.")
                 .MaximumLength(100).WithMessage("Пароль должен состоять максимум из 100 символов.");
-            RuleFor(x => x.PasswordConfirm)
-                .Equal(x => x.Password).WithMessage("Пароли должны совпадать.");
         }
     }
 }

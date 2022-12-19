@@ -26,8 +26,10 @@ namespace Solarvito.AppServices.User.Services
         private readonly IUserRepository _userRepository;
         private readonly IClaimsAccessor _claimsAccessor;
         private readonly IConfiguration _configuration;
-        private readonly IValidator<UserCredentialsDto> _validator;
-        private readonly IPasswordHasher<UserCredentialsDto> _hasher;
+        private readonly IValidator<UserRegisterDto> _validatorRegister;
+        private readonly IValidator<UserLoginDto> _validatorLogin;
+        private readonly IPasswordHasher<UserRegisterDto> _hasherRegister;
+        private readonly IPasswordHasher<UserLoginDto> _hasherLogin;
         private readonly ILogger<UserService> _logger;
 
         /// <summary>
@@ -42,54 +44,63 @@ namespace Solarvito.AppServices.User.Services
             IUserRepository userRepository,
             IClaimsAccessor claimsAccessor,
             IConfiguration configuration,
-            IValidator<UserCredentialsDto> validator,
-            IPasswordHasher<UserCredentialsDto> hasher,
+            IValidator<UserRegisterDto> validatorRegister,
+            IValidator<UserLoginDto> validatorLogin,
+            IPasswordHasher<UserRegisterDto> hasherRegister,
+            IPasswordHasher<UserLoginDto> hasherLogin,
             ILogger<UserService> logger)
         {
             _userRepository = userRepository;
             _claimsAccessor = claimsAccessor;
             _configuration = configuration;
-            _validator = validator;
-            _hasher = hasher;
+            _validatorRegister = validatorRegister;
+            _validatorLogin = validatorLogin;
+            _hasherRegister = hasherRegister;
+            _hasherLogin = hasherLogin;
             _logger = logger;
         }
 
         /// <inheritdoc/>
-        public async Task<int> Register(UserCredentialsDto userCreds, CancellationToken cancellationToken)
+        public async Task<int> Register(UserRegisterDto userRegisterDto, CancellationToken cancellationToken)
         {
 
-            var validationResult = _validator.Validate(userCreds);
+            var validationResult = _validatorRegister.Validate(userRegisterDto);
             if (!validationResult.IsValid) {
                 throw new Exception(validationResult.ToString("~"));
             }
 
 
-            var existingUser = await _userRepository.GetWithHashByEmail(userCreds.Email, cancellationToken);
+            var existingUser = await _userRepository.GetWithHashByEmail(userRegisterDto.Email, cancellationToken);
             if (existingUser != null) {
 
-                throw new ArgumentException($"Пользователь с почтой '{userCreds.Email}' уже зарегистрирован!");
+                throw new ArgumentException($"Пользователь с почтой '{userRegisterDto.Email}' уже зарегистрирован!");
             }
 
 
-            var passwordHash = _hasher.HashPassword(userCreds, userCreds.Password); 
+            var passwordHash = _hasherRegister.HashPassword(userRegisterDto, userRegisterDto.Password); 
             
-            var user = new UserHashDto { Email = userCreds.Email, PasswordHash = passwordHash };           
+            var user = new UserHashDto { Email = userRegisterDto.Email, PasswordHash = passwordHash };           
             
             return await _userRepository.AddAsync(user, cancellationToken);
 
         }
 
         /// <inheritdoc/>
-        public async Task<string> Login(UserCredentialsDto userCreds, CancellationToken cancellationToken)
+        public async Task<string> Login(UserLoginDto userLoginDto, CancellationToken cancellationToken)
         {
+            var validationResult = _validatorLogin.Validate(userLoginDto);
+            if (!validationResult.IsValid)
+            {
+                throw new Exception(validationResult.ToString("~"));
+            }
 
-            var existingUser = await _userRepository.GetWithHashByEmail(userCreds.Email, cancellationToken);           
+            var existingUser = await _userRepository.GetWithHashByEmail(userLoginDto.Email, cancellationToken);           
             if (existingUser == null)
             {
                 throw new ArgumentException("Введен неверный email или пароль.");
             }
 
-            var isPasswordVerified = _hasher.VerifyHashedPassword(userCreds, existingUser.PasswordHash, userCreds.Password) != PasswordVerificationResult.Failed;
+            var isPasswordVerified = _hasherLogin.VerifyHashedPassword(userLoginDto, existingUser.PasswordHash, userLoginDto.Password) != PasswordVerificationResult.Failed;
             if (!isPasswordVerified)
             {
                 throw new ArgumentException("Введен неверный email или пароль.");

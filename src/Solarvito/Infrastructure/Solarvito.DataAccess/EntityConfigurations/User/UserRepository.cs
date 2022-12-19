@@ -106,7 +106,8 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
                     Address = user.Address,
                     Rating = user.Rating,
                     NumberOfRates = user.NumberOfRates,
-                    CreatedAt = user.CreatedAt
+                    CreatedAt = user.CreatedAt,
+                    RoleId = user.RoleId
                 };
 
                 return userDto;
@@ -196,6 +197,38 @@ namespace Solarvito.DataAccess.EntityConfigurations.User
                 _logger.LogError("Ошибка при изменении пользователя с идентификатором {UserId}: {ErrorMessage}", request.Id, e.Message);
                 throw;
             }            
+        }
+
+        /// <inheritdoc />
+        public async Task UpdateAsync(UserDto request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                _logger.LogInformation("Запрос в репозиторий на изменение пользователя с идентификатором {UserId}.", request.Id);
+
+                var user = await _repository.GetByIdAsync(request.Id);
+
+                if (user == null)
+                {
+                    _logger.LogError("Не найден пользователь с идентификатором {UserId}", request.Id);
+                    throw new KeyNotFoundException($"Не найден пользователь с идентификатором '{request.Id}'");
+                }
+
+                user.Address = request.Address;
+                user.Phone = request.Phone;
+                user.Name = request.Name;
+                user.CreatedAt = request.CreatedAt;
+                user.Rating = request.Rating;
+                user.NumberOfRates = request.NumberOfRates;
+                user.RoleId = request.RoleId;
+
+                await _repository.UpdateAsync(user);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Ошибка при изменении пользователя с идентификатором {UserId}: {ErrorMessage}", request.Id, e.Message);
+                throw;
+            }
         }
 
         /// <inheritdoc />

@@ -15,18 +15,18 @@ namespace Solarvito.AppServices.User.Services
         /// <summary>
         /// Регистрация пользователя.
         /// </summary>
-        /// <param name="UserCredsDto">Элемент <see cref="UserCredentialsDto"/>.</param>
+        /// <param name="userRegisterDto">Элемент <see cref="UserRegisterDto"/>.</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Идентификатор нового пользователя.</returns>
-        Task<int> Register(UserCredentialsDto UserCredsDto, CancellationToken cancellationToken);
+        Task<int> Register(UserRegisterDto userRegisterDto, CancellationToken cancellationToken);
 
         /// <summary>
         /// Авторизация пользователя.
         /// </summary>
-        /// <param name="UserCredsDto">Элемент <see cref="UserCredentialsDto"/>.</param>
+        /// <param name="userLoginDto">Элемент <see cref="UserLoginDto"/>.</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Токен.</returns>
-        Task<string> Login(UserCredentialsDto UserCredsDto, CancellationToken cancellationToken);
+        Task<string> Login(UserLoginDto userLoginDto, CancellationToken cancellationToken);
 
         /// <summary>
         /// Получить всех пользователей с пагинацией.
