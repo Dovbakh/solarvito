@@ -36,7 +36,7 @@ namespace Solarvito.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IReadOnlyCollection<CommentDto>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAll(int page, CancellationToken cancellation)
+        public async Task<IActionResult> GetAll(int? page, CancellationToken cancellation)
         {
             var result = await _commentService.GetAllAsync(page, cancellation);
 
@@ -52,7 +52,7 @@ namespace Solarvito.Api.Controllers
         [HttpGet("filter")]
         [ProducesResponseType(typeof(IReadOnlyCollection<CommentDto>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAllFiltered([FromQuery] CommentFilterRequest filter, int page, CancellationToken cancellation)
+        public async Task<IActionResult> GetAllFiltered([FromQuery] CommentFilterRequest filter, int? page, CancellationToken cancellation)
         {
             var result = await _commentService.GetAllFilteredAsync(filter, page, cancellation);
 

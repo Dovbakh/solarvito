@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Solarvito.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +13,7 @@ namespace Solarvito.DataAccess;
 /// <summary>
 /// Контекст БД
 /// </summary>
-public class SolarvitoContext : DbContext
+public class SolarvitoContext : IdentityDbContext<User, Role, string>
 {
     /// <summary>
     /// Инициализирует экземпляр <see cref="ShoppingCartContext"/>.

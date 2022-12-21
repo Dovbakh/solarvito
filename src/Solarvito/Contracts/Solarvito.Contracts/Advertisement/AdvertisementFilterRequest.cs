@@ -19,7 +19,7 @@ namespace Solarvito.Contracts.Advertisement
         /// <summary>
         /// Идентификатор пользователя.
         /// </summary>
-        public int? UserId { get; set; }
+        public string? UserId { get; set; }
 
         /// <summary>
         /// Текст поиска.

@@ -6,6 +6,7 @@ using Solarvito.Contracts.User;
 using Solarvito.Domain;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -181,11 +182,11 @@ namespace Solarvito.Contracts
 
         public static Domain.Comment MapToEntity(this CommentRequestDto сommentRequestDto) => new()
         {
-            Text = сommentRequestDto.Text,
-            Rating = сommentRequestDto.Rating,
-            AuthorId = сommentRequestDto.AuthorId,
-            UserId = сommentRequestDto.UserId,
-            AdvertisementId = сommentRequestDto.AdvertisementId
+            //Text = сommentRequestDto.Text,
+            //Rating = сommentRequestDto.Rating,
+            //AuthorId = сommentRequestDto.AuthorId,
+            //UserId = сommentRequestDto.UserId,
+            //AdvertisementId = сommentRequestDto.AdvertisementId
         };
 
         public static CommentDto MapToDto(this CommentRequestDto сommentRequestDto) => new()
@@ -207,28 +208,34 @@ namespace Solarvito.Contracts
         {
             Id = user.Id,
             Email = user.Email,
-            PasswordHash = user.PasswordHash,
             Name = user.Name,
-            Phone = user.Phone,
-            Address = user.Address,           
-            Rating = (float)user.CommentsFor.Sum(u => u.Rating) / (float)user.CommentsFor.Count,
+            Phone = user.PhoneNumber,
+            Address = user.Address,
+            Rating = user.CommentsFor.Count != 0 ? (float)user.CommentsFor.Sum(u => u.Rating) / (float)user.CommentsFor.Count : 0,
             CommentsCount = user.CommentsFor.Count,
             AdvertisementCount = user.Advertisements.Count,
             CreatedAt = user.CreatedAt,
-            RoleId = user.RoleId,
-            RoleName = user.Role.Name
+            RoleName = user.Role.Name,
+            RoleId = user.RoleId
         };
 
         public static Domain.User MapToEntity(this UserDto userDto) => new()
         {
             Id = userDto.Id,
             Email = userDto.Email,
-            PasswordHash = userDto.PasswordHash,
             Name = userDto.Name,
-            Phone = userDto.Phone,
+            PhoneNumber = userDto.Phone,
             Address = userDto.Address,
             CreatedAt = userDto.CreatedAt,
             RoleId = userDto.RoleId
+        };
+
+        public static Domain.User MapToEntity(this UserRegisterDto userRegisterDto) => new()
+        {
+            Email = userRegisterDto.Email,
+            UserName = userRegisterDto.Email,
+            CreatedAt = DateTime.UtcNow,
+            RoleId = "1"
         };
     }
 }

@@ -19,6 +19,12 @@ using Microsoft.Extensions.Logging;
 using Solarvito.AppServices.Advertisement.Repositories;
 using Solarvito.Contracts.User.Interfaces;
 using FluentValidation.Validators;
+using Microsoft.EntityFrameworkCore;
+using Solarvito.AppServices.Notifier.Services;
+using Solarvito.Contracts.Notifier;
+using System.Security.Policy;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace Solarvito.AppServices.User.Services
 {
@@ -30,11 +36,17 @@ namespace Solarvito.AppServices.User.Services
         private readonly IConfiguration _configuration;
         private readonly IValidator<UserRegisterDto> _validatorRegister;
         private readonly IValidator<UserLoginDto> _validatorLogin;
+        private readonly IValidator<UserChangePasswordDto> _validatorPassword;
 
         private readonly IPasswordHasher<UserRegisterDto> _hasherRegister;
         private readonly IPasswordHasher<UserLoginDto> _hasherLogin;
         private readonly IPasswordHasher<UserDto> _hasher;
         private readonly ILogger<UserService> _logger;
+        private readonly UserManager<Domain.User> _userManager;
+        private readonly RoleManager<Domain.Role> _roleManager;
+        private readonly IDistributedCache _distributedCache;
+
+        private readonly INotifierService _notifierService;
 
         /// <summary>
         /// Инициализировать экземпляр <see cref="UserService"/>
@@ -50,29 +62,38 @@ namespace Solarvito.AppServices.User.Services
             IConfiguration configuration,
             IValidator<UserRegisterDto> validatorRegister,
             IValidator<UserLoginDto> validatorLogin,
+            IValidator<UserChangePasswordDto> validatorPassword,
             IPasswordHasher<UserRegisterDto> hasherRegister,
             IPasswordHasher<UserLoginDto> hasherLogin,
             ILogger<UserService> logger,
-            IPasswordHasher<UserDto> hasher)
+            IPasswordHasher<UserDto> hasher,
+            UserManager<Domain.User> userManager,
+            RoleManager<Domain.Role> roleManager,
+            INotifierService notifierService,
+            IDistributedCache distributedCache)
         {
             _userRepository = userRepository;
             _claimsAccessor = claimsAccessor;
             _configuration = configuration;
             _validatorRegister = validatorRegister;
             _validatorLogin = validatorLogin;
+            _validatorPassword = validatorPassword;
             _hasherRegister = hasherRegister;
             _hasherLogin = hasherLogin;
             _logger = logger;
             _hasher = hasher;
-
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _notifierService = notifierService;
+            _distributedCache = distributedCache;
         }
         /// <inheritdoc/>
-        public Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellationToken)
-        {
-            return _userRepository.GetAll(take, skip, cancellationToken);
+        public async Task<IReadOnlyCollection<UserDto>> GetAll(int take, int skip, CancellationToken cancellationToken)
+        {        
+            return await _userRepository.GetAll(take, skip, cancellationToken);
         }
 
-        public Task<UserDto> GetById(int id, CancellationToken cancellationToken)
+        public Task<UserDto> GetById(string id, CancellationToken cancellationToken)
         {
             return _userRepository.GetById(id, cancellationToken);
         }
@@ -89,41 +110,28 @@ namespace Solarvito.AppServices.User.Services
             {
                 return null;
             }
+            var id = claimId;
+            var user = await _userRepository.GetById(id, cancellationToken);
 
-            var id = int.Parse(claimId);
-            var userDto = await _userRepository.GetById(id, cancellationToken);
-
-            return userDto;
+            return user;
         }
 
         /// <inheritdoc/>
-        public async Task<int> Register(UserRegisterDto userRegisterDto, CancellationToken cancellationToken)
+        public async Task<string> Register(UserRegisterDto userRegisterDto, CancellationToken cancellationToken)
         {
-
             var validationResult = _validatorRegister.Validate(userRegisterDto);
             if (!validationResult.IsValid) {
                 throw new Exception(validationResult.ToString("~"));
             }
-
 
             var existingUser = await _userRepository.GetByEmail(userRegisterDto.Email, cancellationToken);
             if (existingUser != null) {
 
                 throw new ArgumentException($"Пользователь с почтой '{userRegisterDto.Email}' уже зарегистрирован!");
             }
-
-
-            var passwordHash = _hasherRegister.HashPassword(userRegisterDto, userRegisterDto.Password);
-
-            var user = new UserDto
-            {
-                Email = userRegisterDto.Email,
-                PasswordHash = passwordHash,
-                CreatedAt = DateTime.UtcNow,
-                RoleId = 1
-            };           
+          
             
-            return await _userRepository.AddAsync(user, cancellationToken);
+            return await _userRepository.AddAsync(userRegisterDto, cancellationToken);
 
         }
 
@@ -135,6 +143,7 @@ namespace Solarvito.AppServices.User.Services
             {
                 throw new Exception(validationResult.ToString("~"));
             }
+            
 
             var existingUser = await _userRepository.GetByEmail(userLoginDto.Email, cancellationToken);           
             if (existingUser == null)
@@ -142,7 +151,7 @@ namespace Solarvito.AppServices.User.Services
                 throw new ArgumentException("Введен неверный email или пароль.");
             }
 
-            var isPasswordVerified = _hasherLogin.VerifyHashedPassword(userLoginDto, existingUser.PasswordHash, userLoginDto.Password) != PasswordVerificationResult.Failed;
+            var isPasswordVerified = await _userRepository.CheckPasswordAsync(userLoginDto.Email, userLoginDto.Password, cancellationToken);
             if (!isPasswordVerified)
             {
                 throw new ArgumentException("Введен неверный email или пароль.");
@@ -151,68 +160,113 @@ namespace Solarvito.AppServices.User.Services
             var token = GenerateToken(existingUser);
 
 
-
             return token;
         }
 
         /// <inheritdoc/>
-        public Task UpdateAsync(int id, UserUpdateRequestDto request, CancellationToken cancellationToken)
+        public Task UpdateAsync(string id, UserUpdateRequestDto request, CancellationToken cancellationToken)
         {
             return _userRepository.UpdateAsync(id, request, cancellationToken);
         }
 
-        ///// <inheritdoc/>
-        //public async Task ChangePasswordAsync(UserChangePasswordDto userChangePasswordDto, CancellationToken cancellationToken)
-        //{
-        //    var currentUser = await GetCurrent(cancellationToken);
+        /// <inheritdoc/>
+        public async Task ChangePasswordAsync(UserChangePasswordDto userChangePasswordDto, CancellationToken cancellationToken)
+        {           
+            var validationResult = _validatorPassword.Validate(userChangePasswordDto);
 
-        //    var isPasswordVerified = _hasher.VerifyHashedPassword(currentUser, currentUser.PasswordHash, userChangePasswordDto.Password) != PasswordVerificationResult.Failed;
-        //    if (!isPasswordVerified)
-        //    {
-        //        throw new ArgumentException("Введен неверный пароль.");
-        //    }
+            if (!validationResult.IsValid)
+            {
+                throw new Exception(validationResult.ToString("~"));
+            }
 
-        //    var validationResult = _validatorPassword.Validate(userChangePasswordDto);
-        //    if (!validationResult.IsValid)
-        //    {
-        //        throw new Exception(validationResult.ToString("~"));
-        //    }
+            var currentUser = await GetCurrent(cancellationToken);
 
-        //    var newPasswordHash = _hasher.HashPassword(currentUser, userChangePasswordDto.NewPassword);
-        //    currentUser.PasswordHash = newPasswordHash;
-
-        //    await _userRepository.UpdateAsync(currentUser, cancellationToken);
-        //}
-
-        ///// <inheritdoc/>
-        //public async Task ChangeEmailRequestAsync(UserEmailDto userEmailDto, CancellationToken cancellationToken)
-        //{
-        //    var currentUser = await GetCurrent(cancellationToken);
-
-        //    if(currentUser.Email == userEmailDto.Email)
-        //    {
-        //        throw new ArgumentException("Электронные адреса не должны совпадать.");
-        //    }
-
-        //    var validationResult = _validatorEmail.Validate(userEmailDto);
-        //    if (!validationResult.IsValid)
-        //    {
-        //        throw new Exception(validationResult.ToString("~"));
-        //    }
-
-
-        //    // TODO generate token and Email notify
-        //}
+            await _userRepository.ChangePasswordAsync(currentUser.Email, userChangePasswordDto.Password, userChangePasswordDto.NewPassword, cancellationToken);
+        }
 
         /// <inheritdoc/>
-        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+        public async Task ChangeEmailRequestAsync(string newEmail, string password, string changeLink, CancellationToken cancellationToken)
+        {
+            // Валидация введенной почты
+
+            // Верификация пароля
+
+            // Генерация токена смены почты
+            var currentUser = await GetCurrent(cancellationToken);
+
+            var token = await _userRepository.ChangeEmailRequestAsync(currentUser.Email, newEmail, cancellationToken);
+
+            // Отправление сообщения на почту
+
+            changeLink = changeLink.Replace("tokenValue", token);
+
+            var notifyWarning = new NotifyDto()
+            {
+                To = currentUser,
+                Subject = "Запрос на изменение почты",
+                Body = "Поступил запрос на изменение электронной почты на <b>" + newEmail + "</b>. Если это были вы, то ничего делать не нужно. В противном случае напишите в поддержку."
+            };
+            _notifierService.Send(notifyWarning);
+
+            currentUser.Email = newEmail;
+            var notifyConfirm = new NotifyDto()
+            {
+                To = currentUser,
+                Subject = "Запрос на изменение почты",
+                Body = "Чтобы изменить почту, нажмите <a href='" + changeLink + "'>сюда</a>"
+            };
+
+            _notifierService.Send(notifyConfirm);
+        }
+
+        public async Task ChangeEmailAsync(string newEmail, string token, CancellationToken cancellationToken)
         {
             var currentUser = await GetCurrent(cancellationToken);
 
-            if (currentUser.Id == id || currentUser.RoleName == "admin")
+            await _userRepository.ChangeEmailAsync(currentUser.Email, newEmail, token, cancellationToken);
+
+        }
+
+            public async Task ResetPasswordRequestAsync(string email, string resetLink, CancellationToken cancellationToken)
+        {
+            // валидация данных (почты)
+
+            var user = await _userRepository.GetByEmail(email, cancellationToken);
+            if(user == null)
             {
-                await _userRepository.DeleteAsync(id, cancellationToken);
+                throw new KeyNotFoundException("Пользователя с такой почтой не существует.");
             }
+
+            var token = await _userRepository.ResetPasswordRequestAsync(email, cancellationToken);
+            resetLink = resetLink.Replace("tokenValue", token);
+
+
+            var notify = new NotifyDto()
+            {
+                To = user,
+                Subject = "Сброс пароля",
+                Body = "Чтобы сбросить пароль, нажмите <a href='" + resetLink + "'>сюда</a>"
+            };
+
+            _notifierService.Send(notify);
+        }
+
+        public Task ResetPasswordAsync(string email, string newPassword, string token, CancellationToken cancellationToken)
+        {
+            return _userRepository.ResetPasswordAsync(email, token, newPassword, cancellationToken);
+        }
+
+        /// <inheritdoc/>
+        public async Task DeleteAsync(string id, CancellationToken cancellationToken)
+        {
+            var currentUser = await GetCurrent(cancellationToken);
+;
+            if (currentUser.Id != id && currentUser.RoleName != "admin")
+            {
+                throw new AccessViolationException("Нет прав.");
+            }
+
+            await _userRepository.DeleteAsync(id, cancellationToken);
         }
 
         /// <summary>

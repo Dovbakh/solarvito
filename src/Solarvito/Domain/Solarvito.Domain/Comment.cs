@@ -27,13 +27,13 @@ namespace Solarvito.Domain
         /// <summary>
         /// Идентификатор пользователя, который оставил отзыв.
         /// </summary>
-        public int AuthorId { get; set; }
+        public string AuthorId { get; set; }
         /// <summary>
         /// Идентификатор пользователя, которому оставлен отзыв.
         /// </summary>
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         /// <summary>
-        /// Идентификатор обьявления, к которому оставлен отзыв.
+        /// Идентификатор пользователя, который оставил отзыв.
         /// </summary>
         public int AdvertisementId { get; set; }
         /// <summary>
@@ -44,6 +44,7 @@ namespace Solarvito.Domain
         /// Пользователь, к которому оставлен отзыв.
         /// </summary>
         public User User { get; set; }
+
         /// <summary>
         /// Обьявление, к которому оставлен отзыв.
         /// </summary>

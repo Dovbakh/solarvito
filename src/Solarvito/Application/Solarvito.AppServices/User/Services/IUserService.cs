@@ -18,7 +18,7 @@ namespace Solarvito.AppServices.User.Services
         /// <param name="userRegisterDto">Элемент <see cref="UserRegisterDto"/>.</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Идентификатор нового пользователя.</returns>
-        Task<int> Register(UserRegisterDto userRegisterDto, CancellationToken cancellationToken);
+        Task<string> Register(UserRegisterDto userRegisterDto, CancellationToken cancellationToken);
 
         /// <summary>
         /// Авторизация пользователя.
@@ -43,7 +43,7 @@ namespace Solarvito.AppServices.User.Services
         /// <param name="id">Идентификатор.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Элемент <see cref="UserDto"/>.</returns>
-        Task<UserDto> GetById(int id, CancellationToken cancellationToken);
+        Task<UserDto> GetById(string id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Получить текущего пользователя.
@@ -57,22 +57,30 @@ namespace Solarvito.AppServices.User.Services
         /// </summary>
         /// <param name="request">Элемент <see cref="UserUpdateRequestDto"/>.</param>
         /// <param name="cancellationToken"></param>
-        Task UpdateAsync(int id, UserUpdateRequestDto request, CancellationToken cancellationToken);
+        Task UpdateAsync(string id, UserUpdateRequestDto request, CancellationToken cancellationToken);
 
-        ///// <summary>
-        ///// Изменить пароль пользователя.
-        ///// </summary>
-        ///// <param name="userChangePasswordDto"></param>
-        ///// <param name="cancellationToken"></param>
-        ///// <returns></returns>
-        //Task ChangePasswordAsync(UserChangePasswordDto userChangePasswordDto, CancellationToken cancellationToken);
+        /// <summary>
+        /// Изменить пароль пользователя.
+        /// </summary>
+        /// <param name="userChangePasswordDto"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task ChangePasswordAsync(UserChangePasswordDto userChangePasswordDto, CancellationToken cancellationToken);
+
+        Task ChangeEmailRequestAsync(string newEmail, string password, string changeLink, CancellationToken cancellationToken);
+
+        Task ChangeEmailAsync(string newEmail, string token, CancellationToken cancellationToken);
+
+        Task ResetPasswordRequestAsync(string email, string resetLink, CancellationToken cancellationToken);
+
+        Task ResetPasswordAsync(string email, string newPassword, string token, CancellationToken cancellationToken);
 
         /// <summary>
         /// Удалить пользователя по идентификатору.
         /// </summary>
         /// <param name="id">Идентификатор.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
-        Task DeleteAsync(int id, CancellationToken cancellationToken);
+        Task DeleteAsync(string id, CancellationToken cancellationToken);
 
 
 

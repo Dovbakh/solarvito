@@ -5,24 +5,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
-namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
+namespace Solarvito.DataAccess.EntityConfigurations.User
 {
     /// <summary>
-    /// Конфигурация таблицы Users.
+    /// Конфигурация таблицы AspNetUsers.
     /// </summary>
     public class UserConfiguration : IEntityTypeConfiguration<Domain.User>
     {
         /// <inheritdoc />
         public void Configure(EntityTypeBuilder<Domain.User> builder)
         {
-            builder.ToTable("Users");
+            builder.ToTable("AspNetUsers");
 
-            builder.HasKey(u => u.Id);
-            builder.Property(u => u.Id).ValueGeneratedOnAdd();
-            builder.Property(u => u.Email).HasMaxLength(100).IsRequired();
             builder.Property(u => u.Name).HasMaxLength(100);
-            builder.Property(u => u.PasswordHash).HasMaxLength(500).IsRequired();
             builder.Property(u => u.Address).HasMaxLength(500);
 
             builder.HasMany(u => u.Advertisements)

@@ -27,11 +27,11 @@ namespace Solarvito.Contracts.Comment
         /// <summary>
         /// Идентификатор пользователя, который оставил отзыв.
         /// </summary>
-        public int AuthorId { get; set; }
+        public string AuthorId { get; set; }
         /// <summary>
         /// Идентификатор пользователя, которому оставлен отзыв.
         /// </summary>
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         /// <summary>
         /// Идентификатор обьявления, к которому оставлен отзыв.
         /// </summary>

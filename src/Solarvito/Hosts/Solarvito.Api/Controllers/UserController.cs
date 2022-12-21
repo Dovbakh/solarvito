@@ -12,7 +12,6 @@ namespace Solarvito.Api.Controllers
     /// Работа с пользователями.
     /// </summary>
     [ApiController]
-    [AllowAnonymous]
     [Route("v1/[controller]")]
     public class UserController : ControllerBase
     {
@@ -50,11 +49,11 @@ namespace Solarvito.Api.Controllers
         /// <param name="id">Идентификатор пользователя.</param>
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Элемент <see cref="UserDto"/>.</returns>
-        [HttpGet("{id:int}")]        
+        [HttpGet("{id}")]        
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
-        public async Task<IActionResult> GetById(int id, CancellationToken cancellation)
+        public async Task<IActionResult> GetById(string id, CancellationToken cancellation)
         {
             var user = await _userService.GetById(id, cancellation);
 
@@ -82,64 +81,114 @@ namespace Solarvito.Api.Controllers
         /// </summary>
         /// <param name="id">Идентификатор пользователя.</param>
         /// <param name="cancellation">Токен отмены.</param>
-        [HttpPut("{id:int}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<IActionResult> Update(int id, UserUpdateRequestDto userUpdateRequestDto, CancellationToken cancellation)
+        public async Task<IActionResult> Update(string id, UserUpdateRequestDto userUpdateRequestDto, CancellationToken cancellation)
         {
             await _userService.UpdateAsync(id, userUpdateRequestDto, cancellation);
 
             return Ok();
         }
 
-        ///// <summary>
-        ///// Изменить пользователя по идентификатору.
-        ///// </summary>
-        ///// <param name="id">Идентификатор пользователя.</param>
-        ///// <param name="cancellation">Токен отмены.</param>
-        //[HttpPut("email/{id:int}")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[Authorize]
-        //public async Task<IActionResult> ChangeEmail(UserChangeConfirmDto userChangeConfirmDto, CancellationToken cancellation)
-        //{
-        //    await _userService.ChangeEmailAsync(userChangeConfirmDto, cancellation);
+        /// <summary>
+        /// Изменить пользователя по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        [HttpGet("change-email")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        public async Task<IActionResult> ChangeEmail(string newEmail, string token, CancellationToken cancellation)
+        {
+            await _userService.ChangeEmailAsync(newEmail, token, cancellation);
 
-        //    return Ok();
-        //}
+            return Ok();
+        }
 
-        ///// <summary>
-        ///// Изменить пользователя по идентификатору.
-        ///// </summary>
-        ///// <param name="id">Идентификатор пользователя.</param>
-        ///// <param name="cancellation">Токен отмены.</param>
-        //[HttpPut("password/{id:int}")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[Authorize]
-        //public async Task<IActionResult> ChangePassword(UserChangePasswordDto userChangePasswordDto, CancellationToken cancellation)
-        //{
-        //    await _userService.ChangePasswordAsync(userChangePasswordDto, cancellation);
+        /// <summary>
+        /// Изменить пользователя по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        [HttpPost("change-email-request")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        public async Task<IActionResult> ChangeEmailRequest(string newEmail, string password, CancellationToken cancellation)
+        {
+            var changeLink = Url.Action(nameof(ChangeEmail), "User", new { newEmail = newEmail, token = "tokenValue" }, Request.Scheme);
 
-        //    return Ok();
-        //}
+            await _userService.ChangeEmailRequestAsync(newEmail, password, changeLink, cancellation);
 
-        ///// <summary>
-        ///// Изменить пользователя по идентификатору.
-        ///// </summary>
-        ///// <param name="id">Идентификатор пользователя.</param>
-        ///// <param name="cancellation">Токен отмены.</param>
-        //[HttpPut("password/reset/{id:int}")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[Authorize]
-        //public async Task<IActionResult> ResetPassword(string email, CancellationToken cancellation)
-        //{
-        //    await _userService.ResetPasswordAsync(email, cancellation);
+            return Ok();
+        }
 
-        //    return Ok();
-        //}
+        /// <summary>
+        /// Изменить пользователя по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        [HttpPut("change-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] UserChangePasswordDto userChangePasswordDto, CancellationToken cancellation)
+        {
+            await _userService.ChangePasswordAsync(userChangePasswordDto, cancellation);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Изменить пользователя по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        [HttpGet("reset-password-request")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPasswordRequest(string email, CancellationToken cancellation)
+        {
+            var resetLink  = Url.Action(nameof(ResetPasswordConfirm), "User", new { email = email, token = "tokenValue" }, Request.Scheme);
+
+            await _userService.ResetPasswordRequestAsync(email, resetLink, cancellation);          
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Изменить пользователя по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        [HttpGet("reset-password-confirm")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPasswordConfirm(string email, string token, CancellationToken cancellation)
+        {           
+            return Ok(new { email, token });
+        }
+
+        /// <summary>
+        /// Изменить пользователя по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        [HttpPut("reset-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(string email, string newPassword, string token, CancellationToken cancellation)
+        {
+            await _userService.ResetPasswordAsync(email, newPassword, token, cancellation);
+
+            return Ok();
+        }
 
 
 
@@ -151,8 +200,8 @@ namespace Solarvito.Api.Controllers
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Delete(int id, CancellationToken cancellation)
+        [Authorize]
+        public async Task<IActionResult> Delete(string id, CancellationToken cancellation)
         {
             await _userService.DeleteAsync(id, cancellation);
 

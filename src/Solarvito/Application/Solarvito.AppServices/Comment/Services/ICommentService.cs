@@ -21,14 +21,14 @@ namespace Solarvito.AppServices.Category.Services
         /// <param name="skip">Количество пропускаемых категорий.</param>
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Коллекция элементов <see cref="CommentDto"/>.</returns>
-        Task<IReadOnlyCollection<CommentDto>> GetAllAsync(int page, CancellationToken cancellation);
+        Task<IReadOnlyCollection<CommentDto>> GetAllAsync(int? page, CancellationToken cancellation);
 
         /// <summary>
         /// Получить все категории с пагинацией.
         /// </summary>
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Коллекция элементов <see cref="CommentDto"/>.</returns>
-        Task<IReadOnlyCollection<CommentDto>> GetAllFilteredAsync(CommentFilterRequest filterRequest, int page, CancellationToken cancellation);
+        Task<IReadOnlyCollection<CommentDto>> GetAllFilteredAsync(CommentFilterRequest filterRequest, int? page, CancellationToken cancellation);
 
         /// <summary>
         /// Получить категорию по идентификатору.

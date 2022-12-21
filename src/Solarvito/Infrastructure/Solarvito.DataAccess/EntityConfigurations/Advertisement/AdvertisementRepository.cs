@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Minio.DataModel;
+using Newtonsoft.Json;
 using Solarvito.AppServices.Advertisement.Repositories;
 using Solarvito.Contracts;
 using Solarvito.Contracts.Advertisement;
@@ -24,16 +28,24 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
         private readonly IRepository<Domain.Advertisement> _repository;
         private readonly IObjectStorage _objectStorage;
         private readonly ILogger<AdvertisementRepository> _logger;
+        private readonly ICachedRepository<List<int>> _cachedRepository;
+
+        private readonly string CacheKey = "AdvertisementHistoryKey_";
 
         /// <summary>
         /// Инициализировать экземпляр <see cref="AdvertisementRepository"/>.
         /// </summary>
         /// <param name="repository">Базовый репозиторий.</param>
-        public AdvertisementRepository(IRepository<Domain.Advertisement> repository, IObjectStorage objectStorage, ILogger<AdvertisementRepository> logger)
+        public AdvertisementRepository(
+            IRepository<Domain.Advertisement> repository, 
+            IObjectStorage objectStorage, 
+            ILogger<AdvertisementRepository> logger,
+            ICachedRepository<List<int>> cachedRepository)
         {
             _repository = repository;
             _objectStorage = objectStorage;
             _logger = logger;
+            _cachedRepository = cachedRepository;
         }
 
         /// <inheritdoc/>
@@ -58,7 +70,6 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
         /// <inheritdoc/>
         public async Task DeleteAsync(int id, CancellationToken cancellation)
         {
-
             try
             {
                 _logger.LogInformation("Запрос в репозиторий на удаление обьявления с ID: {AdvertisementId}.", id);
@@ -109,7 +120,7 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
             var query = _repository.GetAll();
                 
 
-            if (filter.UserId.HasValue)
+            if (!filter.UserId.IsNullOrEmpty())
             {
                 query = query.Where(a => a.UserId == filter.UserId);
             }
@@ -177,7 +188,8 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
         {
             try
             {
-                _logger.LogInformation("Запрос в репозиторий на получение обьявления c ID: {AdvertisementId}.", id);
+                _logger.LogInformation("Запрос в репозиторий на получение обьявления c ID: {AdvertisementId}.", id);                     
+
                 var advertisement = await _repository.GetAllFiltered(a => a.Id.Equals(id))
                     .Include(a => a.Category)
                     .Include(a => a.User)
@@ -190,6 +202,25 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
                     throw new KeyNotFoundException($"Не найдено обьявление с идентификатором '{id}'");
                 }
 
+                _logger.LogInformation("Запрос на кэширование обьявления c ID: {AdvertisementId} в историю просмотров.", id);
+
+                var history = await _cachedRepository.GetById(CacheKey);
+
+                if (history == null)
+                {
+                    history = new List<int>();
+                }
+                if (history.Count > 99)
+                {
+                    history.RemoveAt(0);
+                }
+                if (!history.Contains(id))
+                {
+                    history.Add(id);
+                    _cachedRepository.SetWithId(CacheKey, history);
+                }
+                
+
                 return advertisement;
             }
             catch(Exception e)
@@ -198,6 +229,26 @@ namespace Solarvito.DataAccess.EntityConfigurations.Advertisement
                 throw;
             }
 
+        }
+
+        public async Task<IReadOnlyCollection<AdvertisementResponseDto>> GetHistoryAsync(int take, int skip, CancellationToken cancellation)
+        {
+            var cachedId = await _cachedRepository.GetById(CacheKey);
+
+            var history = new List<AdvertisementResponseDto>();
+            foreach(var id in cachedId)
+            {
+                var advertisement = await _repository.GetAllFiltered(a => a.Id.Equals(id))
+                    .Include(a => a.Category)
+                    .Include(a => a.User)
+                    .Include(a => a.AdvertisementImages)
+                    .Select(a => a.MapToDto())
+                    .FirstOrDefaultAsync();
+
+                history.Add(advertisement);
+            }
+
+            return history.Skip(skip).Take(take).ToList();
         }
 
         /// <inheritdoc/>

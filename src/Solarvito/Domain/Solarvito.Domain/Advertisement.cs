@@ -66,7 +66,7 @@ namespace Solarvito.Domain
         /// <summary>
         /// Идентификатор пользователя.
         /// </summary>
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// Категория обьявления.

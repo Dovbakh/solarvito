@@ -102,29 +102,37 @@ namespace Solarvito.AppServices.Category.Services
         }
 
         /// <inheritdoc/>
-        public async Task<IReadOnlyCollection<CommentDto>> GetAllAsync(int page, CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<CommentDto>> GetAllAsync(int? page, CancellationToken cancellation)
         {
+            if (page == null) page = 1;
             int take = numByPage;
-            int skip = take * page - take;
+            int skip = take * page.GetValueOrDefault() - take;
 
             var comments = await _commentRepository.GetAllAsync(take, skip, cancellation);
             foreach(var comment in comments)
             {
-                comment.AuthorName = "Пользователь #" + comment.AuthorId;
+                if (string.IsNullOrEmpty(comment.AuthorName))
+                {
+                    comment.AuthorName = "Аноним";
+                }
             }
 
             return comments;
         }
 
-        public async Task<IReadOnlyCollection<CommentDto>> GetAllFilteredAsync(CommentFilterRequest filterRequest, int page, CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<CommentDto>> GetAllFilteredAsync(CommentFilterRequest filterRequest, int? page, CancellationToken cancellation)
         {
+            if (page == null) page = 1;
             int take = numByPage;
-            int skip = take * page - take;
+            int skip = take * page.GetValueOrDefault() - take;
 
             var comments = await _commentRepository.GetAllFilteredAsync(filterRequest, take, skip, cancellation);
             foreach (var comment in comments)
             {
-                comment.AuthorName = "Пользователь #" + comment.AuthorId;
+                if (string.IsNullOrEmpty(comment.AuthorName))
+                {
+                    comment.AuthorName = "Аноним";
+                }
             }
 
             return comments;

@@ -81,6 +81,40 @@ namespace Solarvito.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Получить обьявление по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор обьявления.</param>
+        /// <param name="cancellation">Токен отмены</param>
+        /// <returns>Элемент <see cref="AdvertisementResponseDto"/>.</returns>
+        [HttpGet("history")]
+        [ProducesResponseType(typeof(AdvertisementResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetHistory(int? page, CancellationToken cancellation)
+        {
+            var result = await _advertisementService.GetHistoryAsync(page, cancellation);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Получить обьявление по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор обьявления.</param>
+        /// <param name="cancellation">Токен отмены</param>
+        /// <returns>Элемент <see cref="AdvertisementResponseDto"/>.</returns>
+        [HttpGet("last-viewed")]
+        [ProducesResponseType(typeof(AdvertisementResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetLastViewed(int? count, CancellationToken cancellation)
+        {
+            var result = await _advertisementService.GetLastViewedAsync(count, cancellation);
+
+            return Ok(result);
+        }
+
 
         /// <summary>
         /// Добавить новое обьявление.

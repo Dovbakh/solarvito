@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Solarvito.AppServices.File.Repositories;
 using Solarvito.Infrastructure.ObjectStorage;
+using Solarvito.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,24 +18,42 @@ namespace Solarvito.DataAccess.EntityConfigurations.File
     {
         private readonly IObjectStorage _objectStorage;
         private readonly ILogger<FileRepository> _logger;
+        private readonly ICachedRepository<byte[]> _cachedRepository;
+
+        private readonly string CacheKey = "FilesKey_";
 
         /// <summary>
         /// Инициализировать экземпляр <see cref="FileRepository"/>.
         /// </summary>
         /// <param name="objectStorage">Базовый репозиторий.</param>
-        public FileRepository(IObjectStorage objectStorage, ILogger<FileRepository> logger)
+        public FileRepository(
+            IObjectStorage objectStorage, 
+            ILogger<FileRepository> logger,
+            ICachedRepository<byte[]> cachedRepository)
         {
             _objectStorage = objectStorage;
             _logger = logger;
+            _cachedRepository = cachedRepository;
         }
 
         /// <inheritdoc/>
-        public Task<byte[]> Get(string fileName, string fileFolder, CancellationToken cancellation)
+        public async Task<byte[]> Get(string fileName, string fileFolder, CancellationToken cancellation)
         {
             try
             {
+                var cache = await _cachedRepository.GetById(CacheKey + fileName);
+                if (cache != null)
+                {
+                    return cache;
+                }
+
+
                 _logger.LogInformation("Запрос в обьектное хранилище на получение файла с именем '{FileName}' в корзине '{FolderName}'.", fileName, fileFolder);
-                return _objectStorage.Get(fileName, fileFolder);
+                var fileBytes = await _objectStorage.Get(fileName, fileFolder);
+
+                _cachedRepository.SetWithId(CacheKey + fileName, fileBytes);
+
+                return fileBytes;
             }
             catch(Exception e)
             {

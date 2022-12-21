@@ -41,6 +41,22 @@
             <param name="cancellation">Токен отмены</param>
             <returns>Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementResponseDto"/>.</returns>
         </member>
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetHistory(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Получить обьявление по идентификатору.
+            </summary>
+            <param name="id">Идентификатор обьявления.</param>
+            <param name="cancellation">Токен отмены</param>
+            <returns>Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementResponseDto"/>.</returns>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.AdvertisementController.GetLastViewed(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Получить обьявление по идентификатору.
+            </summary>
+            <param name="id">Идентификатор обьявления.</param>
+            <param name="cancellation">Токен отмены</param>
+            <returns>Элемент <see cref="T:Solarvito.Contracts.Advertisement.AdvertisementResponseDto"/>.</returns>
+        </member>
         <member name="M:Solarvito.Api.Controllers.AdvertisementController.Add(Solarvito.Contracts.Advertisement.AdvertisementRequestDto,System.Threading.CancellationToken)">
             <summary>
             Добавить новое обьявление.
@@ -126,7 +142,7 @@
             </summary>
             <param name="commentService">Сервис для работы с комментариями.</param>
         </member>
-        <member name="M:Solarvito.Api.Controllers.CommentController.GetAll(System.Int32,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.CommentController.GetAll(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Получить все комментарии с пагинацией.
             </summary>
@@ -134,7 +150,7 @@
             <param name="cancellation">Токен отмены.</param>
             <returns>Коллекция элементов <see cref="T:Solarvito.Contracts.Comment.CommentDto"/>.</returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.CommentController.GetAllFiltered(Solarvito.Contracts.Comment.CommentFilterRequest,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.CommentController.GetAllFiltered(Solarvito.Contracts.Comment.CommentFilterRequest,System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             Получить все комментарии по фильтру и с пагинацией.
             </summary>
@@ -220,7 +236,7 @@
             <param name="cancellation">Токен отмены.</param>
             <returns>Коллекция элементов <see cref="T:Solarvito.Contracts.User.UserDto"/>.</returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.GetById(System.Int32,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.GetById(System.String,System.Threading.CancellationToken)">
             <summary>
             Получить пользователя по идентификатору.
             </summary>
@@ -235,14 +251,56 @@
             <param name="cancellation">Токен отмены.</param>
             <returns>Элемент <see cref="T:Solarvito.Contracts.User.UserDto"/>.</returns>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.Update(System.Int32,Solarvito.Contracts.User.UserUpdateRequestDto,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.Update(System.String,Solarvito.Contracts.User.UserUpdateRequestDto,System.Threading.CancellationToken)">
             <summary>
             Изменить пользователя по идентификатору.
             </summary>
             <param name="id">Идентификатор пользователя.</param>
             <param name="cancellation">Токен отмены.</param>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.Delete(System.Int32,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.ChangeEmail(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Изменить пользователя по идентификатору.
+            </summary>
+            <param name="id">Идентификатор пользователя.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.UserController.ChangeEmailRequest(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Изменить пользователя по идентификатору.
+            </summary>
+            <param name="id">Идентификатор пользователя.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.UserController.ChangePassword(Solarvito.Contracts.User.UserChangePasswordDto,System.Threading.CancellationToken)">
+            <summary>
+            Изменить пользователя по идентификатору.
+            </summary>
+            <param name="id">Идентификатор пользователя.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.UserController.ResetPasswordRequest(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Изменить пользователя по идентификатору.
+            </summary>
+            <param name="id">Идентификатор пользователя.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.UserController.ResetPasswordConfirm(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Изменить пользователя по идентификатору.
+            </summary>
+            <param name="id">Идентификатор пользователя.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.UserController.ResetPassword(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Изменить пользователя по идентификатору.
+            </summary>
+            <param name="id">Идентификатор пользователя.</param>
+            <param name="cancellation">Токен отмены.</param>
+        </member>
+        <member name="M:Solarvito.Api.Controllers.UserController.Delete(System.String,System.Threading.CancellationToken)">
             <summary>
             Удалить пользователя по идентификатору.
             </summary>

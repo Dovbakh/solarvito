@@ -1,73 +1,52 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Solarvito.Domain
 {
-    public class User
+    public class User : IdentityUser
     {
-        /// <summary>
-        /// Идентификатор пользователя.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Электронная почта пользователя.
-        /// </summary>
-        public string Email { get; set; }
-
-        /// <summary>
-        /// Хэш пароля пользователя.
-        /// </summary>
-        public string PasswordHash { get; set; }
-
-        /// <summary>
+        // <summary>
         /// Имя пользователя.
         /// </summary>
         public string? Name { get; set; }
 
         /// <summary>
-        /// Номер телефона пользователя.
-        /// </summary>
-        public string? Phone { get; set; }
-
-        /// <summary>
         /// Адрес пользователя.
         /// </summary>
-        public string? Address { get; set; }
+        public string? Address { get; set; }      
 
         /// <summary>
         /// Дата создания пользователя.
         /// </summary>
         public DateTime CreatedAt { get; set; }
-        
+
+        /// <summary>
+        /// Идентификатор роли пользователя.
+        /// </summary>
+        public string RoleId { get; set; }
+
         /// <summary>
         /// Роль пользователя.
         /// </summary>
         public Role Role { get; set; }
 
         /// <summary>
-        /// Идентификатор роли пользователя.
-        /// </summary>
-        public int RoleId {get; set; }
-
-        /// <summary>
         /// Коллекция обьявлений пользователя.
         /// </summary>
-        public ICollection<Advertisement> Advertisements { get; set; }
+        public virtual ICollection<Advertisement> Advertisements { get; set; }
 
         /// <summary>
         /// Коллекция отзывов, написанных пользователем.
         /// </summary>
-        public ICollection<Comment> CommentsBy { get; set; }
+        public virtual ICollection<Comment> CommentsBy { get; set; }
 
         /// <summary>
         /// Коллекция отзывов, написанных о пользователе.
         /// </summary>
-        public ICollection<Comment> CommentsFor { get; set; }
-
+        public virtual ICollection<Comment> CommentsFor { get; set; }
     }
 }

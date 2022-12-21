@@ -40,6 +40,8 @@ namespace Solarvito.AppServices.Advertisement.Repositories
         /// <returns>Элемент <see cref="AdvertisementResponseDto"/>.</returns>
         Task<AdvertisementResponseDto> GetByIdAsync(int id, CancellationToken cancellation);
 
+        Task<IReadOnlyCollection<AdvertisementResponseDto>> GetHistoryAsync(int take, int skip, CancellationToken cancellation);
+
         /// <summary>
         /// Добавить новое обьявление.
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,22 +7,11 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Domain
 {
-    public class Role
+    public class Role : IdentityRole
     {
         /// <summary>
-        /// Идентификатор роли.
+        /// Коллекция пользователей с этой ролью.
         /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Название роли.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Коллекция пользователей, имеющих роль.
-        /// </summary>
-        public ICollection<User> Users { get; set; }
-
+        public IReadOnlyCollection<User> Users { get; set; }
     }
 }

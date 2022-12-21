@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Minio.DataModel;
+using Newtonsoft.Json;
 using SixLabors.ImageSharp.Advanced;
 using Solarvito.AppServices.Advertisement.Repositories;
 using Solarvito.AppServices.AdvertisementImage.Repositories;
@@ -19,6 +21,7 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Solarvito.AppServices.Advertisement.Services
 {
@@ -32,6 +35,7 @@ namespace Solarvito.AppServices.Advertisement.Services
         private readonly IFileService _fileService;
         private readonly IAdvertisementImageRepository _advertisementImageRepository;
         private readonly ILogger<AdvertisementService> _logger;
+        private readonly IDistributedCache _distributedCache;
         private const int numByPage = 20; // количество обьявлений на одной странице
 
         /// <summary>
@@ -45,7 +49,8 @@ namespace Solarvito.AppServices.Advertisement.Services
             IValidator<AdvertisementUpdateRequestDto> validatorUpdate,
             IFileService fileService,
             IAdvertisementImageRepository advertisementImageRepository,
-            ILogger<AdvertisementService> logger)
+            ILogger<AdvertisementService> logger,
+            IDistributedCache distributedCache)
         {
             _advertisementRepository = advertisementRepository;
             _userService = userService;
@@ -54,6 +59,7 @@ namespace Solarvito.AppServices.Advertisement.Services
             _fileService = fileService;
             _advertisementImageRepository = advertisementImageRepository;
             _logger = logger;
+            _distributedCache = distributedCache;
         }
 
         /// <inheritdoc/>
@@ -118,7 +124,7 @@ namespace Solarvito.AppServices.Advertisement.Services
             var currentUser = await _userService.GetCurrent(cancellation);
             var advertisement = await _advertisementRepository.GetByIdAsync(id, cancellation);
 
-            if (advertisement.UserId == currentUser.Id || currentUser.RoleId != 1)
+            if (advertisement.UserId == currentUser.Id || currentUser.RoleName != "admin")
             {
                 await _advertisementRepository.DeleteAsync(id, cancellation);
             }
@@ -127,6 +133,7 @@ namespace Solarvito.AppServices.Advertisement.Services
         /// <inheritdoc/>
         public Task<IReadOnlyCollection<AdvertisementResponseDto>> GetAllAsync(CancellationToken cancellation, int? page)
         {
+            if (page == null) page = 1;
             int take = numByPage;
             int skip = page.GetValueOrDefault() * take - take;
 
@@ -136,6 +143,7 @@ namespace Solarvito.AppServices.Advertisement.Services
         /// <inheritdoc/>
         public Task<IReadOnlyCollection<AdvertisementResponseDto>> GetAllFilteredAsync(AdvertisementFilterRequest filter, CancellationToken cancellation, int? page)
         {
+            if (page == null) page = 1;
             int take = numByPage;
             int skip = page.GetValueOrDefault() * take - take;
 
@@ -150,15 +158,35 @@ namespace Solarvito.AppServices.Advertisement.Services
             _logger.LogInformation("Изменение количества просмотров обьявления с идентификатором {AdvertisementId}.", id);
             var currentUser = await _userService.GetCurrent(cancellation);
 
-            if (advertisementResponseDto.UserId != currentUser.Id)
+
+            if (currentUser == null || currentUser.Id != advertisementResponseDto.UserId)
             {
                 advertisementResponseDto.NumberOfViews += 1;
+
+                var advertisementDto = advertisementResponseDto.MapToDto();
+                await _advertisementRepository.UpdateAsync(id, advertisementDto, cancellation);
             }
 
-            var advertisementDto = advertisementResponseDto.MapToDto();
-            await _advertisementRepository.UpdateAsync(id, advertisementDto, cancellation);
+           
 
             return advertisementResponseDto;
+        }
+
+        public Task<IReadOnlyCollection<AdvertisementResponseDto>> GetHistoryAsync(int? page, CancellationToken cancellation)
+        {
+            if (page == null) page = 1;
+            int take = numByPage;
+            int skip = take * page.GetValueOrDefault() - take;
+
+            return _advertisementRepository.GetHistoryAsync(take, skip, cancellation);
+
+        }
+
+        public Task<IReadOnlyCollection<AdvertisementResponseDto>> GetLastViewedAsync(int? count, CancellationToken cancellation)
+        {
+            if (count == null) count = 10;
+
+            return _advertisementRepository.GetHistoryAsync(count.GetValueOrDefault(), 0, cancellation);
         }
 
         /// <inheritdoc/>

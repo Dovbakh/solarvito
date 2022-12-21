@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Minio.DataModel;
 using Solarvito.AppServices.Category.Repositories;
 using Solarvito.Contracts;
@@ -98,12 +99,12 @@ namespace Solarvito.DataAccess.EntityConfigurations.Category
         {
             var query = _repository.GetAll();
 
-            if (filter.UserId.HasValue)
+            if (!filter.UserId.IsNullOrEmpty())
             {
                 query = query.Where(a => a.UserId == filter.UserId);
             }
 
-            if (filter.AuthorId.HasValue)
+            if (!filter.AuthorId.IsNullOrEmpty())
             {
                 query = query.Where(a => a.AuthorId == filter.AuthorId);
             }
@@ -154,12 +155,12 @@ namespace Solarvito.DataAccess.EntityConfigurations.Category
         {
             var query = _repository.GetAll();
 
-            if (filter.UserId.HasValue)
+            if (!filter.UserId.IsNullOrEmpty())
             {
                 query = query.Where(a => a.UserId == filter.UserId);
             }
 
-            if (filter.AuthorId.HasValue)
+            if (!filter.AuthorId.IsNullOrEmpty())
             {
                 query = query.Where(a => a.AuthorId == filter.AuthorId);
             }

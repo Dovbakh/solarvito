@@ -14,17 +14,12 @@ namespace Solarvito.Contracts.User
         /// <summary>
         /// Идентификатор пользователя.
         /// </summary>
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Электронная почта пользователя.
         /// </summary>
         public string Email { get; set; }
-
-        /// <summary>
-        /// Хэш пароля пользователя.
-        /// </summary>
-        public string PasswordHash { get; set; }
 
         /// <summary>
         /// Имя пользователя.
@@ -64,7 +59,7 @@ namespace Solarvito.Contracts.User
         /// <summary>
         /// Идентификатор роли пользователя.
         /// </summary>
-        public int RoleId { get; set; }
+        public string RoleId { get; set; }
 
         /// <summary>
         /// Название роли пользователя.

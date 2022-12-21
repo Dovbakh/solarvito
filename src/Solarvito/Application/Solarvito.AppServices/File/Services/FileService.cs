@@ -7,13 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Minio;
+using Newtonsoft.Json;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Processing;
 using Solarvito.AppServices.File.Repositories;
 using Solarvito.AppServices.Services;
+using Solarvito.Contracts.Advertisement;
+using Solarvito.Contracts.AdvertisementImage;
 using static System.Net.WebRequestMethods;
 
 namespace Solarvito.AppServices.File.Services
@@ -23,15 +27,20 @@ namespace Solarvito.AppServices.File.Services
     {
         private readonly IFileRepository _fileRepository;
         private readonly ILogger<FileService> _logger;
+        private readonly IDistributedCache _distributedCache;
 
         /// <summary>
         /// Инициализировать экземпляр <see cref="FileService"/>
         /// </summary>
         /// <param name="fileRepository">Репозиторий для работы с файлами.</param>
-        public FileService(IFileRepository fileRepository, ILogger<FileService> logger)
+        public FileService(
+            IFileRepository fileRepository, 
+            ILogger<FileService> logger,
+            IDistributedCache distributedCache)
         {
             _fileRepository = fileRepository;
             _logger = logger;
+            _distributedCache = distributedCache;
         }
 
         /// <inheritdoc/>
@@ -43,11 +52,10 @@ namespace Solarvito.AppServices.File.Services
 
         /// <inheritdoc/>
         public Task<byte[]> GetImage(string fileName, CancellationToken cancellation)
-        {
+        {            
             var fileFolder = "images";
 
             return _fileRepository.Get(fileName, fileFolder, cancellation);
-
         }
 
         /// <inheritdoc/>

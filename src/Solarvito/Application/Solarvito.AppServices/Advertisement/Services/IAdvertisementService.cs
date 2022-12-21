@@ -38,6 +38,9 @@ namespace Solarvito.AppServices.Advertisement.Services
         /// <returns>Элемент <see cref="AdvertisementResponseDto"/>.</returns>
         Task<AdvertisementResponseDto> GetByIdAsync(int id, CancellationToken cancellation);
 
+        Task<IReadOnlyCollection<AdvertisementResponseDto>> GetHistoryAsync(int? page, CancellationToken cancellation);
+
+        Task<IReadOnlyCollection<AdvertisementResponseDto>> GetLastViewedAsync(int? count, CancellationToken cancellation);
         /// <summary>
         /// Добавить новое обьявление.
         /// </summary>

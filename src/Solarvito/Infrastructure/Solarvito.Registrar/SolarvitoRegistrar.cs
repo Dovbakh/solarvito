@@ -36,6 +36,8 @@ using Solarvito.AppServices.AdvertisementImage.Repositories;
 using Solarvito.DataAccess.EntityConfigurations.AdvertisementImage;
 using Solarvito.Contracts.Comment;
 using Solarvito.AppServices.Comment.Helpers;
+using Solarvito.AppServices.User.Helpers;
+using Solarvito.AppServices.Notifier.Services;
 
 namespace Solarvito.Registrar
 {
@@ -56,6 +58,7 @@ namespace Solarvito.Registrar
 
             // Регистрация репозиториев
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(ICachedRepository<>), typeof(CachedRepository<>));
             services.AddTransient<IAdvertisementRepository, AdvertisementRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
@@ -70,6 +73,7 @@ namespace Solarvito.Registrar
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<ICommentService, CommentService>();
+            services.AddTransient<INotifierService, EmailService>();
 
             // Регистрация вспомогательных сервисов
             services.AddSingleton<IDateTimeService, DateTimeService>();
@@ -77,6 +81,7 @@ namespace Solarvito.Registrar
             services.AddScoped<IClaimsAccessor, HttpContextClaimsAccessor>();
             services.AddTransient<IValidator<UserRegisterDto>, UserRegisterValidator>();
             services.AddTransient<IValidator<UserLoginDto>, UserLoginValidator>();
+            services.AddTransient<IValidator<UserChangePasswordDto>, UserPasswordValidator>();
             services.AddTransient<IValidator<AdvertisementRequestDto>, AdvertisementValidator>();
             services.AddTransient<IValidator<AdvertisementUpdateRequestDto>, AdvertisementUpdateValidator>();
             services.AddTransient<IValidator<CommentRequestDto>, CommentValidator>();
