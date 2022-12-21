@@ -10,14 +10,22 @@ using System.Threading.Tasks;
 
 namespace Solarvito.AppServices.Notifier.Services
 {
+    /// <inheritdoc/>
     public class EmailService : INotifierService
     {
         private readonly IConfiguration _configuration;
 
+
+        /// <summary>
+        /// Инициализировать экземпляр <see cref="EmailService"/>
+        /// </summary>
+        /// <param name="configuration">Конфигурация приложения.</param>
         public EmailService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
+
+        /// <inheritdoc/>
         public void Send(NotifyDto request)
         {
             var emailUserName = _configuration.GetSection("EmailService").GetRequiredSection("EmailUsername").Value;

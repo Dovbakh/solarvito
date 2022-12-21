@@ -21,7 +21,6 @@ using System.Threading.Tasks;
 using Solarvito.Infrastructure.Identity;
 using Microsoft.AspNetCore.Http;
 using FluentValidation;
-using Solarvito.AppServices.User.Validators;
 using Microsoft.AspNetCore.Identity;
 using Solarvito.Contracts.User;
 using Solarvito.AppServices.User.Additional;
@@ -36,8 +35,9 @@ using Solarvito.AppServices.AdvertisementImage.Repositories;
 using Solarvito.DataAccess.EntityConfigurations.AdvertisementImage;
 using Solarvito.Contracts.Comment;
 using Solarvito.AppServices.Comment.Helpers;
-using Solarvito.AppServices.User.Helpers;
 using Solarvito.AppServices.Notifier.Services;
+using Solarvito.AppServices.User.Helpers.Validators;
+using Solarvito.AppServices.User.Helpers;
 
 namespace Solarvito.Registrar
 {
@@ -81,7 +81,11 @@ namespace Solarvito.Registrar
             services.AddScoped<IClaimsAccessor, HttpContextClaimsAccessor>();
             services.AddTransient<IValidator<UserRegisterDto>, UserRegisterValidator>();
             services.AddTransient<IValidator<UserLoginDto>, UserLoginValidator>();
-            services.AddTransient<IValidator<UserChangePasswordDto>, UserPasswordValidator>();
+            services.AddTransient<IValidator<UserChangePasswordDto>, UserChangePasswordValidator>();
+            services.AddTransient<IValidator<UserChangeEmailDto>, UserChangeEmailValidator>();
+            services.AddTransient<IValidator<UserUpdateRequestDto>, UserUpdateValidator>();
+            services.AddTransient<IValidator<UserEmailDto>, UserEmailValidator>();
+            services.AddTransient<IValidator<UserResetPasswordDto>, UserResetPasswordValidator>();
             services.AddTransient<IValidator<AdvertisementRequestDto>, AdvertisementValidator>();
             services.AddTransient<IValidator<AdvertisementUpdateRequestDto>, AdvertisementUpdateValidator>();
             services.AddTransient<IValidator<CommentRequestDto>, CommentValidator>();

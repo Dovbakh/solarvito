@@ -34,13 +34,26 @@ namespace Solarvito.AppServices.Advertisement.Services
         /// Получить обьявление по идентификатору.
         /// </summary>
         /// <param name="id">Идентификатор обьявления.</param>
-        /// <param name="cancellation">Токен отмены</param>
+        /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Элемент <see cref="AdvertisementResponseDto"/>.</returns>
         Task<AdvertisementResponseDto> GetByIdAsync(int id, CancellationToken cancellation);
 
+        /// <summary>
+        /// Получить историю просмотренных обьявлений текущего пользователя.
+        /// </summary>
+        /// <param name="page">Номер страницы.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Коллекция элементов <see cref="AdvertisementResponseDto"/>.</returns>
         Task<IReadOnlyCollection<AdvertisementResponseDto>> GetHistoryAsync(int? page, CancellationToken cancellation);
 
+        /// <summary>
+        /// Получить N-количество последних просмотренных обьявлений.
+        /// </summary>
+        /// <param name="count">Количество последних просмотренных обьявлений.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Коллекция элементов <see cref="AdvertisementResponseDto"/>.</returns>
         Task<IReadOnlyCollection<AdvertisementResponseDto>> GetLastViewedAsync(int? count, CancellationToken cancellation);
+
         /// <summary>
         /// Добавить новое обьявление.
         /// </summary>

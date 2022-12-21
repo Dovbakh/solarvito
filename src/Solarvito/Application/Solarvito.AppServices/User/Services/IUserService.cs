@@ -60,27 +60,55 @@ namespace Solarvito.AppServices.User.Services
         Task UpdateAsync(string id, UserUpdateRequestDto request, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Изменить пароль пользователя.
-        /// </summary>
-        /// <param name="userChangePasswordDto"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task ChangePasswordAsync(UserChangePasswordDto userChangePasswordDto, CancellationToken cancellationToken);
-
-        Task ChangeEmailRequestAsync(string newEmail, string password, string changeLink, CancellationToken cancellationToken);
-
-        Task ChangeEmailAsync(string newEmail, string token, CancellationToken cancellationToken);
-
-        Task ResetPasswordRequestAsync(string email, string resetLink, CancellationToken cancellationToken);
-
-        Task ResetPasswordAsync(string email, string newPassword, string token, CancellationToken cancellationToken);
-
-        /// <summary>
         /// Удалить пользователя по идентификатору.
         /// </summary>
         /// <param name="id">Идентификатор.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         Task DeleteAsync(string id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Изменить пароль у пользователя.
+        /// </summary>
+        /// <param name="userChangePasswordDto">Элемент <see cref="UserChangePasswordDto"/>.</param>
+        /// <param name="cancellationToken">Токен отмены.</param>
+        /// <returns></returns>
+        Task ChangePasswordAsync(UserChangePasswordDto userChangePasswordDto, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Получение токена для изменения почты пользователя и его отправка на новую почту.
+        /// </summary>
+        /// <param name="request">Элемент <see cref="UserChangeEmailDto"/>.</param>
+        /// /// <param name="changeLink">Шаблон ссылки на изменение почты.</param>
+        /// <param name="cancellationToken">Токен отмены.</param>
+        /// <returns>Токен для изменения почты пользователя.</returns>
+        Task ChangeEmailRequestAsync(UserChangeEmailDto request, string changeLink, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Изменить электронную почту у пользователя.
+        /// </summary>
+        /// <param name="newEmail">Элемент <see cref="UserEmailDto"/>.</param>
+        /// <param name="token">Сгенерированный токен смены почты.</param>
+        /// <param name="cancellationToken">Токен отмены.</param>
+        /// <returns></returns>
+        Task ChangeEmailAsync(UserEmailDto newEmail, string token, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Получение токена для сброса пароля пользователя и его отправка на почту.
+        /// </summary>
+        /// <param name="email">Почта пользователя.</param>
+        /// <param name="resetLink">Шаблон для ссылки на сброс пароля.</param>
+        /// <param name="cancellationToken">Токен отмены.</param>
+        /// <returns></returns>
+        Task ResetPasswordRequestAsync(UserEmailDto email, string resetLink, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Сброс пароля пользователя.
+        /// </summary>
+        /// <param name="request">Элемент <see cref="UserResetPasswordDto"/>.</param>
+        /// <param name="token">Сгенерированный токен на сброс пароля.</param>
+        /// <param name="cancellationToken">Токен отмены.</param>
+        /// <returns></returns>
+        Task ResetPasswordAsync(UserResetPasswordDto request, string token, CancellationToken cancellationToken);
 
 
 

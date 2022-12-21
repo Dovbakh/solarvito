@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.User
 {
+    /// <summary>
+    /// DTO пользователя с текущим и новым паролями.
+    /// </summary>
     public class UserChangePasswordDto
     {
         /// <summary>

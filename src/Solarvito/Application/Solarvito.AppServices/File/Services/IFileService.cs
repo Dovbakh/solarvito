@@ -32,11 +32,11 @@ namespace Solarvito.AppServices.File.Services
         /// <summary>
         /// Добавить файл в директорию.
         /// </summary>
-        /// <param name="fileFolder">Директория.</param>
+        /// <param name="folderName">Директория.</param>
         /// <param name="file">Файл.</param>
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Название файла.</returns>
-        Task<string> Upload(string fileFolder, IFormFile file, CancellationToken cancellation);
+        Task<string> Upload(string folderName, IFormFile file, CancellationToken cancellation);
 
         /// <summary>
         /// Добавить файл-изображение.
@@ -46,8 +46,19 @@ namespace Solarvito.AppServices.File.Services
         /// <returns>Название файла-изображения.</returns>
         Task<string> UploadImage(IFormFile file, CancellationToken cancellation);
 
+        /// <summary>
+        /// Удалить файл.
+        /// </summary>
+        /// <param name="fileName">Имя файла.</param>
+        /// <param name="folderName">Директория.</param>
+        /// <returns></returns>
         Task Delete(string fileName, string folderName);
 
+        /// <summary>
+        /// Удалить файл-изображение.
+        /// </summary>
+        /// <param name="fileName">Имя файла.</param>
+        /// <returns></returns>
         Task DeleteImage(string fileName);
     }
 }

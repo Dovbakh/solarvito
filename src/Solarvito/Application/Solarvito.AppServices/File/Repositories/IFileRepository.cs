@@ -32,6 +32,12 @@ namespace Solarvito.AppServices.File.Repositories
         /// <returns></returns>
         Task Upload(string fileName, string fileFolder, string contentType, byte[] bytes, CancellationToken cancellation);
 
+        /// <summary>
+        /// Удалить файл по имени и директории.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="folderName"></param>
+        /// <returns></returns>
         Task Delete(string fileName, string folderName);
     }
 }

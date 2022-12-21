@@ -180,15 +180,6 @@ namespace Solarvito.Contracts
             AdvertisementId = commentDto.AdvertisementId
         };
 
-        public static Domain.Comment MapToEntity(this CommentRequestDto сommentRequestDto) => new()
-        {
-            //Text = сommentRequestDto.Text,
-            //Rating = сommentRequestDto.Rating,
-            //AuthorId = сommentRequestDto.AuthorId,
-            //UserId = сommentRequestDto.UserId,
-            //AdvertisementId = сommentRequestDto.AdvertisementId
-        };
-
         public static CommentDto MapToDto(this CommentRequestDto сommentRequestDto) => new()
         {
             Text = сommentRequestDto.Text,

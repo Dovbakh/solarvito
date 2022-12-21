@@ -9,31 +9,30 @@ using System.Threading.Tasks;
 
 namespace Solarvito.AppServices.User.Helpers
 {
-    public class UserChangePasswordValidator
+
+    /// <summary>
+    /// Валидатор данных для <see cref="UserChangePasswordDto"/>
+    /// </summary>
+    public class UserChangePasswordValidator : AbstractValidator<UserChangePasswordDto>
     {
         /// <summary>
-        /// Валидатор данных для <see cref="UserLoginDto"/>
+        /// Правила для валидации <see cref="UserChangePasswordDto"/>
         /// </summary>
-        public class UserPasswordValidator : AbstractValidator<UserChangePasswordDto>
+        public UserChangePasswordValidator()
         {
-            /// <summary>
-            /// Правила для валидации <see cref="UserLoginDto"/>
-            /// </summary>
-            public UserPasswordValidator()
-            {
-                RuleFor(x => x.Password)
-                    .NotEmpty().WithMessage("Пароль обязателен для заполнения.")
-                    .Matches(@"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)").WithMessage("Пароль должен содержать цифры, латинские заглавные и строчные буквы.")
-                    .MinimumLength(8).WithMessage("Пароль должен состоять минимум из 8 символов.")
-                    .MaximumLength(100).WithMessage("Пароль должен состоять максимум из 100 символов.");
+            RuleFor(x => x.Password)
+                .NotEmpty().WithMessage("Пароль обязателен для заполнения.")
+                .Matches(@"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)").WithMessage("Пароль должен содержать цифры, латинские заглавные и строчные буквы.")
+                .MinimumLength(8).WithMessage("Пароль должен состоять минимум из 8 символов.")
+                .MaximumLength(100).WithMessage("Пароль должен состоять максимум из 100 символов.");
 
-                RuleFor(x => x.NewPassword)
-                    .NotEqual(x => x.Password).WithMessage("Новый пароль не должен совпадать со старым.")
-                    .NotEmpty().WithMessage("Пароль обязателен для заполнения.")
-                    .Matches(@"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)").WithMessage("Пароль должен содержать цифры, латинские заглавные и строчные буквы.")
-                    .MinimumLength(8).WithMessage("Пароль должен состоять минимум из 8 символов.")
-                    .MaximumLength(100).WithMessage("Пароль должен состоять максимум из 100 символов.");
-            }
+            RuleFor(x => x.NewPassword)
+                .NotEqual(x => x.Password).WithMessage("Новый пароль не должен совпадать со старым.")
+                .NotEmpty().WithMessage("Пароль обязателен для заполнения.")
+                .Matches(@"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)").WithMessage("Пароль должен содержать цифры, латинские заглавные и строчные буквы.")
+                .MinimumLength(8).WithMessage("Пароль должен состоять минимум из 8 символов.")
+                .MaximumLength(100).WithMessage("Пароль должен состоять максимум из 100 символов.");
         }
     }
+
 }

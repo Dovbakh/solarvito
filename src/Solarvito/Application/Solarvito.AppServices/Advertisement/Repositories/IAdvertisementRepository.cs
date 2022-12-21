@@ -40,6 +40,13 @@ namespace Solarvito.AppServices.Advertisement.Repositories
         /// <returns>Элемент <see cref="AdvertisementResponseDto"/>.</returns>
         Task<AdvertisementResponseDto> GetByIdAsync(int id, CancellationToken cancellation);
 
+        /// <summary>
+        /// Получить историю просмотренных обьявлений текущего пользователя.
+        /// </summary>
+        /// <param name="take">Количество получаемых обьявлений.</param>
+        /// <param name="skip">Количество пропускаемых обьявлений.</param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
         Task<IReadOnlyCollection<AdvertisementResponseDto>> GetHistoryAsync(int take, int skip, CancellationToken cancellation);
 
         /// <summary>

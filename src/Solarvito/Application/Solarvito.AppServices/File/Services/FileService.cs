@@ -91,11 +91,13 @@ namespace Solarvito.AppServices.File.Services
             return fileName;
         }
 
+        /// <inheritdoc/>
         public Task Delete(string fileName, string folderName)
         {
             return _fileRepository.Delete(fileName, folderName);
         }
 
+        /// <inheritdoc/>
         public Task DeleteImage(string fileName)
         {
             return _fileRepository.Delete(fileName, "images");

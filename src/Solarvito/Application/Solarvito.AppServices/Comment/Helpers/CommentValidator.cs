@@ -8,8 +8,14 @@ using System.Threading.Tasks;
 
 namespace Solarvito.AppServices.Comment.Helpers
 {
+    /// <summary>
+    /// Валидатор данных для <see cref="CommentRequestDto"/>
+    /// </summary>
     public class CommentValidator : AbstractValidator<CommentRequestDto>
     {
+        /// <summary>
+        /// Валидатор данных для <see cref="CommentRequestDto"/>
+        /// </summary>
         public CommentValidator()
         {
             RuleFor(c => c.Text)

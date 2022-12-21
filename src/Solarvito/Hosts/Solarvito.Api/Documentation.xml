@@ -258,14 +258,14 @@
             <param name="id">Идентификатор пользователя.</param>
             <param name="cancellation">Токен отмены.</param>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.ChangeEmail(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.ChangeEmail(Solarvito.Contracts.User.UserEmailDto,System.String,System.Threading.CancellationToken)">
             <summary>
             Изменить пользователя по идентификатору.
             </summary>
             <param name="id">Идентификатор пользователя.</param>
             <param name="cancellation">Токен отмены.</param>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.ChangeEmailRequest(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.ChangeEmailRequest(Solarvito.Contracts.User.UserChangeEmailDto,System.Threading.CancellationToken)">
             <summary>
             Изменить пользователя по идентификатору.
             </summary>
@@ -279,7 +279,7 @@
             <param name="id">Идентификатор пользователя.</param>
             <param name="cancellation">Токен отмены.</param>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.ResetPasswordRequest(System.String,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.ResetPasswordRequest(Solarvito.Contracts.User.UserEmailDto,System.Threading.CancellationToken)">
             <summary>
             Изменить пользователя по идентификатору.
             </summary>
@@ -293,7 +293,7 @@
             <param name="id">Идентификатор пользователя.</param>
             <param name="cancellation">Токен отмены.</param>
         </member>
-        <member name="M:Solarvito.Api.Controllers.UserController.ResetPassword(System.String,System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Solarvito.Api.Controllers.UserController.ResetPassword(Solarvito.Contracts.User.UserResetPasswordDto,System.String,System.Threading.CancellationToken)">
             <summary>
             Изменить пользователя по идентификатору.
             </summary>

@@ -6,16 +6,19 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.User
 {
+    /// <summary>
+    /// DTO пользователя с новой электронной почтой и текущим паролем.
+    /// </summary>
     public class UserChangeEmailDto
     {
         /// <summary>
         /// Новая почта пользователя.
         /// </summary>
-        public UserEmailDto newEmail { get; set; }
+        public string newEmail { get; set; }
 
         /// <summary>
         /// Пароль пользователя.
         /// </summary>
-        public UserPasswordDto Password { get; set; }
+        public string Password { get; set; }
     }
 }

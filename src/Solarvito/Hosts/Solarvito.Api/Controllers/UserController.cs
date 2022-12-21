@@ -101,7 +101,7 @@ namespace Solarvito.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<IActionResult> ChangeEmail(string newEmail, string token, CancellationToken cancellation)
+        public async Task<IActionResult> ChangeEmail([FromQuery] UserEmailDto newEmail, string token, CancellationToken cancellation)
         {
             await _userService.ChangeEmailAsync(newEmail, token, cancellation);
 
@@ -117,11 +117,11 @@ namespace Solarvito.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<IActionResult> ChangeEmailRequest(string newEmail, string password, CancellationToken cancellation)
+        public async Task<IActionResult> ChangeEmailRequest([FromBody] UserChangeEmailDto request, CancellationToken cancellation)
         {
-            var changeLink = Url.Action(nameof(ChangeEmail), "User", new { newEmail = newEmail, token = "tokenValue" }, Request.Scheme);
+            var changeLink = Url.Action(nameof(ChangeEmail), "User", new { newEmail = request.newEmail, token = "tokenValue" }, Request.Scheme);
 
-            await _userService.ChangeEmailRequestAsync(newEmail, password, changeLink, cancellation);
+            await _userService.ChangeEmailRequestAsync(request, changeLink, cancellation);
 
             return Ok();
         }
@@ -151,9 +151,9 @@ namespace Solarvito.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
-        public async Task<IActionResult> ResetPasswordRequest(string email, CancellationToken cancellation)
+        public async Task<IActionResult> ResetPasswordRequest([FromQuery] UserEmailDto email, CancellationToken cancellation)
         {
-            var resetLink  = Url.Action(nameof(ResetPasswordConfirm), "User", new { email = email, token = "tokenValue" }, Request.Scheme);
+            var resetLink  = Url.Action(nameof(ResetPasswordConfirm), "User", new { email = email.Value, token = "tokenValue" }, Request.Scheme);
 
             await _userService.ResetPasswordRequestAsync(email, resetLink, cancellation);          
 
@@ -183,9 +183,9 @@ namespace Solarvito.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
-        public async Task<IActionResult> ResetPassword(string email, string newPassword, string token, CancellationToken cancellation)
+        public async Task<IActionResult> ResetPassword(UserResetPasswordDto request, string token, CancellationToken cancellation)
         {
-            await _userService.ResetPasswordAsync(email, newPassword, token, cancellation);
+            await _userService.ResetPasswordAsync(request, token, cancellation);
 
             return Ok();
         }

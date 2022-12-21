@@ -170,6 +170,7 @@ namespace Solarvito.AppServices.Advertisement.Services
             return advertisementResponseDto;
         }
 
+        /// <inheritdoc/>
         public Task<IReadOnlyCollection<AdvertisementResponseDto>> GetHistoryAsync(int? page, CancellationToken cancellation)
         {
             if (page == null) page = 1;
@@ -180,6 +181,7 @@ namespace Solarvito.AppServices.Advertisement.Services
 
         }
 
+        /// <inheritdoc/>
         public Task<IReadOnlyCollection<AdvertisementResponseDto>> GetLastViewedAsync(int? count, CancellationToken cancellation)
         {
             if (count == null) count = 10;
@@ -207,28 +209,24 @@ namespace Solarvito.AppServices.Advertisement.Services
                 {
                     var imageName = await _fileService.UploadImage(image, cancellation);
 
-                    var advertisementImageDto = new AdvertisementImageDto() { 
-                        AdvertisementId = id, 
-                        FileName = Guid.NewGuid().ToString() 
+                    var advertisementImageDto = new AdvertisementImageDto()
+                    {
+                        AdvertisementId = id,
+                        FileName = Guid.NewGuid().ToString()
                     };
                     await _advertisementImageRepository.AddAsync(advertisementImageDto, cancellation);
                 }
             }
 
-            // удалить лишние изображения
-            
-           
-                foreach (var image in existingImages)
+            // удалить старые лишние изображения
+            foreach (var image in existingImages)
+            {
+                if (!advertisementUpdateRequestDto.ImagePathes.Contains(image.FileName))
                 {
-                    if (!advertisementUpdateRequestDto.ImagePathes.Contains(image.FileName))
-                    {
-                        await _advertisementImageRepository.DeleteAsync(image.Id, cancellation);
-                        await _fileService.DeleteImage(image.FileName);
-                    }
+                    await _advertisementImageRepository.DeleteAsync(image.Id, cancellation);
+                    await _fileService.DeleteImage(image.FileName);
                 }
-           
-
-
+            }
 
 
             var advertisement = await _advertisementRepository.GetByIdAsync(id, cancellation);

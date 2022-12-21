@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Solarvito.Contracts.User
 {
+    /// <summary>
+    /// DTO пользователя с электронной почтой.
+    /// </summary>
     public class UserEmailDto
     {
 
