@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using FluentValidation;
 using Solarvito.Contracts.User;
 
-namespace Solarvito.AppServices.User.Validators
+namespace Solarvito.AppServices.User.Helpers.Validators
 {
     /// <summary>
     /// Валидатор данных для <see cref="UserLoginDto"/>

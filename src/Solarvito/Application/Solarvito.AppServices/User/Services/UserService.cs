@@ -34,9 +34,8 @@ namespace Solarvito.AppServices.User.Services
         private readonly IUserRepository _userRepository;
         private readonly IClaimsAccessor _claimsAccessor;
         private readonly IConfiguration _configuration;
-        private readonly IValidator<UserRegisterDto> _validatorRegister;
-        private readonly IValidator<UserLoginDto> _validatorLogin;
-        private readonly IValidator<UserChangePasswordDto> _validatorPassword;
+        private readonly IValidator<UserEmailDto> _validatorEmail;
+        private readonly IValidator<UserPasswordDto> _validatorPassword;
 
         private readonly IPasswordHasher<UserRegisterDto> _hasherRegister;
         private readonly IPasswordHasher<UserLoginDto> _hasherLogin;
@@ -60,9 +59,6 @@ namespace Solarvito.AppServices.User.Services
             IUserRepository userRepository,
             IClaimsAccessor claimsAccessor,
             IConfiguration configuration,
-            IValidator<UserRegisterDto> validatorRegister,
-            IValidator<UserLoginDto> validatorLogin,
-            IValidator<UserChangePasswordDto> validatorPassword,
             IPasswordHasher<UserRegisterDto> hasherRegister,
             IPasswordHasher<UserLoginDto> hasherLogin,
             ILogger<UserService> logger,
@@ -70,14 +66,15 @@ namespace Solarvito.AppServices.User.Services
             UserManager<Domain.User> userManager,
             RoleManager<Domain.Role> roleManager,
             INotifierService notifierService,
-            IDistributedCache distributedCache)
+            IDistributedCache distributedCache,
+            IValidator<UserEmailDto> validatorEmail,
+            IValidator<UserPasswordDto> validatorPassword)
         {
             _userRepository = userRepository;
             _claimsAccessor = claimsAccessor;
             _configuration = configuration;
-            _validatorRegister = validatorRegister;
-            _validatorLogin = validatorLogin;
             _validatorPassword = validatorPassword;
+            _validatorEmail = validatorEmail;
             _hasherRegister = hasherRegister;
             _hasherLogin = hasherLogin;
             _logger = logger;
@@ -172,7 +169,7 @@ namespace Solarvito.AppServices.User.Services
         /// <inheritdoc/>
         public async Task ChangePasswordAsync(UserChangePasswordDto userChangePasswordDto, CancellationToken cancellationToken)
         {           
-            var validationResult = _validatorPassword.Validate(userChangePasswordDto);
+            var validationResult = _validatorChangePassword.Validate(userChangePasswordDto);
 
             if (!validationResult.IsValid)
             {
@@ -185,16 +182,26 @@ namespace Solarvito.AppServices.User.Services
         }
 
         /// <inheritdoc/>
-        public async Task ChangeEmailRequestAsync(string newEmail, string password, string changeLink, CancellationToken cancellationToken)
+        public async Task ChangeEmailRequestAsync(UserChangeEmailDto request, string changeLink, CancellationToken cancellationToken)
         {
             // Валидация введенной почты
 
+            var validationResult = _validatorEmail.Validate(request.newEmail);
+            if (!validationResult.IsValid)
+            {
+                throw new Exception(validationResult.ToString("~"));
+            }
+
             // Верификация пароля
+            var currentUser = await GetCurrent(cancellationToken);
+            var isPasswordVerified = await _userRepository.CheckPasswordAsync(currentUser.Email, request.Password.Password, cancellationToken);
+            if (!isPasswordVerified)
+            {
+                throw new ArgumentException("Введен неверный пароль.");
+            }
 
             // Генерация токена смены почты
-            var currentUser = await GetCurrent(cancellationToken);
-
-            var token = await _userRepository.ChangeEmailRequestAsync(currentUser.Email, newEmail, cancellationToken);
+            var token = await _userRepository.ChangeEmailRequestAsync(currentUser.Email, request.newEmail.Email, cancellationToken);
 
             // Отправление сообщения на почту
 
@@ -204,11 +211,11 @@ namespace Solarvito.AppServices.User.Services
             {
                 To = currentUser,
                 Subject = "Запрос на изменение почты",
-                Body = "Поступил запрос на изменение электронной почты на <b>" + newEmail + "</b>. Если это были вы, то ничего делать не нужно. В противном случае напишите в поддержку."
+                Body = "Поступил запрос на изменение электронной почты на <b>" + request.newEmail.Email + "</b>. Если это были вы, то ничего делать не нужно. В противном случае напишите в поддержку."
             };
             _notifierService.Send(notifyWarning);
 
-            currentUser.Email = newEmail;
+            currentUser.Email = request.newEmail.Email;
             var notifyConfirm = new NotifyDto()
             {
                 To = currentUser,
@@ -219,11 +226,20 @@ namespace Solarvito.AppServices.User.Services
             _notifierService.Send(notifyConfirm);
         }
 
-        public async Task ChangeEmailAsync(string newEmail, string token, CancellationToken cancellationToken)
+        public async Task ChangeEmailAsync(UserEmailDto newEmail, string token, CancellationToken cancellationToken)
         {
+            var validationResult = _validatorEmail.Validate(newEmail);
+
+            if (!validationResult.IsValid)
+            {
+                throw new Exception(validationResult.ToString("~"));
+            }
+
+
+
             var currentUser = await GetCurrent(cancellationToken);
 
-            await _userRepository.ChangeEmailAsync(currentUser.Email, newEmail, token, cancellationToken);
+            await _userRepository.ChangeEmailAsync(currentUser.Email, newEmail.Email, token, cancellationToken);
 
         }
 

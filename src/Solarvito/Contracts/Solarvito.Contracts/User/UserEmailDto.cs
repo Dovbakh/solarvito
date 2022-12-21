@@ -13,6 +13,6 @@ namespace Solarvito.Contracts.User
         /// <summary>
         /// Электронная почта пользователя.
         /// </summary>
-        public string Email {get; set;}
+        public string Value {get; set;}
     }
 }

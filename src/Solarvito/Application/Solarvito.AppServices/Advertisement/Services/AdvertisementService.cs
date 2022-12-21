@@ -35,7 +35,7 @@ namespace Solarvito.AppServices.Advertisement.Services
         private readonly IFileService _fileService;
         private readonly IAdvertisementImageRepository _advertisementImageRepository;
         private readonly ILogger<AdvertisementService> _logger;
-        private readonly IDistributedCache _distributedCache;
+
         private const int numByPage = 20; // количество обьявлений на одной странице
 
         /// <summary>
@@ -49,8 +49,7 @@ namespace Solarvito.AppServices.Advertisement.Services
             IValidator<AdvertisementUpdateRequestDto> validatorUpdate,
             IFileService fileService,
             IAdvertisementImageRepository advertisementImageRepository,
-            ILogger<AdvertisementService> logger,
-            IDistributedCache distributedCache)
+            ILogger<AdvertisementService> logger)
         {
             _advertisementRepository = advertisementRepository;
             _userService = userService;
@@ -59,7 +58,6 @@ namespace Solarvito.AppServices.Advertisement.Services
             _fileService = fileService;
             _advertisementImageRepository = advertisementImageRepository;
             _logger = logger;
-            _distributedCache = distributedCache;
         }
 
         /// <inheritdoc/>

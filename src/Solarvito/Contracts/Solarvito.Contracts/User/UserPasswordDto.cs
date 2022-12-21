@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solarvito.AppServices.User.Helpers
+namespace Solarvito.Contracts.User
 {
-    public class UserContactDetailsValidator
+    public class UserPasswordDto
     {
-
+        public string Value { get; set; }
     }
 }

@@ -31,46 +31,9 @@ builder.Services.AddSwaggerModule();
 
 builder.Services.AddAuthenticationModule(builder.Configuration);
 
-//builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-//    .AddEntityFrameworkStores<SolarvitoContext>()
-//    .AddDefaultTokenProviders()
-//    .AddUserManager<UserManager<ApplicationUser>>();
+builder.Services.AddIdentityModule();
 
-builder.Services.AddIdentityCore<User>()
-    .AddRoles<Role>()
-    .AddUserManager<UserManager<User>>()
-    .AddRoleManager<RoleManager<Role>>()
-    .AddEntityFrameworkStores<SolarvitoContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequiredUniqueChars = 1;
-
-    options.User.AllowedUserNameCharacters =
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
-    options.User.RequireUniqueEmail = true;
-
-
-
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
-
-    options.SignIn.RequireConfirmedEmail = false;
-    options.SignIn.RequireConfirmedPhoneNumber = false;
-});
-
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = "localhost";
-    options.InstanceName = "Solarvito_";
-});
+builder.Services.AddRedisModule(builder.Configuration);
 
 var app = builder.Build();
 

@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solarvito.Migrations", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solarvito.Registrar", "src\Solarvito\Infrastructure\Solarvito.Registrar\Solarvito.Registrar.csproj", "{1C98A624-1E2B-46BB-B050-9FF68C328A1D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarvito.Tests", "src\Solarvito\Tests\Solarvito.Tests\Solarvito.Tests.csproj", "{38B425AA-E5CF-4AC7-B3B5-AC1609FA65E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{1C98A624-1E2B-46BB-B050-9FF68C328A1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C98A624-1E2B-46BB-B050-9FF68C328A1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C98A624-1E2B-46BB-B050-9FF68C328A1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38B425AA-E5CF-4AC7-B3B5-AC1609FA65E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38B425AA-E5CF-4AC7-B3B5-AC1609FA65E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38B425AA-E5CF-4AC7-B3B5-AC1609FA65E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38B425AA-E5CF-4AC7-B3B5-AC1609FA65E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +99,7 @@ Global
 		{763A3A02-74F5-4B40-A3BA-98891A753D7A} = {AF8AF4AD-5396-44CB-A38B-B8673A4CFE08}
 		{C7DCEC52-508C-4B6C-9308-06E98F51C23E} = {AF8AF4AD-5396-44CB-A38B-B8673A4CFE08}
 		{1C98A624-1E2B-46BB-B050-9FF68C328A1D} = {AF8AF4AD-5396-44CB-A38B-B8673A4CFE08}
+		{38B425AA-E5CF-4AC7-B3B5-AC1609FA65E9} = {798B6194-4185-4003-9816-5AA1A67DD37B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {78BB7BEB-A1D7-4EBF-B09B-BB1BEAC0EC90}
