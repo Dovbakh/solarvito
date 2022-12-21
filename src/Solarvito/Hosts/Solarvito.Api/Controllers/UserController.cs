@@ -95,7 +95,8 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Изменить пользователя по идентификатору.
         /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="newEmail">Новая электронная почта пользователя.</param>
+        /// <param name="token">Сгенерированный токен для изменения почты пользователя.</param>
         /// <param name="cancellation">Токен отмены.</param>
         [HttpGet("change-email")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -111,7 +112,7 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Изменить пользователя по идентификатору.
         /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="request">Элемент <see cref="UserChangeEmailDto"/>.</param>
         /// <param name="cancellation">Токен отмены.</param>
         [HttpPost("change-email-request")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -129,7 +130,7 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Изменить пользователя по идентификатору.
         /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="userChangePasswordDto">Элемент <see cref="UserChangePasswordDto"/>.</param>
         /// <param name="cancellation">Токен отмены.</param>
         [HttpPut("change-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -145,7 +146,7 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Изменить пользователя по идентификатору.
         /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="email">Текущая электронная почта пользователя.</param>
         /// <param name="cancellation">Токен отмены.</param>
         [HttpGet("reset-password-request")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -163,7 +164,8 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Изменить пользователя по идентификатору.
         /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="email">Электронная почта пользователя.</param>
+        /// <param name="token">Сгенерированный токен для сброса пароля.</param>
         /// <param name="cancellation">Токен отмены.</param>
         [HttpGet("reset-password-confirm")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -177,7 +179,8 @@ namespace Solarvito.Api.Controllers
         /// <summary>
         /// Изменить пользователя по идентификатору.
         /// </summary>
-        /// <param name="id">Идентификатор пользователя.</param>
+        /// <param name="request">Элемент <see cref="UserResetPasswordDto"/>.</param>
+        /// <param name="token">Идентификатор пользователя.</param>
         /// <param name="cancellation">Токен отмены.</param>
         [HttpPut("reset-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]

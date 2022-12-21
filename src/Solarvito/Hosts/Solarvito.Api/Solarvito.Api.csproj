@@ -9,6 +9,7 @@
     <DockerfileContext>..\..\..\..</DockerfileContext>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>Documentation.xml</DocumentationFile>
+    <DockerComposeProjectPath>..\..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
